@@ -8,7 +8,7 @@ from matplotlib import cm
 from matplotlib.pyplot import colormaps
 from pyqtgraph import ColorMap
 
-class pit_cmap(ColorMap) :
+class ds_cmap(ColorMap) :
     """ Simple subclass of :class: `<pyqtgraph.ColorMap>`. Adds vmax, 
     powerlaw normalization and a convenience function to change alpha.
     """
@@ -97,7 +97,7 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
     # Apply alpha
     rgba[:,-1] = alpha
 
-    return pit_cmap(values, rgba)
+    return ds_cmap(values, rgba)
 
 
 # Convert all matplotlib colormaps to pyqtgraph ones and make them available 
