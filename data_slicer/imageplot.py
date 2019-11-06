@@ -694,3 +694,16 @@ class Scalebar(CursorPlot) :
         else :
             super().keyPressEvent(event)
 
+    def add_text(self, text, pos=(0.5, 0.5), anchor=(0.5, 0.5)) :
+        """ 
+        Add text to the scalebar.
+
+        *Parameters*
+        ======  ================================================================
+        text    string; the text to be displayed.
+        pos     tuple; (x, y) position of the text relative to the scalebar.
+        anchor  tuple; (x, y) position of the text object's anchor.
+        ======  ================================================================
+        """
+        pass
+

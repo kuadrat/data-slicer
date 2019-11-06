@@ -145,3 +145,57 @@ def indexof(value, array) :
     """
     return np.argmin(np.abs(array - value))
 
+def make_slice(data, d, i, integrate=0, silent=False) :
+    """ Create a slice out of the 3d data (l x m x n) along dimension d 
+    (0,1,2) at index i. Optionally integrate around i.
+
+    *Parameters*
+    ============================================================================
+    data       array-like; data of the shape (x, y, z)
+    d          int, d in (0, 1, 2); dimension along which to slice
+    i          int, 0 <= i < data.size[d]; The index at which to create the slice
+    integrate  int, 0 <= integrate < |i - n|; the number of slices above 
+               and below slice i over which to integrate
+    silent     bool; toggle warning messages
+    ============================================================================
+
+    *Returns*
+    ============================================================================
+    res        np.array; Slice at index with dimensions shape[:d] + shape[d+1:]
+               where shape = (x, y, z).
+    ============================================================================
+    """
+    # Get the relevant dimensions
+    shape = data.shape
+    try :
+        n_slices = shape[d]
+    except IndexError :
+        print('d ({}) can only be 0, 1 or 2 and data must be 3D.'.format(d))
+        return
+
+    # Set the integration indices and adjust them if they go out of scope
+    start = i - integrate
+    stop = i + integrate + 1
+    if start < 0 :
+        if not silent :
+            warnings.warn(
+            'i - integrate ({}) < 0, setting start=0'.format(start))       
+        start = 0
+    if stop > n_slices :
+        if not silent :
+            warning = ('i + integrate ({}) > n_slices ({}), setting '
+                       'stop=n_slices').format(stop, n_slices)       
+            warnings.warn(warning)
+        stop = n_slices
+
+    # Initialize data container and fill it with data from selected slices
+    if d == 0 :
+        sliced = data[start:stop,:,:].sum(d)
+    elif d == 1 :
+        sliced = data[:,start:stop,:].sum(d)
+    elif d == 2 :
+        sliced = data[:,:,start:stop].sum(d)
+
+    return sliced
+
+
