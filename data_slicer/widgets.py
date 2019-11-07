@@ -49,6 +49,7 @@ class ThreeDWidget(QtGui.QWidget) :
         # Add the scalebar
         self.slider_xy = Scalebar()
         self.slider_xy.pos.sig_value_changed.connect(self.update_xy)
+        self.slider_xy.add_text('xy plane', relpos=(0.5, 0.5))
 
         # Put all widgets in place
         self.align()

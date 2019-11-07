@@ -658,7 +658,17 @@ class Scalebar(CursorPlot) :
     <data_slicer.imageview.CursorPlot>` that is intended to simulate a 
     scalebar. This is achieved by providing simply a long, flat plot without 
     any data and no y axis, but the same draggable slider as in CursorPlot.
+
+    ==================  ========================================================
+    ..:attr: textItems  list of (t, (rx, ry)) tuples; t is a :class: 
+                        `TextItem <pyqtgraph.graphicsItems.TextItem>` 
+                        instance and rx, ry are float in the range [0, 1] 
+                        indicating the relative positioning of the textitems 
+                        inside the Scalebar.
+    ==================  ========================================================
     """
+    textItems = []
+
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
 
@@ -673,6 +683,10 @@ class Scalebar(CursorPlot) :
 
         self.set_size(300, 50)
         self.pos.set_allowed_values(linspace(0, 1, 100))
+
+        # Connect signal of changed allowed values to update TextItem positions
+        self.pos.sig_allowed_values_changed.connect(
+            self.on_allowed_values_changed)
 
         # Slider appearance
         slider_width = 20
@@ -694,7 +708,7 @@ class Scalebar(CursorPlot) :
         else :
             super().keyPressEvent(event)
 
-    def add_text(self, text, pos=(0.5, 0.5), anchor=(0.5, 0.5)) :
+    def add_text(self, text, relpos=(0.5, 0.5), anchor=(0.5, 0.5)) :
         """ 
         Add text to the scalebar.
 
@@ -705,5 +719,28 @@ class Scalebar(CursorPlot) :
         anchor  tuple; (x, y) position of the text object's anchor.
         ======  ================================================================
         """
-        pass
+        t = pg.TextItem(text, anchor=anchor)
+        self.set_relative_position(t, relpos)
+        self.addItem(t)
+        self.textItems.append((t, relpos))
+
+    def set_relative_position(self, textItem, relpos) :
+        """ 
+        Figure out this Scalebar's current size (in data units) and 
+        reposition its textItems accordingly.
+        """
+        height = 1
+        width = len(self.pos.allowed_values)
+
+        x = width * relpos[0]
+        y = height * relpos[1]
+
+        logger.debug('set_relative_position - x={:.2f}, y={:.2f}'.format(x, y))
+
+        textItem.setPos(x, y)
+
+    def on_allowed_values_changed(self) :
+        """ Keep TextItems in correct relative position. """
+        for t, relpos in self.textItems :
+            self.set_relative_position(t, relpos)
 

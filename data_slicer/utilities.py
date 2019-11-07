@@ -84,7 +84,7 @@ class TracedVariable(qt.QtCore.QObject) :
         """ Define a set/range/list of values that are allowed for this 
         Variable. Once set, all future calls to set_value will automatically 
         try to pick the most reasonable of the allowed values to assign. 
-        Emits :signal: `sig_allowed_value_changed`
+        Emits :signal: `sig_allowed_values_changed`
 
         ====== =================================================================
         values iterable; The complete list of allowed (numerical) values. This
