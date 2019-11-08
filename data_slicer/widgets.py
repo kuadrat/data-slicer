@@ -161,7 +161,7 @@ if __name__ == "__main__" :
     import pickle
     import pkg_resources
 
-    import set_up_logging
+    import data_slicer.set_up_logging
     # Set up Qt Application skeleton
     app = QtGui.QApplication([])
     window = QtGui.QMainWindow()
