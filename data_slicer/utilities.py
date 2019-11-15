@@ -37,7 +37,6 @@ class TracedVariable(qt.QtCore.QObject) :
     sig_value_read = qt.QtCore.Signal()
     sig_allowed_values_changed = qt.QtCore.Signal()
     allowed_values = None
-    name = 'Unnamed'
 
     def __init__(self, value=None, name=None) :
         # Have to call superclass init for signals to work
@@ -45,9 +44,11 @@ class TracedVariable(qt.QtCore.QObject) :
         self._value = value
         if name is not None :
             self.name = name
+        else :
+            self.name = 'Unnamed'
 
     def __repr__(self) :
-        return '<TracedVariable({})>'.format(self._value)
+        return '<TracedVariable({}, {})>'.format(self.name, self._value)
 
     def set_value(self, value=None) :
         """ Emit sig_value_changed and set the internal self._value. """
@@ -55,7 +56,7 @@ class TracedVariable(qt.QtCore.QObject) :
         if self.allowed_values is not None :
             value = self.find_closest_allowed(value)
         self._value = value
-        logger.info(('{} {}: Emitting sig_value_changed.').format(
+        logger.debug(('{} {}: Emitting sig_value_changed.').format(
             self.__class__.__name__, self.name))
         self.sig_value_changed.emit()
 
@@ -63,7 +64,7 @@ class TracedVariable(qt.QtCore.QObject) :
         """ Emit sig_value_changed and return the internal self._value. 
         NOTE: the signal is emitted here before the caller actually receives 
         the return value. This could lead to unexpected behaviour. """
-        logger.info('{} {}: Emitting sig_value_read.'.format( 
+        logger.debug('{} {}: Emitting sig_value_read.'.format( 
             self.__class__.__name__, self.name))
         self.sig_value_read.emit()
         return self._value
@@ -114,8 +115,11 @@ class TracedVariable(qt.QtCore.QObject) :
             self.min_allowed = values[0]
             self.max_allowed = values[-1]
 
-        logger.info('{} {}: Emitting sig_allowed_values_changed.'.format(
+        logger.debug('{} {}: Emitting sig_allowed_values_changed.'.format(
             self.__class__.__name__, self.name))
+
+        # Update the current value to within the allowed range
+        self.set_value(self._value)
         self.sig_allowed_values_changed.emit()
 
     def find_closest_allowed(self, value) :

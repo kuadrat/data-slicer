@@ -667,7 +667,6 @@ class Scalebar(CursorPlot) :
                         inside the Scalebar.
     ==================  ========================================================
     """
-    textItems = []
 
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
@@ -692,6 +691,9 @@ class Scalebar(CursorPlot) :
         slider_width = 20
         self.slider.setPen(color=(100, 100, 100), width=slider_width)
         self.slider.setHoverPen(color=(120, 120, 120), width=slider_width)
+
+        # Initialize other attributes 
+        self.textItems = []
 
     def set_size(self, width, height) :
         """ Set this widgets size by setting minimum and maximum sizes 
@@ -735,7 +737,8 @@ class Scalebar(CursorPlot) :
         x = width * relpos[0]
         y = height * relpos[1]
 
-        logger.debug('set_relative_position - x={:.2f}, y={:.2f}'.format(x, y))
+        logger.debug(('set_relative_position [{}] - x={:.2f}, '
+                     'y={:.2f}').format(self.name, x, y))
 
         textItem.setPos(x, y)
 
