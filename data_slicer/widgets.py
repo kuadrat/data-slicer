@@ -30,7 +30,7 @@ class ThreeDWidget(QtGui.QWidget) :
     This class mostly functions as a base class for more refined variations.
     """
 
-    data = TracedVariable(None)
+    data = TracedVariable(None, name='data')
     lut = cmaps[DEFAULT_CMAP].getLookupTable()
     gloptions = 'translucent'
 
