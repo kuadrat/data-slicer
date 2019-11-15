@@ -8,10 +8,10 @@ with open("README.md", "r") as fh :
 
 setuptools.setup(
     name='data-slicer',
-    version='0.0.3',
+    version='0.0.1',
     author='Kevin Kramer',
     author_email='kevin.kramer@uzh.ch',
-    description='Tools for quick visualization of 3 dimensional datasets.',
+    description='Tools for quick visualization of three dimensional datasets.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/kuadrat/data_slicer.git',
@@ -23,4 +23,7 @@ setuptools.setup(
         'Operating System :: OS Independent',
     ],
     include_package_data=True,
+#    data_files=[
+#        ('example_data', ['data/testdata_100_150_200.p'])
+#    ],
 )
