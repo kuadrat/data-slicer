@@ -8,8 +8,9 @@ import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 from pyqtgraph.Qt import QtGui
 
-from data_slicer.imageplot import Scalebar
 from data_slicer.cmaps import cmaps
+from data_slicer.cutline import Cutline
+from data_slicer.imageplot import ImagePlot, Scalebar
 from data_slicer.utilities import make_slice, TracedVariable
 
 logger = logging.getLogger('ds.'+__name__)
@@ -154,6 +155,7 @@ class ThreeDWidget(QtGui.QWidget) :
         self.xy.scale(self.xscale, self.yscale, 1)
         self.xy.translate(T, T, T)
         # Put to position in accordance with slider
+        self.old_z = self.slider_xy.pos.get_value()
         self.update_xy()
         # Add to GLView
         self.glview.addItem(self.xy)
@@ -327,6 +329,132 @@ class ThreeDSliceWidget(ThreeDWidget) :
         texture = self.make_texture(cut)
         self.zx.setData(texture)
 
+class FreeSliceWidget(ThreeDWidget) :
+    """ A :class: `ThreeDWidget <data_slicer.widgets.ThreeDWidget>` which 
+    represents its xy plane in an additional 2D panel.
+    In this "selector" panel, there's a :class: `Cutline 
+    <data_slicer.cutline.Cutline> with which arbitrary slices can be 
+    generated, which will in turn be shown in the 3D GLView.
+    """
+
+    def _initialize_sub_widgets(self) :
+        """ Create the ImagePlot with the Cutline. """
+        super()._initialize_sub_widgets()
+        self.slider_xy.pos.sig_value_changed.connect(self.update_selector)
+        self.selector = ImagePlot()
+
+    def align(self) :
+        """
+          0   1   2   3   4   5   6   7
+        +---+---+---+---+---+---+---+---+
+        |               |               | 0
+        +               |               +
+        |               |               | 1
+        +  Selector     |   GLView      +
+        |               |               | 2
+        +               |               +  
+        |               |               | 3
+        +               |   +---+---+   +
+        |               |   |  xy   |   | 4
+        +---+---+---+---+---+---+---+---+
+        """
+        l = self.layout
+
+        l.addWidget(self.selector, 0, 0, 5, 4)
+        l.addWidget(self.glview, 0, 4, 5, 4)
+        l.addWidget(self.slider_xy, 4, 5, 1, 2)
+
+    def _initialize_planes(self) :
+        """ Create the xy plane, the arbitrary cut plane and the view in the 
+        selector panel.
+        """
+        # xy
+        super()._initialize_planes()
+        # selector
+        xy = self.get_xy_slice(0)
+        self.selector.set_image(xy, lut=self.lut)
+        # cutline in selector
+        if not hasattr(self, 'cutline') :
+            self.cutline = Cutline(self.selector)
+        self.cutline.initialize()
+        # cut plane
+        if hasattr(self, 'cutplane') :
+            self.glview.removeItem(self.cutplane)
+        cut, coords = self.get_cutline_cut()
+        cut_texture = self.make_texture(cut)
+        self.cutplane = gl.GLImageItem(cut_texture, glOptions=self.gloptions)
+
+        # Scale and move to origin in upright position
+        self.cutplane.scale(self.xscale, self.zscale, 1)
+        self.cutplane.rotate(90, 1, 0, 0)
+        self.cutplane.translate(T, 0, T)
+        self.transform0 = self.cutplane.transform()
+
+        self.glview.addItem(self.cutplane)
+        self.cutline.sig_region_changed.connect(self.update_cut)
+
+    def get_cutline_cut(self) :
+        """ Wrapper for Curline.get_array_region() """
+        data = self.data.get_value()
+        cut, coords = self.cutline.get_array_region(data, 
+                                           self.selector.image_item, 
+                                           returnCoords=True)
+
+        return cut, coords
+
+    def update_cut(self) :
+        """ 
+        Update the texture and position of the cutline cut in the 
+        GLGraphicsView. 
+        """
+        ## Update the texture
+        cut, coords = self.get_cutline_cut()
+        texture = self.make_texture(cut)
+        self.cutplane.setData(texture)
+
+        ## Update the position in 3D space
+
+        # Get handle positions (in data pixel coordinates (?))
+        try :
+            x0, y0 = coords[[0, 1], [0, 0]]
+            x1, y1 = coords[[0, 1], [-1, -1]]
+        except IndexError :
+            return
+
+        # Figure out the translation vector
+        tx = x0*self.xscale
+        ty = y0*self.yscale
+
+        # Calculate the rotation angle
+        delta_y = y1 - y0
+        try :
+            # arctan (delta y) / (delta x)
+            alpha = np.arctan(delta_y / (x1 - x0))
+        except ZeroDivisionError :
+            alpha = np.sign(delta_y) * np.pi/2
+        # Correct for special cases
+        if x1 < x0 :
+            alpha -= np.sign(delta_y) * np.pi
+        alpha_degree = 180/np.pi * alpha
+        print(alpha_degree)
+        
+        # Apply the transformations in inverse order
+        t = QtGui.QMatrix4x4()
+        t.translate(tx+T, ty+T, T)
+        t.scale(self.xscale, self.yscale, 1)
+        t.rotate(alpha_degree, 0, 0, 1)
+        t.rotate(90, 1, 0, 0)
+        t.scale(1, self.zscale, 1)
+        self.cutplane.setTransform(t)
+
+    def update_selector(self) :
+        """ When the slider position changes, update the image displayed in 
+        the selector to represent the correct cut.
+        """ 
+        z = self.slider_xy.pos.get_value()
+        cut = self.get_xy_slice(z)
+        self.selector.set_image(cut, lut=self.lut)
+
 #_Testing_______________________________________________________________________
 
 if __name__ == "__main__" :
@@ -349,6 +477,7 @@ if __name__ == "__main__" :
 
     # Add our custom widgets
     w = ThreeDSliceWidget()
+    w = FreeSliceWidget()
     layout.addWidget(w, 0, 0, 1, 2)
 
     button1 = QtGui.QPushButton()
