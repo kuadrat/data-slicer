@@ -362,14 +362,13 @@ class CrosshairImagePlot(ImagePlot) :
         self.sig_image_changed.connect(self.update_allowed_values)
 
     def update_allowed_values(self) :
-        """ Ensure that the allowed values (and therefore the connected axes 
-        of the edc and mdc plots) are in line with the data represented in 
-        cut_plot.
-        """
+        """ Update the allowed values silently. """
         logger.debug('{}.update_allowed_values()'.format(self.name))
         [[xmin, xmax], [ymin, ymax]] = self.get_limits()
         self.pos[0].set_allowed_values(linspace(ymin, ymax, 100))
         self.pos[1].set_allowed_values(linspace(xmin, xmax, 100))
+#        self.pos[0].allowed_values = linspace(ymin, ymax, 100)
+#        self.pos[1].allowed_values = linspace(xmin, xmax, 100)
 
     def set_bounds(self, xmin, xmax, ymin, ymax) :
         """ Set both, the displayed area of the axis as well as the the range 
@@ -613,8 +612,8 @@ class CursorPlot(pg.PlotWidget) :
         """
         allowed_values = self.pos.allowed_values
         old_index = indexof(self.pos.get_value(), allowed_values)
-        new_index = (old_index + step)%len(allowed_values)
-        new_value = allowed_values[new_index]
+        new_index = int((old_index + step)%len(allowed_values))
+        new_value = allowed_values[int(new_index)]
         self.pos.set_value(new_value)
 
     def keyPressEvent(self, event) :
@@ -637,10 +636,10 @@ class CursorPlot(pg.PlotWidget) :
 
     def wheelEvent(self, event) :
         """ Override of the Qt wheelEvent method. Fired on mousewheel 
-        scrolling inside the widget. Change the position of the 
+        scrolling inside the widget. 
         """
         # Get the relevant coordinate of the mouseWheel scroll
-        delta = event.pixelDelta().y()
+        delta = event.angleDelta().y()
         logger.debug('<{}>wheelEvent(); delta = {}'.format(self.name, delta))
         if delta > 0 :
             sign = 1
@@ -650,7 +649,8 @@ class CursorPlot(pg.PlotWidget) :
             # It seems that in some cases delta==0
             sign = 0
         increment = sign*self.wheel_frames
-        logger.debug('<{}>wheelEvent(); increment = {}'.format(self.name, increment))
+        logger.debug('<{}>wheelEvent(); increment = {}'.format(self.name, 
+                                                               increment))
         self.increase_pos(increment)
 
 class Scalebar(CursorPlot) :
