@@ -9,7 +9,11 @@ import pkg_resources
 from copy import copy
 
 import numpy as np
+#import pyqtgraph as pg
+import pyqtgraph.console
 from pyqtgraph.Qt import QtGui, QtCore
+from qtconsole.rich_ipython_widget import RichIPythonWidget, RichJupyterWidget
+from qtconsole.inprocess import QtInProcessKernelManager
 
 from data_slicer.cmaps import cmaps
 from data_slicer.cutline import Cutline
@@ -35,6 +39,18 @@ border: 1px solid rgb(50, 50, 50);
 """
 
 DEFAULT_CMAP = 'viridis'
+
+class EmbedIPython(RichJupyterWidget):
+    """ Some voodoo to get an ipython console in a Qt application. """
+    def __init__(self, **kwarg):
+        super(RichJupyterWidget, self).__init__()
+        self.kernel_manager = QtInProcessKernelManager()
+        self.kernel_manager.start_kernel()
+        self.kernel = self.kernel_manager.kernel
+        self.kernel.gui = 'qt4'
+        self.kernel.shell.push(kwarg)
+        self.kernel_client = self.kernel_manager.client()
+        self.kernel_client.start_channels()
 
 # Prepare sample data
 data_path = pkg_resources.resource_filename('data_slicer', 'data/')
@@ -107,12 +123,12 @@ class PITDataHandler() :
         self.main_window.update_main_plot()
         self.main_window.set_axes()
 
-    def load(self, data, axes=[]) :
+    def load(self, data, axes=3*[None]) :
         """ Convenient alias for :func: `prepare_data 
         <data_slicer.pit.PITDataHandler.prepare_data>`. """
         self.prepare_data(data, axes)
 
-    def open(self, data, axes=[]) :
+    def open(self, data, axes=3*[None]) :
         """ Convenient alias for :func: `prepare_data 
         <data_slicer.pit.PITDataHandler.prepare_data>`. """
         self.prepare_data(data, axes)
@@ -362,12 +378,11 @@ class MainWindow(QtGui.QMainWindow) :
         self.cut_plot.sig_image_changed.connect(self.update_xy_plots)
 
         # Set up the python console
-#        namespace = dict(pit=self.data_handler, mw=self, pg=pg, arp=arp, 
-#                         dl=dl, pp=pp)
-#        self.console = pyqtgraph.console.ConsoleWidget(namespace=namespace)
-#        self.console = EmbedIPython(**namespace)
-#        self.console.kernel.shell.run_cell('%pylab qt')
-#        self.console.setStyleSheet(console_style)
+        namespace = dict(pit=self.data_handler, mw=self)
+        self.console = pyqtgraph.console.ConsoleWidget(namespace=namespace)
+        self.console = EmbedIPython(**namespace)
+        self.console.kernel.shell.run_cell('%pylab qt')
+        self.console.setStyleSheet(console_style)
 
         # Create the integrated intensity plot
         ip = CursorPlot(name='z selector')
@@ -432,13 +447,12 @@ class MainWindow(QtGui.QMainWindow) :
         # Cut to the right of Main
         l.addWidget(self.cut_plot, 0, 2*sd, 2*sd, 2*sd)
         # EDC and MDC plots
-#        l.addWidget(self.x_plot, 0, 4*sd, 2*sd, 1*sd)
         l.addWidget(self.x_plot, 0, 4*sd, 2*sd, 2)
         l.addWidget(self.y_plot, 2*sd, 2*sd, 1*sd, 2*sd)
         # Integrated z-intensity plot
         l.addWidget(self.integrated_plot, 2*sd, 0, 2*sd, 2*sd)
         # Console
-#        l.addWidget(self.console, 3*sd, 2*sd, 1*sd, 3*sd)
+        l.addWidget(self.console, 3*sd, 2*sd, 1*sd, 3*sd)
 
         # Scalebars
         l.addWidget(self.scalebar1, 2*sd, 4*sd, 1, 1*sd)
@@ -506,7 +520,7 @@ class MainWindow(QtGui.QMainWindow) :
         logger.debug(('xp.pos.get_value()={}; i_x: '
                       '{}').format(xp.pos.get_value(), i_x))
         xprofile = self.data_handler.cut_data[i_x]
-        y = np.arange(len(xprofile))
+        y = np.arange(len(xprofile)) + 0.5
         xp.plot(xprofile, y)
 
     def update_y_plot(self) :
@@ -524,7 +538,7 @@ class MainWindow(QtGui.QMainWindow) :
         logger.debug(('yp.pos.get_value()={}; i_y: '
                       '{}').format(yp.pos.get_value(), i_y))
         yprofile = self.data_handler.cut_data[:,i_y]
-        x = np.arange(len(yprofile))
+        x = np.arange(len(yprofile)) + 0.5
         yp.plot(x, yprofile)
 
     def update_xy_plots(self) :
