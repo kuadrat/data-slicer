@@ -506,7 +506,7 @@ class MainWindow(QtGui.QMainWindow) :
         logger.debug(('xp.pos.get_value()={}; i_x: '
                       '{}').format(xp.pos.get_value(), i_x))
         xprofile = self.data_handler.cut_data[i_x]
-        y = np.arange(len(xprofile))
+        y = np.arange(len(xprofile)) + 0.5
         xp.plot(xprofile, y)
 
     def update_y_plot(self) :
@@ -524,7 +524,7 @@ class MainWindow(QtGui.QMainWindow) :
         logger.debug(('yp.pos.get_value()={}; i_y: '
                       '{}').format(yp.pos.get_value(), i_y))
         yprofile = self.data_handler.cut_data[:,i_y]
-        x = np.arange(len(yprofile))
+        x = np.arange(len(yprofile)) + 0.5
         yp.plot(x, yprofile)
 
     def update_xy_plots(self) :

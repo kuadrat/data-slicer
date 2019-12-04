@@ -92,7 +92,12 @@ class ImagePlot(pg.PlotWidget) :
 
         # Convert array to ImageItem
         if isinstance(image, ndarray) :
-            image = ImageItem(image, *args, **kwargs)
+            if 0 not in image.shape :
+                image = ImageItem(image, *args, **kwargs)
+            else :
+                logger.debug(('<{}>.set_image(): image.shape is {}. Not '
+                              'setting image.').format(self.name, image.shape))
+                return
         # Throw an exception if image is not an ImageItem
         if not isinstance(image, ImageItem) :
             message = '''`image` should be a np.array or pg.ImageItem instance,
