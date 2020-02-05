@@ -6,6 +6,7 @@ import logging
 
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
+import numpy as np
 from pyqtgraph.Qt import QtGui
 
 from data_slicer.cmaps import cmaps
@@ -436,7 +437,6 @@ class FreeSliceWidget(ThreeDWidget) :
         if x1 < x0 :
             alpha -= np.sign(delta_y) * np.pi
         alpha_degree = 180/np.pi * alpha
-        print(alpha_degree)
         
         # Apply the transformations in inverse order
         t = QtGui.QMatrix4x4()

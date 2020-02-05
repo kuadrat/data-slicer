@@ -15,6 +15,7 @@ from pyqtgraph.Qt import QtGui, QtCore
 from qtconsole.rich_ipython_widget import RichIPythonWidget, RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
 
+import data_slicer.dataloading as dl
 from data_slicer.cmaps import cmaps
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import *
@@ -123,15 +124,16 @@ class PITDataHandler() :
         self.main_window.update_main_plot()
         self.main_window.set_axes()
 
-    def load(self, data, axes=3*[None]) :
-        """ Convenient alias for :func: `prepare_data 
-        <data_slicer.pit.PITDataHandler.prepare_data>`. """
-        self.prepare_data(data, axes)
+    def load(self, filename) :
+        """ Alias to :func: `open <data_slicer.pit.PITDataHandler.open>`. """ 
+        self.open(filename)
 
-    def open(self, data, axes=3*[None]) :
-        """ Convenient alias for :func: `prepare_data 
-        <data_slicer.pit.PITDataHandler.prepare_data>`. """
-        self.prepare_data(data, axes)
+    def open(self, filename) :
+        """ Open a file that's readable by :module: `dataloading 
+        <data_slicer.dataloading>`.
+        """
+        D = dl.load_data(filename)
+        self.prepare_data(D.data, D.axes)
 
     def update_z_range(self) :
         """ When new data is loaded or the axes are rolled, the limits and 
@@ -305,7 +307,7 @@ class PITDataHandler() :
         res = np.roll([0, 1, 2], i)
         self.set_data(np.moveaxis(data, [0,1,2], res))
         # Setting the data triggers a call to self.redraw_plots()
-        self.axes = np.roll(self.scales, i)
+        self.axes = np.roll(self.axes, -i)
         self.on_z_dim_change()
         self.main_window.set_axes()
 
@@ -568,6 +570,66 @@ class MainWindow(QtGui.QMainWindow) :
         """
         self.lut = self.cmap.getLookupTable()
         self.redraw_plots()
+
+    def rotate(self, alpha=0) :
+        """ Rotate the main image by the given angle *alpha* (in degrees). 
+
+        *NOTE* There seems to be some sort of bug with this when applying to 
+        certain datasets (so far only to 2D data).
+        """
+        image_item = self.main_plot.image_item
+        # Get the details of the current transformation
+        transform = image_item.transform()
+
+        if self.transform_factors == [] :
+            dx, dy = transform.dx(), transform.dy()
+            sx, sy = transform.m11(), transform.m22()
+            wx, wy = image_item.width(), image_item.height()
+            self.transform_factors = [dx, dy, sx, sy, wx, wy]
+        else :
+            dx, dy, sx, sy, wx, wy = self.transform_factors
+
+        # Build the transformation anew, adding a rotation
+        # Remember that the order in which transformations are applied is 
+        # reverted to how they added in the code, i.e. last transform added 
+        # in the code will come first (this is the reason we have to 
+        # completely rebuild the transformation instead of just adding a 
+        # rotation...)
+        transform.reset()
+        transform.translate(dx/sx, dy/sy)
+        transform.translate(wx/2, wy/2)
+        transform.rotate(alpha)
+        transform.scale(sx, sy)
+        transform.translate(-wx/2, -wy/2)
+
+        self.main_plot.release_viewrange()
+
+        image_item.setTransform(transform)
+
+    def keyPressEvent(self, event) :
+        """ Define all responses to keyboard presses. 
+        Currently defined:
+
+        key     action
+        ========================================================================
+        r       Flip orientation of cutline. Also useful to bring it back to 
+                visibility.
+        ========================================================================
+        """
+        key = event.key()
+        logger.debug('keyPressEvent(): key={}'.format(key))
+#        if key == QtCore.Qt.Key_Right :
+#            self.data_handler.z.set_value(self.data_handler.z.get_value() + 1)
+#        elif key == QtCore.Qt.Key_Left :
+#            self.data_handler.z.set_value(self.data_handler.z.get_value() - 1)
+        # Flip Cutline on *R* key
+        if key == QtCore.Qt.Key_R :
+            self.cutline.flip_orientation()
+        else :
+            event.ignore()
+            return
+        # If any if-statement matched, we accepted the event
+        event.accept()
 
     def redraw_plots(self, image=None) :
         """ Redraw plotted data to reflect changes in data or its colors. """

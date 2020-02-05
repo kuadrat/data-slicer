@@ -51,13 +51,13 @@ class Dataloader_Pickle(Dataloader) :
         with open(filename, 'rb') as f :
             filedata = pickle.load(f)
         
-        if isinstance(filedata, np.array()) :
+        if isinstance(filedata, type(np.array([]))) :
             axes = 3*[None]
             data = filedata
-        elif isinstance(filedata, dict()) :
+        elif isinstance(filedata, type(dict())) :
             data = filedata['data']
             axes = [filedata[i+'axis'] for i in 'xyz']
-        elif isinstance(filedata, Namespace()) :
+        elif isinstance(filedata, type(Namespace())) :
             # Nothing to do
             return filedata
         else :
