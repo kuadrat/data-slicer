@@ -145,7 +145,12 @@ for cmap in os.listdir(data_path) :
 
 # Add user supplied colormaps
 config_path = str(pathlib.Path.home()) + '/' + CONFIG_DIR + 'cmaps/'
-for cmap in os.listdir(config_path) :
+try :
+    files = os.listdir(config_path)
+except FileNotFoundError :
+    files = []
+
+for cmap in files :
     name, suffix = cmap.split('.')
     # Only load files with the .cmap suffix
     if suffix != 'cmap' :
