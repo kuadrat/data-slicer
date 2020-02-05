@@ -139,7 +139,7 @@ def load_data(filename, exclude=None, suppress_warnings=False) :
     """ 
     # Sanity check: does the given path even exist in the filesystem?
     if not os.path.exists(filename) :
-        raise FileNotFoundError(ENOENT, os.strerror(ENOENT), filename) 
+        raise FileNotFoundError(filename) 
 
     # If only a single string is given as exclude, pack it into a list
     if exclude is not None and type(exclude)==str :

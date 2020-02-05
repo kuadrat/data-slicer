@@ -2,6 +2,8 @@
 Convert some of the nicer matplotlib and kustom colormaps to pyqtgraph 
 colormaps.
 """
+import os
+import pkg_resources
 
 import numpy as np
 from matplotlib import cm
@@ -99,12 +101,40 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
 
     return ds_cmap(values, rgba)
 
+def load_user_cmap(filename) :
+    """ Create a :class: `ds_cmap <data_slicer.cmaps.ds_cmap>` instance from 
+    data stored in a file with three columns, red, green and blue - either in 
+    integer form from 0-255 or as floats from 0.0 to 1.0 (ignores fourth 
+    alpha column).
+    """
+    data = np.loadtxt(filename)[:,:3]
+    data /= data.max()
+    N = len(data)
+    # Append a column of 1's
+    cmap = np.hstack([data, np.ones(N).reshape((N, 1))])
+    pos = np.linspace(0, 1, N)
+    return ds_cmap(pos, cmap)
+
+# +-------------------+ #
+# | Prepare colormaps | # ======================================================
+# +-------------------+ #
 
 # Convert all matplotlib colormaps to pyqtgraph ones and make them available 
 # in the dict cmaps
 cmaps = dict()
 for name,cmap in cm.cmap_d.items() :
     cmaps.update({name: convert_matplotlib_to_pyqtgraph(cmap)})
+
+# Add additional colormaps
+data_path = pkg_resources.resource_filename('data_slicer', 'data/')
+for cmap in os.listdir(data_path) :
+    print(cmap)
+    name, suffix = cmap.split('.')
+    # Only load files with the .cmap suffix
+    if suffix != 'cmap' :
+        continue
+
+    cmaps.update({name: load_user_cmap(data_path + cmap)})
 
 # +---------+ #
 # | Testing | # ================================================================
