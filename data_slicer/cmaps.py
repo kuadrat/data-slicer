@@ -2,13 +2,17 @@
 Convert some of the nicer matplotlib and kustom colormaps to pyqtgraph 
 colormaps.
 """
+import copy
 import os
+import pathlib
 import pkg_resources
 
 import numpy as np
 from matplotlib import cm
 from matplotlib.pyplot import colormaps
 from pyqtgraph import ColorMap
+
+from data_slicer.utilities import CONFIG_DIR
 
 class ds_cmap(ColorMap) :
     """ Simple subclass of :class: `<pyqtgraph.ColorMap>`. Adds vmax, 
@@ -101,7 +105,7 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
 
     return ds_cmap(values, rgba)
 
-def load_user_cmap(filename) :
+def load_custom_cmap(filename) :
     """ Create a :class: `ds_cmap <data_slicer.cmaps.ds_cmap>` instance from 
     data stored in a file with three columns, red, green and blue - either in 
     integer form from 0-255 or as floats from 0.0 to 1.0 (ignores fourth 
@@ -125,17 +129,33 @@ cmaps = dict()
 for name,cmap in cm.cmap_d.items() :
     cmaps.update({name: convert_matplotlib_to_pyqtgraph(cmap)})
 
-# Add additional colormaps
+# Add additional colormaps from package
 data_path = pkg_resources.resource_filename('data_slicer', 'data/')
 for cmap in os.listdir(data_path) :
-    print(cmap)
     name, suffix = cmap.split('.')
     # Only load files with the .cmap suffix
     if suffix != 'cmap' :
         continue
+    cmap_object = load_custom_cmap(data_path + cmap)
+    cmaps.update({name: cmap_object})
+    # Also add the inverse cmap
+    inverse = copy.copy(cmap_object)
+    inverse.color = cmap_object.color[::-1]
+    cmaps.update({name + '_r': inverse})
 
-    cmaps.update({name: load_user_cmap(data_path + cmap)})
-
+# Add user supplied colormaps
+config_path = str(pathlib.Path.home()) + '/' + CONFIG_DIR + 'cmaps/'
+for cmap in os.listdir(config_path) :
+    name, suffix = cmap.split('.')
+    # Only load files with the .cmap suffix
+    if suffix != 'cmap' :
+        continue
+    cmap_object = load_custom_cmap(config_path + cmap)
+    cmaps.update({name: cmap_object})
+    # Also add the inverse cmap
+    inverse = copy.copy(cmap_object)
+    inverse.color = cmap_object.color[::-1]
+    cmaps.update({name + '_r': inverse})
 # +---------+ #
 # | Testing | # ================================================================
 # +---------+ #

@@ -6,6 +6,12 @@ from pyqtgraph import Qt as qt
 
 logger = logging.getLogger('ds.'+__name__)
 
+#_Constants_____________________________________________________________________
+
+CONFIG_DIR = '.data_slicer/'
+
+#_Utilities_____________________________________________________________________
+
 class TracedVariable(qt.QtCore.QObject) :
     """ A pyqt implementaion of tkinter's/Tcl's traced variables using Qt's 
     signaling mechanism.
