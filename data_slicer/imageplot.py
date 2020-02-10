@@ -5,6 +5,8 @@ import logging
 import matplotlib.pyplot as plt
 import pyqtgraph as pg
 from matplotlib.colors import ListedColormap
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 from numpy import array, clip, inf, linspace, ndarray
 from pyqtgraph import Qt as qt #import QtCore
 from pyqtgraph.graphicsItems.ImageItem import ImageItem
@@ -16,6 +18,172 @@ from data_slicer.utilities import TracedVariable, indexof
 logger = logging.getLogger('ds.'+__name__)
 
 HOVER_COLOR = (195,155,0)
+
+class MPLExportDialog(qt.QtGui.QDialog) :
+
+    figwidth = 5
+    figheight = 5
+    def __init__(self, imageplot, *args, **kwargs) :
+        super().__init__(*args, **kwargs)
+        self.imageplot = imageplot
+
+        # Convert the lookuptable (lut) to a matplotlib colormap
+        lut = self.imageplot.image_item.lut
+        lut = lut/lut.max()
+        cmap_array = array([[a[0], a[1], a[2], 1.] for a in lut])
+        self.cmap = ListedColormap(cmap_array)
+
+        ## Dialog window layout
+        self.setWindowTitle('MPL Export Options')
+
+        # Title textbox
+        self.label_title = qt.QtGui.QLabel('Title')
+        self.box_title = qt.QtGui.QLineEdit(self)
+
+        # x- and y-axis textboxes
+        self.label_xlabel = qt.QtGui.QLabel('x axis label')
+        self.box_xlabel = qt.QtGui.QLineEdit(self)
+        self.label_ylabel = qt.QtGui.QLabel('y axis label')
+        self.box_ylabel = qt.QtGui.QLineEdit(self)
+
+        # Invert and transpose checkboxes
+        self.checkbox_invertx = qt.QtGui.QCheckBox('invert x')
+        self.checkbox_inverty = qt.QtGui.QCheckBox('invert y')
+        self.checkbox_transpose = qt.QtGui.QCheckBox('transpose')
+
+        # x limits
+        self.label_xlim = qt.QtGui.QLabel('x limits')
+        self.box_xmin = qt.QtGui.QLineEdit()
+        self.box_xmin.setValidator(qt.QtGui.QDoubleValidator())
+        self.box_xmax = qt.QtGui.QLineEdit()
+        self.box_xmax.setValidator(qt.QtGui.QDoubleValidator())
+
+        # y limits
+        self.label_ylim = qt.QtGui.QLabel('y limits')
+        self.box_ymin = qt.QtGui.QLineEdit()
+        self.box_ymin.setValidator(qt.QtGui.QDoubleValidator())
+        self.box_ymax = qt.QtGui.QLineEdit()
+        self.box_ymax.setValidator(qt.QtGui.QDoubleValidator())
+
+        # Figsize
+        self.label_width = qt.QtGui.QLabel('Figure width (inch)')
+        self.box_width = qt.QtGui.QLineEdit()
+        self.box_width.setValidator(qt.QtGui.QDoubleValidator(0, 99, 2))
+        self.box_width.setText(str(self.figwidth))
+        self.label_height = qt.QtGui.QLabel('Figure height (inch)')
+        self.box_height = qt.QtGui.QLineEdit()
+        self.box_height.setValidator(qt.QtGui.QDoubleValidator(0, 99, 2))
+        self.box_height.setText(str(self.figheight))
+
+        # Update preview button
+        self.update_button = qt.QtGui.QPushButton('Update Preview')
+        self.update_button.clicked.connect(self.plot_preview)
+
+        # Figsize warning label
+        self.label_figsize = qt.QtGui.QLabel('Preview figure size is not to '
+                                             'scale')
+
+        # Preview canvas
+        self.figure = Figure(figsize=(self.figwidth, self.figheight), 
+                             constrained_layout=True)
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        self.ax = self.figure.add_subplot(111)
+
+        # 'OK' and 'Cancel' buttons
+        QBtn = qt.QtGui.QDialogButtonBox.Ok | qt.QtGui.QDialogButtonBox.Cancel
+        self.button_box = qt.QtGui.QDialogButtonBox(QBtn)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+        self.plot_preview()
+        self.align()
+
+    def align(self) :
+        """ Create and apply the dialog's layout. """
+        layout = qt.QtGui.QGridLayout()
+        ncol = 4
+        i = 1
+        # Title
+        layout.addWidget(self.label_title, i, 1, 1, 1)
+        layout.addWidget(self.box_title, i, 2, 1, 1)
+        i += 1
+        # x label
+        layout.addWidget(self.label_xlabel, i, 1, 1, 1)
+        layout.addWidget(self.box_xlabel, i, 2, 1, 1)
+        i += 1
+        # y label
+        layout.addWidget(self.label_ylabel, i, 1, 1, 1)
+        layout.addWidget(self.box_ylabel, i, 2, 1, 1)
+        i += 1
+        # Invert and transpose checkboxes
+        layout.addWidget(self.checkbox_invertx, i, 1, 1, 1)
+        layout.addWidget(self.checkbox_inverty, i, 2, 1, 1)
+        layout.addWidget(self.checkbox_transpose, i, 3, 1, 1)
+        i += 1
+        # Limits
+        layout.addWidget(self.label_xlim, i, 1, 1, 1)
+        xlims = qt.QtGui.QHBoxLayout()
+        xlims.addWidget(self.box_xmin)
+        xlims.addWidget(self.box_xmax)
+        layout.addLayout(xlims, i, 2, 1, 1)
+        layout.addWidget(self.label_ylim, i, 3, 1, 1)
+        ylims = qt.QtGui.QHBoxLayout()
+        ylims.addWidget(self.box_ymin)
+        ylims.addWidget(self.box_ymax)
+        layout.addLayout(ylims, i, 4, 1, 1)
+        i += 1
+        # Figsize fields
+        layout.addWidget(self.label_width, i, 1, 1, 1)
+        layout.addWidget(self.box_width, i, 2, 1, 1)
+        layout.addWidget(self.label_height, i, 3, 1, 1)
+        layout.addWidget(self.box_height, i, 4, 1, 1)
+        i += 1
+        # Preview
+        layout.addWidget(self.update_button, i, 1, 1, 1)
+        layout.addWidget(self.label_figsize, i, 2, 1, ncol-1)
+        i += 1
+        layout.addWidget(self.canvas, i, 1, 1, ncol)
+        i += 1
+        # OK and Cancel buttons
+        layout.addWidget(self.button_box, i, 1, 1, ncol)
+        self.setLayout(layout)
+
+    def plot_preview(self) :
+        """ Update the plot in the preview window with the currently selected 
+        options. 
+        """
+        # Remove previous plot and get up-to-date data
+        self.ax.clear()
+        ip = self.imageplot
+        xaxis, yaxis, data = ip.xscale, ip.yscale, ip.image_data.T
+        if self.checkbox_transpose.isChecked() :
+            xaxis, yaxis, data = yaxis, xaxis, data.T
+        mesh = self.ax.pcolormesh(xaxis, yaxis, data, cmap=self.cmap)
+
+        # Apply options
+        invertx = self.checkbox_invertx.isChecked() 
+        inverty = self.checkbox_inverty.isChecked() 
+        if invertx : self.ax.invert_xaxis()
+        if inverty : self.ax.invert_yaxis()
+
+        # Limits
+        limits = [b.text() for b in [self.box_xmin, self.box_xmax, 
+                                     self.box_ymin, self.box_ymax]]
+        datalimits = [xaxis[0], xaxis[-1], yaxis[0], yaxis[-1]]
+        for i,lim in enumerate(limits) :
+            if lim == '' :
+                limits[i] = datalimits[i]
+            else :
+                limits[i] = float(lim)
+        self.ax.set_xlim([limits[0], limits[1]])
+        self.ax.set_ylim([limits[2], limits[3]])
+
+        # Labels
+        self.ax.set_title(self.box_title.text())
+        self.ax.set_xlabel(self.box_xlabel.text())
+        self.ax.set_ylabel(self.box_ylabel.text())
+
+        self.canvas.draw()
 
 class ImagePlot(pg.PlotWidget) :
     """
@@ -246,36 +414,26 @@ class ImagePlot(pg.PlotWidget) :
         """
         logger.debug('<ImagePlot.mpl_export()>')
 
+        # Show the dialog with some options
+        dialog = MPLExportDialog(self, parent=self)
+#        ok_button = qt.QtGui.QPushButton('Done', dialog)
+        if not dialog.exec_() : return
+        # Replot to update the figure
+        dialog.plot_preview()
+
         # Get a filename first
         fd = qt.QtGui.QFileDialog()
         filename = fd.getSaveFileName()[0]
+        if not filename : return
         logger.debug('Outfilename: {}'.format(filename))
 
-        # Access data and all relevant display options
-        data = self.image_data.T
-        lut = self.image_item.lut
+        # Update figure size before saving
+        width, height = [float(box.text()) for box in [dialog.box_width, 
+                                                       dialog.box_height]]
+        dialog.figure.set_figwidth(width)
+        dialog.figure.set_figheight(height)
 
-        # Convert the lookuptable (lut) to a matplotlib colormap
-        lut = lut/lut.max()
-        cmap_array = array([[a[0], a[1], a[2], 1.] for a in lut])
-        cmap = ListedColormap(cmap_array)
-
-        # Temporarily turn matplotlib's interactive mode off
-        was_interactive = plt.isinteractive() 
-        if was_interactive:
-            plt.ioff()
-
-        # Create a matplotlib figure and save it
-        fig, ax = plt.subplots(1, figsize=figsize)
-        mesh = ax.pcolormesh(self.xscale, self.yscale, data, cmap=cmap)
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-
-        fig.savefig(filename, dpi=dpi)
-
-        if was_interactive:
-            plt.ion()
+        dialog.figure.savefig(filename, dpi=dpi)
 
 class Crosshair() :
     """ Crosshair made up of two InfiniteLines. """
