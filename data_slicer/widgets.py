@@ -182,8 +182,8 @@ class ThreeDSliceWidget(ThreeDWidget) :
     A :class: `ThreeDWidget <data_slicer.widgets.ThreeDWidget>` that can 
     slice along x, y and z.
     """
-    def __init__(self) :
-        super().__init__()
+    def __init__(self, *args, **kwargs) :
+        super().__init__(*args, **kwargs)
 
     def align(self) :
         """ 
