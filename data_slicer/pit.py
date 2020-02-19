@@ -681,7 +681,8 @@ class MainWindow(QtGui.QMainWindow) :
 
     def on_gamma_slider_move(self) :
         """ When the user moves the gamma slider, update gamma. """
-        ind = min(int(100*self.scalebar1.pos.get_value()), len(self.gamma_values)-1)
+        ind = min(int(100*self.scalebar1.pos.get_value()), 
+                  len(self.gamma_values)-1)
         gamma = self.gamma_values[ind]
         self.set_gamma(gamma)
 

@@ -208,4 +208,30 @@ def make_slice(data, d, i, integrate=0, silent=False) :
 
     return sliced
 
+def roll_array(a, i) :
+    """ Cycle the arrangement of the dimensions in an *N* dimensional array.
+    For example, change an X-Y-Z arrangement to Y-Z-X.
+
+    *Parameters*
+    =  =========================================================================
+    a  array of *N* dimensions, i.e. `len(a.shape) = N`.
+    i  int; number of dimensions to roll
+    =  =========================================================================
+
+    *Returns*
+    ===  =======================================================================
+    res  array of *N* dimensions where the axes have been rearranged as 
+         follows: 
+             before: `shape(a) = (d[0], d[1], ..., d[N])`
+             after:  `shape(res) = (d[(0+i)%N], d[(1+i)%N], ..., d[(N+i)%N])
+    ===  =======================================================================
+    """
+    # Create indices and rolled indices
+    N = len(a.shape)
+    indices = np.arange(N)
+    rolled_indices = np.roll(indices, i)
+
+    # Move the axes in the array accordingly
+    res = np.moveaxis(a, indices, rolled_indices)
+    return res
 

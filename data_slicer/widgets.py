@@ -7,9 +7,9 @@ import logging
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 import numpy as np
-from pyqtgraph.Qt import QtGui
+from pyqtgraph.Qt import QtGui, QtCore
 
-from data_slicer.cmaps import cmaps
+from data_slicer.cmaps import cmaps, ds_cmap
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import ImagePlot, Scalebar
 from data_slicer.utilities import make_slice, TracedVariable
@@ -24,6 +24,71 @@ T = -0.5
 
 #_Classes_______________________________________________________________________
 
+class ColorSliders(QtGui.QWidget) :
+    """ A simple widget providing a *gamma* and *vmax* slider. 
+    
+    =============  =============================================================
+    *Signals*
+    gamma_changed  emitted when the value of *gamma* changes
+    vmax_changed   emitted when the value of *vmax* changes
+    =============  =============================================================
+    """
+
+    gamma = 1
+    vmax = 1
+
+    # Signals
+    sig_gamma_changed = QtCore.Signal()
+    sig_vmax_changed = QtCore.Signal()
+
+    def __init__(self, *args, **kwargs) :
+        super().__init__(*args, **kwargs)
+
+
+        # gamma
+        gamma_slider = Scalebar()
+        self.gamma_values = np.concatenate((np.linspace(0.1, 1, 50), 
+                                            np.linspace(1.1, 10, 50)))
+        gamma_slider.pos.set_value(0.5)
+        gamma_slider.pos.sig_value_changed.connect(self.on_gamma_slider_move)
+        # put a label
+        gamma_label = pg.TextItem('γ', anchor=(0.5, 0.5))
+        gamma_label.setPos(0.5, 0.5)
+        gamma_slider.addItem(gamma_label)
+        self.gamma_slider = gamma_slider
+        
+        # vmax (relative colorscale maximum)
+        vmax_slider = Scalebar()
+        vmax_slider.pos.set_value(self.vmax)
+        vmax_slider.pos.sig_value_changed.connect(self.on_vmax_slider_move)
+        # put a label
+        vmax_label = pg.TextItem('Colorscale', anchor=(0.5, 0.5))
+        vmax_label.setPos(0.5, 0.5)
+        vmax_slider.addItem(vmax_label)
+        self.vmax_slider = vmax_slider
+
+        self.align()
+
+    def align(self) :
+        layout = QtGui.QGridLayout()
+        self.setLayout(layout)
+
+        layout.addWidget(self.gamma_slider, 1, 1)
+        layout.addWidget(self.vmax_slider, 2, 1)
+
+    def on_gamma_slider_move(self) :
+        """ When the user moves the gamma slider, update gamma. """
+        ind = min(int(100*self.gamma_slider.pos.get_value()), 
+                  len(self.gamma_values)-1)
+        self.gamma = self.gamma_values[ind]
+        self.sig_gamma_changed.emit()
+
+    def on_vmax_slider_move(self) :
+        """ When the user moves the vmax slider, update vmax. """
+        vmax = int(np.round(100*self.vmax_slider.pos.get_value()))/100
+        self.vmax = vmax
+        self.sig_vmax_changed.emit()
+
 class ThreeDWidget(QtGui.QWidget) :
     """
     A widget that contains a :class: `GLViewWidget 
@@ -33,6 +98,7 @@ class ThreeDWidget(QtGui.QWidget) :
     """
 
     data = TracedVariable(None, name='data')
+    cmap = cmaps[DEFAULT_CMAP]
     lut = cmaps[DEFAULT_CMAP].getLookupTable()
     gloptions = 'translucent'
 
@@ -139,7 +205,8 @@ class ThreeDWidget(QtGui.QWidget) :
 
     def make_texture(self, cut) :
         """ Wrapper for :func: `makeRGBA <pyqtgraph.makeRGBA>`. """
-        return pg.makeRGBA(cut, levels=self.levels, lut=self.lut)[0]
+        return pg.makeRGBA(cut, levels=self.levels, 
+                           lut=self.lut)[0]
 
     def initialize_xy(self) :
         """ Create the xy plane. """
@@ -176,6 +243,25 @@ class ThreeDWidget(QtGui.QWidget) :
         cut = self.get_xy_slice(z)
         texture = self.make_texture(cut)
         self.xy.setData(texture)
+
+    def set_cmap(self, cmap) :
+        """ Change the used colormap to a :class: `ds_cmap 
+        <data_slicer.cmaps.ds_cmap>` instance.
+        """
+        if isinstance(cmap, str) :
+            self.cmap = cmaps[cmap]
+        elif isinstance(cmap, ds_cmap) :
+            self.cmap = cmap
+        else :
+            raise TypeError('*cmap* has to be a valid colormap name or a '
+                            '*ds_cmap* instance')
+        # Update the necessary elements
+        self.lut = self.cmap.getLookupTable()
+        self._on_cmap_change()
+
+    def _on_cmap_change(self) :
+        """ Update all elements affected by the cmap change. """
+        self.update_xy()
 
 class ThreeDSliceWidget(ThreeDWidget) :
     """
@@ -330,6 +416,12 @@ class ThreeDSliceWidget(ThreeDWidget) :
         texture = self.make_texture(cut)
         self.zx.setData(texture)
 
+    def _on_cmap_change(self) :
+        """ Update all elements affected by the cmap change. """
+        self.update_xy()
+        self.update_yz()
+        self.update_zx()
+
 class FreeSliceWidget(ThreeDWidget) :
     """ A :class: `ThreeDWidget <data_slicer.widgets.ThreeDWidget>` which 
     represents its xy plane in an additional 2D panel.
@@ -400,7 +492,6 @@ class FreeSliceWidget(ThreeDWidget) :
         cut, coords = self.cutline.get_array_region(data, 
                                            self.selector.image_item, 
                                            returnCoords=True)
-
         return cut, coords
 
     def update_cut(self) :
@@ -454,6 +545,12 @@ class FreeSliceWidget(ThreeDWidget) :
         z = self.slider_xy.pos.get_value()
         cut = self.get_xy_slice(z)
         self.selector.set_image(cut, lut=self.lut)
+
+    def _on_cmap_change(self) :
+        """ Update all elements affected by the cmap change. """
+        self.update_xy()
+        self.update_cut()
+        self.update_selector()
 
 #_Testing_______________________________________________________________________
 
