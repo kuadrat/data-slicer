@@ -34,8 +34,8 @@ QMainWindow{
 """
 
 console_style = """
-color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
+color: rgb(0, 0, 0);
+background-color: rgb(255, 255, 255);
 border: 1px solid rgb(50, 50, 50);
 """
 
@@ -385,6 +385,7 @@ class MainWindow(QtGui.QMainWindow) :
         self.console = EmbedIPython(**namespace)
         self.console.kernel.shell.run_cell('%pylab qt')
         self.console.setStyleSheet(console_style)
+#        self.console.syntax_style = 'monokai'
 
         # Create the integrated intensity plot
         ip = CursorPlot(name='z selector')
