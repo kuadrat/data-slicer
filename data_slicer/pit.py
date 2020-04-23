@@ -5,6 +5,7 @@ distribution curves and other convenient features.
 
 import importlib
 import logging
+import pathlib
 import pickle
 import pkg_resources
 import sys
@@ -21,7 +22,7 @@ import data_slicer.dataloading as dl
 from data_slicer.cmaps import cmaps
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import *
-from data_slicer.utilities import TracedVariable
+from data_slicer.utilities import CONFIG_DIR, TracedVariable
 
 logger = logging.getLogger('ds.'+__name__)
 
@@ -60,8 +61,8 @@ data_path = pkg_resources.resource_filename('data_slicer', 'data/')
 SAMPLE_DATA_FILE = data_path + 'testdata_100_150_200.p'
 
 # Add the plugin directory to the python path
-plugin_path = pkg_resources.resource_filename('data_slicer', 'plugins/')
-sys.path.append(plugin_path)
+config_path = pathlib.Path.home() / CONFIG_DIR / 'plugins/'
+sys.path.append(str(config_path))
 
 # +-----------------------+ #
 # | Main class definition | # ==================================================
@@ -345,8 +346,11 @@ class MainWindow(QtGui.QMainWindow) :
         self.setStyleSheet(app_style)
         self.set_cmap(DEFAULT_CMAP)
 
-        self.init_UI()
-        
+        # Autoload plugins
+        self._autoloaded_plugins = self._autoload_plugins()
+
+        self._init_UI()
+
         # Connect signal handling
         self.cutline.sig_initialized.connect(self.on_cutline_initialized)
 
@@ -356,7 +360,7 @@ class MainWindow(QtGui.QMainWindow) :
                 data = pickle.load(f)
         self.data_handler.prepare_data(data)
 
-    def init_UI(self) :
+    def _init_UI(self) :
         """ Initialize the elements of the user interface. """
         # Set the window title
         self.setWindowTitle(self.title)
@@ -387,6 +391,9 @@ class MainWindow(QtGui.QMainWindow) :
 
         # Set up the python console
         namespace = dict(pit=self.data_handler, mw=self)
+        # Add the autoloaded plugins
+        for name, plugin in self._autoloaded_plugins :
+            namespace.update({name: plugin})
         self.console = EmbedIPython(**namespace)
         self.console.kernel.shell.run_cell('%pylab qt')
         self.console.setStyleSheet(console_style)
@@ -426,10 +433,10 @@ class MainWindow(QtGui.QMainWindow) :
         self.scalebar2 = scalebar2
 
         # Align all the gui elements
-        self.align()
+        self._align()
         self.show()
 
-    def align(self) :
+    def _align(self) :
         """ Align all the GUI elements in the QLayout. 
         
           0   1   2   3   4
@@ -476,9 +483,37 @@ class MainWindow(QtGui.QMainWindow) :
             l.setColumnMinimumWidth(i, 50)
             l.setColumnStretch(i, 1)
 
+    def _autoload_plugins(self) :
+        """ Load all the plugins specified in the config file 
+        `CONF_DIR/plugins/autoload.txt`.
+        """
+        logger.debug('Autoloading plugins...')
+
+        # Parse the autoload.txt file if it exists
+        try :
+            with open(config_path / 'autoload.txt', 'r') as f :
+                lines = f.readlines()
+        except FileNotFoundError :
+            logger.debug('autoload.txt not found at {}.'.format(config_path))
+
+        # Load all the plugins!
+        plugins = []
+        for line in lines :
+            # Skip commented lines
+            if line.startswith('#') : continue
+            plugin_name = line.strip()
+            plugin = self.load_plugin(plugin_name)
+            # Try to use a shortname
+            if plugin.shortname is not None :
+                plugin_name = plugin.shortname
+            plugins.append((plugin_name, plugin))
+        return plugins
+
     def load_plugin(self, plugin_name) :
-        """ Load a user supplied plugin, which should be placed in the 
-        `plugins` directory and connect its `main` class with PIT.
+        """ Load a user supplied plugin and connect the plugin's `main` class 
+        with PIT.
+        The plugin should be a python module which is placed in the 
+        pythonpath or in the `plugins` directory. 
 
         *Parameters*
         ===========  ===========================================================
@@ -492,8 +527,7 @@ class MainWindow(QtGui.QMainWindow) :
         # Load the module and connect it to PIT
         module = importlib.import_module(plugin_name)
         plugin = module.main(self, self.data_handler)
-        print('Importing plugin {} ({}).'.format(plugin_name, 
-                                                 plugin.plugin_name))
+        print('Importing plugin {} ({}).'.format(plugin_name, plugin.name))
         return plugin
 
     def update_main_plot(self, **image_kwargs) :

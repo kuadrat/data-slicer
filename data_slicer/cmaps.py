@@ -144,7 +144,7 @@ for cmap in os.listdir(data_path) :
     cmaps.update({name + '_r': inverse})
 
 # Add user supplied colormaps
-config_path = str(pathlib.Path.home()) + '/' + CONFIG_DIR + 'cmaps/'
+config_path = pathlib.Path.home() / CONFIG_DIR / 'cmaps/'
 try :
     files = os.listdir(config_path)
 except FileNotFoundError :
@@ -155,7 +155,7 @@ for cmap in files :
     # Only load files with the .cmap suffix
     if suffix != 'cmap' :
         continue
-    cmap_object = load_custom_cmap(config_path + cmap)
+    cmap_object = load_custom_cmap(config_path / cmap)
     cmaps.update({name: cmap_object})
     # Also add the inverse cmap
     inverse = copy.copy(cmap_object)
