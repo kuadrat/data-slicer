@@ -155,16 +155,11 @@ class MPLExportDialog(qt.QtGui.QDialog) :
         # Remove previous plot and get up-to-date data
         self.ax.clear()
         ip = self.imageplot
+
         xaxis, yaxis, data = ip.xscale, ip.yscale, ip.image_data.T
         if self.checkbox_transpose.isChecked() :
             xaxis, yaxis, data = yaxis, xaxis, data.T
         mesh = self.ax.pcolormesh(xaxis, yaxis, data, cmap=self.cmap)
-
-        # Apply options
-        invertx = self.checkbox_invertx.isChecked() 
-        inverty = self.checkbox_inverty.isChecked() 
-        if invertx : self.ax.invert_xaxis()
-        if inverty : self.ax.invert_yaxis()
 
         # Limits
         limits = [b.text() for b in [self.box_xmin, self.box_xmax, 
@@ -177,6 +172,12 @@ class MPLExportDialog(qt.QtGui.QDialog) :
                 limits[i] = float(lim)
         self.ax.set_xlim([limits[0], limits[1]])
         self.ax.set_ylim([limits[2], limits[3]])
+
+        # Apply options
+        invertx = self.checkbox_invertx.isChecked() 
+        inverty = self.checkbox_inverty.isChecked() 
+        if invertx : self.ax.invert_xaxis()
+        if inverty : self.ax.invert_yaxis()
 
         # Labels
         self.ax.set_title(self.box_title.text())
@@ -277,6 +278,7 @@ class ImagePlot(pg.PlotWidget) :
         self.image_item = image
         logger.debug('<{}>Setting image.'.format(self.name))
         self.addItem(image)
+        self._initialize_scales()
         self._set_axes_scales(emit=False)
         # We suppressed emittance of sig_axes_changed to avoid external 
         # listeners thinking the axes are different now. Thus, have to call 
@@ -285,6 +287,12 @@ class ImagePlot(pg.PlotWidget) :
 
         logger.info('<{}>Emitting sig_image_changed.'.format(self.name))
         self.sig_image_changed.emit()
+
+    def _initialize_scales(self) :
+        """ Set self.xscale and self.yscale to simple integer ranges ."""
+        nx, ny = self.image_item.image.shape
+        self.set_xscale(range(nx), update=False)
+        self.set_yscale(range(ny), update=False)
 
     def set_xscale(self, xscale, update=False) :
         """ Set the xscale of the plot. *xscale* is an array of the length 
