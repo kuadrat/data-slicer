@@ -3,9 +3,11 @@ A widget that combines slices from different sides with intensity
 distribution curves and other convenient features.
 """
 
+import importlib
 import logging
 import pickle
 import pkg_resources
+import sys
 from copy import copy
 
 import numpy as np
@@ -23,9 +25,9 @@ from data_slicer.utilities import TracedVariable
 
 logger = logging.getLogger('ds.'+__name__)
 
-# +------------------------+ #
-# | Appearance definitions | # =================================================
-# +------------------------+ #
+# +-----------------------------------------+ #
+# | Appearance definitions and preparations | # ================================
+# +-----------------------------------------+ #
 
 app_style="""
 QMainWindow{
@@ -56,6 +58,10 @@ class EmbedIPython(RichJupyterWidget):
 # Prepare sample data
 data_path = pkg_resources.resource_filename('data_slicer', 'data/')
 SAMPLE_DATA_FILE = data_path + 'testdata_100_150_200.p'
+
+# Add the plugin directory to the python path
+plugin_path = pkg_resources.resource_filename('data_slicer', 'plugins/')
+sys.path.append(plugin_path)
 
 # +-----------------------+ #
 # | Main class definition | # ==================================================
@@ -381,7 +387,6 @@ class MainWindow(QtGui.QMainWindow) :
 
         # Set up the python console
         namespace = dict(pit=self.data_handler, mw=self)
-        self.console = pyqtgraph.console.ConsoleWidget(namespace=namespace)
         self.console = EmbedIPython(**namespace)
         self.console.kernel.shell.run_cell('%pylab qt')
         self.console.setStyleSheet(console_style)
@@ -470,6 +475,26 @@ class MainWindow(QtGui.QMainWindow) :
         for i in range(ncols) :
             l.setColumnMinimumWidth(i, 50)
             l.setColumnStretch(i, 1)
+
+    def load_plugin(self, plugin_name) :
+        """ Load a user supplied plugin, which should be placed in the 
+        `plugins` directory and connect its `main` class with PIT.
+
+        *Parameters*
+        ===========  ===========================================================
+        plugin_name  str; name of the plugin module as it appears in the 
+                     `plugins` directory.
+        ===========  ===========================================================
+        """
+        # For debug purposes, determine the full path to the module location.
+        path_to_plugin = plugin_path + plugin_name
+        logger.debug('Importing {}.'.format(path_to_plugin))
+        # Load the module and connect it to PIT
+        module = importlib.import_module(plugin_name)
+        plugin = module.main(self, self.data_handler)
+        print('Importing plugin {} ({}).'.format(plugin_name, 
+                                                 plugin.plugin_name))
+        return plugin
 
     def update_main_plot(self, **image_kwargs) :
         """ Change *self.main_plot*`s currently displayed
