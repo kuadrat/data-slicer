@@ -163,8 +163,7 @@ class PITDataHandler() :
         just loaded from file.
         """
         logger.debug('reset_data()')
-        self.data.set_value(copy(self.original_data))
-        self.set_data(self.data)
+        self.set_data(copy(self.original_data))
         self.axes = copy(self.original_axes)
         self.prepare_axes()
         self.main_window.set_axes()
@@ -317,9 +316,9 @@ class PITDataHandler() :
         logger.debug('roll_axes()')
         data = self.get_data()
         res = np.roll([0, 1, 2], i)
+        self.axes = np.roll(self.axes, -i)
         self.set_data(np.moveaxis(data, [0,1,2], res))
         # Setting the data triggers a call to self.redraw_plots()
-        self.axes = np.roll(self.axes, -i)
         self.on_z_dim_change()
         self.main_window.set_axes()
         self.roll_state = (self.roll_state + i) % NDIM
@@ -393,7 +392,7 @@ class MainWindow(QtGui.QMainWindow) :
         self.cut_plot.pos[0].sig_value_changed.connect(self.update_y_plot)
         self.cut_plot.pos[1].sig_value_changed.connect(self.update_x_plot)
 
-        self.cut_plot.sig_image_changed.connect(self.update_xy_plots)
+#        self.cut_plot.sig_image_changed.connect(self.update_xy_plots)
 
         # Set up the python console
         namespace = dict(pit=self.data_handler, mw=self)

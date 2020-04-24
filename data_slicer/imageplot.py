@@ -157,6 +157,12 @@ class MPLExportDialog(qt.QtGui.QDialog) :
         ip = self.imageplot
 
         xaxis, yaxis, data = ip.xscale, ip.yscale, ip.image_data.T
+        # Fix unassigned x- and yscales
+        if xaxis is None :
+            xaxis = range(data.shape[1])
+        if yaxis is None :
+            yaxis = range(data.shape[0])
+        # Transpose
         if self.checkbox_transpose.isChecked() :
             xaxis, yaxis, data = yaxis, xaxis, data.T
         mesh = self.ax.pcolormesh(xaxis, yaxis, data, cmap=self.cmap)
@@ -280,7 +286,6 @@ class ImagePlot(pg.PlotWidget) :
         self.image_item = image
         logger.debug('<{}>Setting image.'.format(self.name))
         self.addItem(image)
-        self._initialize_scales()
         self._set_axes_scales(emit=False)
         # We suppressed emittance of sig_axes_changed to avoid external 
         # listeners thinking the axes are different now. Thus, have to call 
@@ -289,14 +294,6 @@ class ImagePlot(pg.PlotWidget) :
 
         logger.info('<{}>Emitting sig_image_changed.'.format(self.name))
         self.sig_image_changed.emit()
-
-    def _initialize_scales(self) :
-        """ Set self.xscale and self.yscale to simple integer ranges ."""
-        nx, ny = self.image_item.image.shape
-        if self.xscale is None :
-            self.set_xscale(range(nx), update=False)
-        if self.yscale is None :
-            self.set_yscale(range(ny), update=False)
 
     def set_xscale(self, xscale, update=False) :
         """ Set the xscale of the plot. *xscale* is an array of the length 
