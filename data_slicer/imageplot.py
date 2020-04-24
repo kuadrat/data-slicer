@@ -205,6 +205,8 @@ class ImagePlot(pg.PlotWidget) :
     image_kwargs = {}
     xlim = None
     ylim = None
+    xscale = None
+    yscale = None
     sig_image_changed = qt.QtCore.Signal()
     sig_axes_changed = qt.QtCore.Signal()
 
@@ -291,8 +293,10 @@ class ImagePlot(pg.PlotWidget) :
     def _initialize_scales(self) :
         """ Set self.xscale and self.yscale to simple integer ranges ."""
         nx, ny = self.image_item.image.shape
-        self.set_xscale(range(nx), update=False)
-        self.set_yscale(range(ny), update=False)
+        if self.xscale is None :
+            self.set_xscale(range(nx), update=False)
+        if self.yscale is None :
+            self.set_yscale(range(ny), update=False)
 
     def set_xscale(self, xscale, update=False) :
         """ Set the xscale of the plot. *xscale* is an array of the length 

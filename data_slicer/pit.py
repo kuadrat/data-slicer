@@ -64,6 +64,9 @@ SAMPLE_DATA_FILE = data_path + 'testdata_100_150_200.p'
 plugin_path = pathlib.Path.home() / CONFIG_DIR / 'plugins/'
 sys.path.append(str(plugin_path))
 
+# Number of dimensions to handle
+NDIM = 3
+
 # +-----------------------+ #
 # | Main class definition | # ==================================================
 # +-----------------------+ #
@@ -83,6 +86,8 @@ class PITDataHandler() :
     z = TracedVariable(0, name='z')
     # Number of slices to integrate along z
 #    integrate_z = TracedVariable(value=0, name='integrate_z')
+    # How often we have rolled the axes from the original setup
+    roll_state = 0
 
     def __init__(self, main_window) :
         self.main_window = main_window
@@ -317,6 +322,7 @@ class PITDataHandler() :
         self.axes = np.roll(self.axes, -i)
         self.on_z_dim_change()
         self.main_window.set_axes()
+        self.roll_state = (self.roll_state + i) % NDIM
 
 class MainWindow(QtGui.QMainWindow) :
     """ The main window of PIT. Defines the basic GUI layouts and 
