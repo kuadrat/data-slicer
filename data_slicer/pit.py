@@ -61,8 +61,8 @@ data_path = pkg_resources.resource_filename('data_slicer', 'data/')
 SAMPLE_DATA_FILE = data_path + 'testdata_100_150_200.p'
 
 # Add the plugin directory to the python path
-config_path = pathlib.Path.home() / CONFIG_DIR / 'plugins/'
-sys.path.append(str(config_path))
+plugin_path = pathlib.Path.home() / CONFIG_DIR / 'plugins/'
+sys.path.append(str(plugin_path))
 
 # +-----------------------+ #
 # | Main class definition | # ==================================================
@@ -491,10 +491,10 @@ class MainWindow(QtGui.QMainWindow) :
 
         # Parse the autoload.txt file if it exists
         try :
-            with open(config_path / 'autoload.txt', 'r') as f :
+            with open(plugin_path / 'autoload.txt', 'r') as f :
                 lines = f.readlines()
         except FileNotFoundError :
-            logger.debug('autoload.txt not found at {}.'.format(config_path))
+            logger.debug('autoload.txt not found at {}.'.format(plugin_path))
 
         # Load all the plugins!
         plugins = []
@@ -522,7 +522,7 @@ class MainWindow(QtGui.QMainWindow) :
         ===========  ===========================================================
         """
         # For debug purposes, determine the full path to the module location.
-        path_to_plugin = plugin_path + plugin_name
+        path_to_plugin = str(plugin_path / plugin_name)
         logger.debug('Importing {}.'.format(path_to_plugin))
         # Load the module and connect it to PIT
         module = importlib.import_module(plugin_name)
