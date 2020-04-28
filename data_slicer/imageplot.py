@@ -215,6 +215,7 @@ class ImagePlot(pg.PlotWidget) :
     yscale = None
     sig_image_changed = qt.QtCore.Signal()
     sig_axes_changed = qt.QtCore.Signal()
+    transform_factors = []
 
     def __init__(self, image=None, parent=None, background='default', 
                  name=None, **kwargs) :
@@ -356,6 +357,7 @@ class ImagePlot(pg.PlotWidget) :
         transform.translate(x0/sx, y0/sy)
         # Finally, apply the transformation to the imageItem
         self.image_item.setTransform(transform)
+        self._update_transform_factors()
 
         if emit :
             logger.info('<{}>Emitting sig_axes_changed.'.format(self.name))
@@ -402,6 +404,46 @@ class ImagePlot(pg.PlotWidget) :
                        yMax=inf,
                        maxXRange=inf,
                        maxYRange=inf)
+
+    def _update_transform_factors(self) :
+        """ Create a copy of the parameters that are necessary to reproduce 
+        the current transform. This is necessary e.g. for the calculation of 
+        the transform in :func: `rotate 
+        <data_slicer.imageplot.ImagePlot.rotate>`.
+        """
+        transform = self.image_item.transform()
+        dx = transform.dx()
+        dy = transform.dy()
+        sx = transform.m11()
+        sy = transform.m22()
+        wx = self.image_item.width()
+        wy = self.image_item.height()
+        self.transform_factors = [dx, dy, sx, sy, wx, wy]
+
+    def rotate(self, alpha=0) :
+        """ Rotate the image_item by the given angle *alpha* (in degrees).  """
+        # Get the details of the current transformation
+        if self.transform_factors == [] :
+            self._update_transform_factors()
+        dx, dy, sx, sy, wx, wy = self.transform_factors
+
+        # Build the transformation anew, adding a rotation
+        # Remember that the order in which transformations are applied is 
+        # reverted to how they are added in the code, i.e. last transform 
+        # added in the code will come first (this is the reason we have to 
+        # completely rebuild the transformation instead of just adding a 
+        # rotation...)
+        transform = self.image_item.transform()
+        transform.reset()
+        transform.translate(dx, dy)
+        transform.translate(wx/2*sx, wy/2*sy)
+        transform.rotate(alpha)
+        transform.scale(sx, sy)
+        transform.translate(-wx/2, -wy/2)
+
+        self.release_viewrange()
+
+        self.image_item.setTransform(transform)
 
     def mpl_export(self, *args, figsize=(5,5), title='', xlabel='', 
                    ylabel='', dpi=300) :

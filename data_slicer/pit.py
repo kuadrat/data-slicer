@@ -87,7 +87,7 @@ class PITDataHandler() :
     # Number of slices to integrate along z
 #    integrate_z = TracedVariable(value=0, name='integrate_z')
     # How often we have rolled the axes from the original setup
-    roll_state = 0
+    _roll_state = 0
 
     def __init__(self, main_window) :
         self.main_window = main_window
@@ -167,10 +167,7 @@ class PITDataHandler() :
         self.axes = copy(self.original_axes)
         self.prepare_axes()
         # Roll back to the view we had before reset_data was called
-        self._roll_axes(self.roll_state, update=False)
-#        self.main_window.set_axes()
-        # Redraw the integrated intensity plot
-#        self.on_z_dim_change()
+        self._roll_axes(self._roll_state, update=False)
 
     def prepare_axes(self) :
         """ Create a list containing the three original x-, y- and z-axes 
@@ -331,7 +328,7 @@ class PITDataHandler() :
         self.on_z_dim_change()
         self.main_window.set_axes()
         if update :
-            self.roll_state = (self.roll_state + i) % NDIM
+            self._roll_state = (self._roll_state + i) % NDIM
 
 class MainWindow(QtGui.QMainWindow) :
     """ The main window of PIT. Defines the basic GUI layouts and 
@@ -351,7 +348,7 @@ class MainWindow(QtGui.QMainWindow) :
     vmax = 1
 
     # Need to store original transformation information for `rotate()`
-    transform_factors = []
+    _transform_factors = []
 
     def __init__(self, data=None, background='default') :
         super().__init__()
@@ -648,39 +645,8 @@ class MainWindow(QtGui.QMainWindow) :
         self.redraw_plots()
 
     def rotate(self, alpha=0) :
-        """ Rotate the main image by the given angle *alpha* (in degrees). 
-
-        *NOTE* There seems to be some sort of bug with this when applying to 
-        certain datasets (so far only to 2D data).
-        """
-        image_item = self.main_plot.image_item
-        # Get the details of the current transformation
-        transform = image_item.transform()
-
-        if self.transform_factors == [] :
-            dx, dy = transform.dx(), transform.dy()
-            sx, sy = transform.m11(), transform.m22()
-            wx, wy = image_item.width(), image_item.height()
-            self.transform_factors = [dx, dy, sx, sy, wx, wy]
-        else :
-            dx, dy, sx, sy, wx, wy = self.transform_factors
-
-        # Build the transformation anew, adding a rotation
-        # Remember that the order in which transformations are applied is 
-        # reverted to how they are added in the code, i.e. last transform 
-        # added in the code will come first (this is the reason we have to 
-        # completely rebuild the transformation instead of just adding a 
-        # rotation...)
-        transform.reset()
-        transform.translate(dx/sx, dy/sy)
-        transform.translate(wx/2, wy/2)
-        transform.rotate(alpha)
-        transform.scale(sx, sy)
-        transform.translate(-wx/2, -wy/2)
-
-        self.main_plot.release_viewrange()
-
-        image_item.setTransform(transform)
+        """ Rotate the main image by the given angle *alpha* (in degrees). """
+        self.main_plot.rotate(alpha)
 
     def keyPressEvent(self, event) :
         """ Define all responses to keyboard presses. 
@@ -727,7 +693,7 @@ class MainWindow(QtGui.QMainWindow) :
         be *None* i.e. in order to just update the plot with a new colormap.
         """
         # Reset the transformation
-        self.transform_factors = []
+        self._transform_factors = []
         if image is None :
             image = self.image_data
         self.main_plot.set_image(image, *args, lut=self.lut, **kwargs)
