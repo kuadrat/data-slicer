@@ -166,9 +166,11 @@ class PITDataHandler() :
         self.set_data(copy(self.original_data))
         self.axes = copy(self.original_axes)
         self.prepare_axes()
-        self.main_window.set_axes()
+        # Roll back to the view we had before reset_data was called
+        self._roll_axes(self.roll_state, update=False)
+#        self.main_window.set_axes()
         # Redraw the integrated intensity plot
-        self.on_z_dim_change()
+#        self.on_z_dim_change()
 
     def prepare_axes(self) :
         """ Create a list containing the three original x-, y- and z-axes 
@@ -313,6 +315,13 @@ class PITDataHandler() :
         i  int; Number of dimensions to roll.
         =  =====================================================================
         """
+        self._roll_axes(i, update=True)
+
+    def _roll_axes(self, i=1, update=True) :
+        """ Backend for :func: `roll_axes <arpys.pit.PITDataHandler.roll_axes>`
+        that allows suppressing updating the roll-state, which is useful for
+        :func: `reset_data <arpys.pit.PITDataHandler.reset_data>`.
+        """
         logger.debug('roll_axes()')
         data = self.get_data()
         res = np.roll([0, 1, 2], i)
@@ -321,7 +330,8 @@ class PITDataHandler() :
         # Setting the data triggers a call to self.redraw_plots()
         self.on_z_dim_change()
         self.main_window.set_axes()
-        self.roll_state = (self.roll_state + i) % NDIM
+        if update :
+            self.roll_state = (self.roll_state + i) % NDIM
 
 class MainWindow(QtGui.QMainWindow) :
     """ The main window of PIT. Defines the basic GUI layouts and 
@@ -500,6 +510,7 @@ class MainWindow(QtGui.QMainWindow) :
                 lines = f.readlines()
         except FileNotFoundError :
             logger.debug('autoload.txt not found at {}.'.format(plugin_path))
+            return []
 
         # Load all the plugins!
         plugins = []
@@ -656,8 +667,8 @@ class MainWindow(QtGui.QMainWindow) :
 
         # Build the transformation anew, adding a rotation
         # Remember that the order in which transformations are applied is 
-        # reverted to how they added in the code, i.e. last transform added 
-        # in the code will come first (this is the reason we have to 
+        # reverted to how they are added in the code, i.e. last transform 
+        # added in the code will come first (this is the reason we have to 
         # completely rebuild the transformation instead of just adding a 
         # rotation...)
         transform.reset()
