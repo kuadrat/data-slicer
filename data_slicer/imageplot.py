@@ -7,7 +7,7 @@ import pyqtgraph as pg
 from matplotlib.colors import ListedColormap
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from numpy import array, clip, inf, linspace, ndarray
+from numpy import arange, array, clip, inf, linspace, ndarray
 from pyqtgraph import Qt as qt #import QtCore
 from pyqtgraph.graphicsItems.ImageItem import ImageItem
 from pyqtgraph.widgets import PlotWidget, GraphicsView
@@ -573,11 +573,14 @@ class CrosshairImagePlot(ImagePlot) :
         self.sig_image_changed.connect(self.update_allowed_values)
 
     def update_allowed_values(self) :
-        """ Update the allowed values silently. """
+        """ Update the allowed values silently. 
+        This assumes that the displayed image is in pixel coordinates and 
+        sets the allowed values to the available pixels.
+        """
         logger.debug('{}.update_allowed_values()'.format(self.name))
         [[xmin, xmax], [ymin, ymax]] = self.get_limits()
-        self.pos[0].set_allowed_values(linspace(xmin, xmax, 100))
-        self.pos[1].set_allowed_values(linspace(ymin, ymax, 100))
+        self.pos[0].set_allowed_values(arange(xmin, xmax, 1))
+        self.pos[1].set_allowed_values(arange(ymin, ymax, 1))
 
     def set_bounds(self, xmin, xmax, ymin, ymax) :
         """ Set both, the displayed area of the axis as well as the the range 
