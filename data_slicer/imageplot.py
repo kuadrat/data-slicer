@@ -198,6 +198,9 @@ class ImagePlot(pg.PlotWidget) :
     distribution) or a 3D array (distribution of RGB values) as well as all 
     the nice pyqtgraph axes panning/rescaling/zooming functionality.
 
+    In addition, this allows one to use custom axes scales as opposed to 
+    being limited to pixel coordinates.
+
     =================  =========================================================
     *Signals*
     sig_image_changed  emitted whenever the image is updated
@@ -287,11 +290,7 @@ class ImagePlot(pg.PlotWidget) :
         self.image_item = image
         logger.debug('<{}>Setting image.'.format(self.name))
         self.addItem(image)
-        self._set_axes_scales(emit=False)
-        # We suppressed emittance of sig_axes_changed to avoid external 
-        # listeners thinking the axes are different now. Thus, have to call 
-        # self.fix_viewrange manually.
-        self.fix_viewrange()
+        self._set_axes_scales(emit=True)
 
         logger.info('<{}>Emitting sig_image_changed.'.format(self.name))
         self.sig_image_changed.emit()
@@ -558,7 +557,7 @@ class CrosshairImagePlot(ImagePlot) :
         self.crosshair = Crosshair()
         self.crosshair.add_to(self)
 
-        self.pos = (self.crosshair.hpos, self.crosshair.vpos)
+        self.pos = (self.crosshair.vpos, self.crosshair.hpos)
 
         # Initialize range to [0, 1]x[0, 1]
         self.set_bounds(0, 1, 0, 1)
@@ -567,9 +566,7 @@ class CrosshairImagePlot(ImagePlot) :
 #        self.setMouseEnabled(False, False)
 
         # Connect a slot (callback) to dragging and clicking events
-        #self.slider.sigDragged.connect(self.on_position_change)
         self.sig_axes_changed.connect(
-#        self.sig_image_changed.connect(
             lambda : self.set_bounds(*[x for lst in self.get_limits() for x 
                                        in lst])) 
 
@@ -579,10 +576,8 @@ class CrosshairImagePlot(ImagePlot) :
         """ Update the allowed values silently. """
         logger.debug('{}.update_allowed_values()'.format(self.name))
         [[xmin, xmax], [ymin, ymax]] = self.get_limits()
-        self.pos[0].set_allowed_values(linspace(ymin, ymax, 100))
-        self.pos[1].set_allowed_values(linspace(xmin, xmax, 100))
-#        self.pos[0].allowed_values = linspace(ymin, ymax, 100)
-#        self.pos[1].allowed_values = linspace(xmin, xmax, 100)
+        self.pos[0].set_allowed_values(linspace(xmin, xmax, 100))
+        self.pos[1].set_allowed_values(linspace(ymin, ymax, 100))
 
     def set_bounds(self, xmin, xmax, ymin, ymax) :
         """ Set both, the displayed area of the axis as well as the the range 
@@ -596,8 +591,8 @@ class CrosshairImagePlot(ImagePlot) :
         self.crosshair.set_bounds(xmin, xmax, ymin, ymax)
 
         # Put the crosshair in the center
-        self.pos[0].set_value(0.5*(ymax+ymin))
-        self.pos[1].set_value(0.5*(xmax+xmin))
+        self.pos[0].set_value(0.5*(xmax+xmin))
+        self.pos[1].set_value(0.5*(ymax+ymin))
 
 class CursorPlot(pg.PlotWidget) :
     """ Implements a simple, draggable scalebar represented by a line 
@@ -606,7 +601,6 @@ class CursorPlot(pg.PlotWidget) :
     The current position of the slider is tracked with the :class: 
     `TracedVariable <data_slicer.utilities.TracedVariable>` self.pos and its 
     width with the `TracedVariable` self.slider_width.
-
     """
     name = 'Unnamed'
     hover_color = HOVER_COLOR

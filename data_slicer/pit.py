@@ -156,7 +156,7 @@ class PITDataHandler() :
         self.zmax = self.get_data().shape[2] - 1
 
         self.z.set_allowed_values(range(self.zmin, self.zmax+1))
-        self.z.set_value(self.zmin)
+#        self.z.set_value(self.zmin)
 
     def reset_data(self) :
         """ Put all data and metadata into its original state, as if it was 
@@ -186,23 +186,6 @@ class PITDataHandler() :
         self.main_window.redraw_plots()
         # Also need to recalculate the intensity plot
         self.on_z_dim_change()
-
-#    def on_z_change(self, caller=None) :
-#        """ Callback to the :signal: `sig_z_changed`. Ensure self.z does not go 
-#        out of bounds and update the Image slice with a call to :func: 
-#        `update_main_plot <data_slicer.imageplot.ImagePlot.update_main_plot>`.
-#        """
-        # Update: AFAIK TracedVariable takes care of not going out of bounds 
-        # itself.
-#        # Ensure z doesn't go out of bounds
-#        z = self.z.get_value()
-#        clipped_z = clip(z, self.zmin, self.zmax)
-#        if z != clipped_z :
-#            # NOTE this leads to unnecessary signal emitting. Should avoid 
-#            # emitting the signal from inside a slot (slot: function 
-#            # connected to that signal)
-#            self.z.set_value(clipped_z)
-#        self.main_window.update_main_plot()
 
     def on_z_dim_change(self) :
         """ Called when either completely new data is loaded or the dimension 
@@ -391,13 +374,10 @@ class MainWindow(QtGui.QMainWindow) :
         # Create the intensity distribution plots
         self.x_plot = CursorPlot(name='x_plot', orientation='horizontal')
         self.y_plot = CursorPlot(name='y_plot')
-        self.x_plot.register_traced_variable(self.cut_plot.pos[0])
-        self.y_plot.register_traced_variable(self.cut_plot.pos[1])
-#        for traced_variable in self.cut_plot.pos :
-#            traced_variable.sig_value_changed.connect(
-#                self.update_xy_plots)
-        self.cut_plot.pos[0].sig_value_changed.connect(self.update_y_plot)
-        self.cut_plot.pos[1].sig_value_changed.connect(self.update_x_plot)
+        self.x_plot.register_traced_variable(self.cut_plot.pos[1])
+        self.y_plot.register_traced_variable(self.cut_plot.pos[0])
+        self.x_plot.pos.sig_value_changed.connect(self.update_y_plot)
+        self.y_plot.pos.sig_value_changed.connect(self.update_x_plot)
 
 #        self.cut_plot.sig_image_changed.connect(self.update_xy_plots)
 
@@ -590,7 +570,7 @@ class MainWindow(QtGui.QMainWindow) :
             pass
 
         # Get the correct position indicator
-        pos = self.cut_plot.pos[1]
+        pos = self.y_plot.pos
         i_x = int( min(pos.get_value(), pos.allowed_values.max()-1))
         logger.debug(('xp.pos.get_value()={}; i_x: '
                       '{}').format(xp.pos.get_value(), i_x))
@@ -608,7 +588,7 @@ class MainWindow(QtGui.QMainWindow) :
         except IndexError :
             pass
         # Get the correct position indicator
-        pos = self.cut_plot.pos[0]
+        pos = self.x_plot.pos
         i_y = int( min(pos.get_value(), pos.allowed_values.max()-1)) 
         logger.debug(('yp.pos.get_value()={}; i_y: '
                       '{}').format(yp.pos.get_value(), i_y))
