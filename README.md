@@ -2,6 +2,7 @@
 
 A 3D data visualization tool.
 
+![](https://raw.githubusercontent.com/kuadrat/arpys/master/screenshots/pit_demo.gif)
 
 ## Installation
 

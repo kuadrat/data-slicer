@@ -255,7 +255,7 @@ class ImagePlot(pg.PlotWidget) :
             self.removeItem(self.image_item)
         self.image_item = None
 
-    def set_image(self, image, *args, **kwargs) :
+    def set_image(self, image, emit=True, *args, **kwargs) :
         """ Expects both, np.arrays and pg.ImageItems as input and sets them 
         correctly to this PlotWidget's Image with `addItem`. Also makes sure 
         there is only one Image by deleting the previous image.
@@ -265,6 +265,7 @@ class ImagePlot(pg.PlotWidget) :
         ======  ================================================================
         image   np.ndarray or pyqtgraph.ImageItem instance; the image to be
                 displayed.
+        emit    bool; whether or not to emit :signal: `sig_image_changed`
         args    positional and keyword arguments that are passed on to :class:
         kwargs  `ImageItem <pyqtgraph.graphicsItems.ImageItem.ImageItem>`
         ======  ================================================================
@@ -290,10 +291,11 @@ class ImagePlot(pg.PlotWidget) :
         self.image_item = image
         logger.debug('<{}>Setting image.'.format(self.name))
         self.addItem(image)
-        self._set_axes_scales(emit=True)
+        self._set_axes_scales(emit=emit)
 
-        logger.info('<{}>Emitting sig_image_changed.'.format(self.name))
-        self.sig_image_changed.emit()
+        if emit :
+            logger.info('<{}>Emitting sig_image_changed.'.format(self.name))
+            self.sig_image_changed.emit()
 
     def set_xscale(self, xscale, update=False) :
         """ Set the xscale of the plot. *xscale* is an array of the length 
