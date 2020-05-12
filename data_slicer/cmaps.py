@@ -9,6 +9,7 @@ import pkg_resources
 
 import numpy as np
 from matplotlib import cm
+from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.pyplot import colormaps
 from pyqtgraph import ColorMap
 
@@ -48,7 +49,7 @@ class ds_cmap(ColorMap) :
         self.pos = m * (self.original_pos - old_max) + new_max
 
         # Apply a powerlaw norm to the positions
-        self.pos = self.pos**self.gamma
+        self.pos = self.pos**(1/self.gamma)
 
     def set_gamma(self, gamma=1) :
         """ Set the exponent for the power-law norm that maps the colors to 
@@ -75,9 +76,8 @@ class ds_cmap(ColorMap) :
 def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
     """ Take a matplotlib colormap and convert it to a pyqtgraph ColorMap.
 
-
+    *Parameters*
     ===============  ===========================================================
-    **Parameters**
     matplotlib_cmap  either a str representing the name of a matplotlib 
                      colormap or a :class: 
                      `<matplotlib.colors.LinearSegmentedColormap>` or :class: 
@@ -86,7 +86,10 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
                      colors in the matplotlib cmap; the alpha (transparency) 
                      value to be assigned to the whole cmap. matplotlib cmaps 
                      default to 1.
-    **Returns**
+    ===============  ===========================================================
+
+    *Returns*
+    ===============  ===========================================================
     pyqtgraph_cmap   :class: `<pyqtgraph.ColorMap>`
     ===============  ===========================================================
     """
@@ -104,6 +107,31 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
     rgba[:,-1] = alpha
 
     return ds_cmap(values, rgba)
+
+def convert_ds_to_matplotlib(data_slicer_cmap, cmap_name='converted_cmap') :
+    """ Create a matplotlib colormap from a :class: `ds_cmap 
+    <data_slicer.cmaps.ds_cmap>` instance.
+
+    *Parameters*
+    ================  ==========================================================
+    data_slicer_cmap  :class: `ds_cmap <data_slicer.cmaps.ds_cmap>`
+    cmap_name         str; optional name for the created cmap.
+    ================  ==========================================================
+
+    *Returns*
+    ===============  ===========================================================
+    matplotlib_cmap  :class: `<matplotlib.colors.LinearSegmentedColormap>`
+    ===============  ===========================================================
+    """
+    # Reset the transformations - matplotlib can take care of them itself
+    data_slicer_cmap.set_gamma(1)
+    data_slicer_cmap.set_vmax(1)
+    # Create the matplotlib colormap
+    colors = data_slicer_cmap.color
+    N = len(colors)
+    matplotlib_cmap = LinearSegmentedColormap.from_list(cmap_name,
+                                                        colors, N)
+    return matplotlib_cmap
 
 def load_custom_cmap(filename) :
     """ Create a :class: `ds_cmap <data_slicer.cmaps.ds_cmap>` instance from 

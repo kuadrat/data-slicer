@@ -612,6 +612,7 @@ class MainWindow(QtGui.QMainWindow) :
         except KeyError :
             print('Invalid colormap name. Use one of: ')
             print(cmaps.keys())
+        self.cmap_name = cmap
         # Since the cmap changed it forgot our settings for alpha and gamma
         self.cmap.set_alpha(self.alpha)
         self.cmap.set_gamma(self.gamma)
