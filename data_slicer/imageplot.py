@@ -13,7 +13,7 @@ from pyqtgraph.graphicsItems.ImageItem import ImageItem
 from pyqtgraph.widgets import PlotWidget, GraphicsView
 
 from data_slicer.dsviewbox import DSViewBox
-from data_slicer.utilities import TracedVariable, indexof
+from data_slicer.utilities import get_lines, TracedVariable, indexof
 
 logger = logging.getLogger('ds.'+__name__)
 
@@ -486,6 +486,81 @@ class ImagePlot(pg.PlotWidget) :
         dialog.figure.set_figheight(height)
 
         dialog.figure.savefig(filename, dpi=dpi)
+
+    def lineplot(self, ax, dim=0, n=10, offset=0.2, lw=0.5, color='k', 
+                 label_fmt='{:.2f}', n_ticks=5, **getlines_kwargs) :
+        """
+        Create a matplotlib plot with *n* lines extracted out of one of the 
+        visible plots. The lines are normalized to their global maximum and 
+        shifted from each other by *offset*.
+        See :func: `get_lines <data_slicer.utilities.get_lines>` for more 
+        options on the extraction of the lines.
+
+        *Parameters*
+        ===============  =======================================================
+        plot             str; either "main" or "cut", specifies from which 
+                         plot to extract the lines.
+        dim              int; either 0 or 1, specifies in which direction to 
+                         take the lines.
+        ax               matplotlib.axes.Axes; the axes in which to plot.
+        n                int; number of lines to extract.
+        offset           float; spacing between neighboring lines.
+        lw               float; linewidth of the plotted lines.
+        color            any color argument understood by matplotlib; color 
+                         of the plotted lines.
+        label_fmt        str; a format string for the ticklabels.
+        n_ticks          int; number of ticks to print.
+        getlines_kwargs  other kwargs are passed to :func: `get_lines 
+                         <data_slicer.utilities.get_lines>`
+        ===============  =======================================================
+
+        *Returns*
+        ===========  ===========================================================
+        lines2ds     list of Line2D objects; the drawn lines.
+        xticks       list of float; locations of the 0 intensity value of 
+                     each line.
+        xtickvalues  list of float; if *momenta* were supplied, corresponding 
+                     xtick values in units of *momenta*. Otherwise this is 
+                     just a copy of *xticks*.
+        xticklabels  list of str; *xtickvalues* formatted according to 
+                     *label_fmt*.
+        ===========  ===========================================================
+        """
+        data = self.image_data
+
+        # Get the right axes
+        axes = [self.xscale, self.yscale]
+        for i,scale in enumerate(axes) :
+            # Deal with *None*
+            if scale is None :
+                axes[i] = np.arange(data.shape[i])
+        if dim==0 :
+            data = data.T
+        elif dim==1 :
+            axes = axes[::-1]
+        else :
+            raise ValueError('*dim* should be one of (0, 1).')
+
+        # Get the lines with an utility function
+        lines, indices = get_lines(data, n, offset=offset, **getlines_kwargs) 
+
+        # Plot the lines
+        line2ds = []
+        for line in lines :
+            line2d = ax.plot(line, axes[0], lw=lw, color=color)[0]
+            line2ds.append(line2d)
+
+        # Create tick positions and labels
+        xticks = [i*offset for i in range(n)]
+        xtickvalues = axes[i][indices]
+        xticklabels = [label_fmt.format(x) for x in xtickvalues]
+
+        # Only render *n_ticks* ticks
+        nth = int(n/n_ticks)
+        ax.set_xticks(xticks[::nth])
+        ax.set_xticklabels(xticklabels[::nth])
+
+        return line2ds, xticks, xtickvalues, xticklabels
 
 class Crosshair() :
     """ Crosshair made up of two InfiniteLines. """

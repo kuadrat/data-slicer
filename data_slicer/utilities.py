@@ -235,3 +235,73 @@ def roll_array(a, i) :
     res = np.moveaxis(a, indices, rolled_indices)
     return res
 
+def get_lines(data, n, dim=0, i0=0, i1=-1, offset=0.2, integrate='max', 
+              **kwargs) :
+    """
+    Extract *n* evenly spaced rows/columns from data along dimension *dim* 
+    between indices *i0* and *i1*. The extracted lines are normalized and offset
+    such that they can be nicely plotted close by each other - as is done, for
+    example in :func: `lineplot <>`.
+
+    *Parameters*
+    =========  =================================================================
+    data       2d np.array; the data from which to extract lines.
+    n          int; the number of lines to extract.
+    dim        int; either 0 or 1, specifying the dimension along which to 
+               extract lines.
+    i0         int; starting index in *data* along *dim*.
+    i1         int; ending index in *data* along *dim*.
+    offset     float; how much to vertically translate each successive line.
+    integrate  int or other; specifies how many channels around each line 
+               index should be integrated over. If anything but a small 
+               enough integer is given, defaults to the maximally available 
+               integration range.
+    kwargs     any other passed keyword arguments are discarded.
+    =========  =================================================================
+
+    *Returns*
+    =======  ===================================================================
+    lines    list of 1d np.arrays; the extracted lines.
+    indices  list of int; the indices at which the lines were extracted.
+    =======  ===================================================================
+    """
+    # Sanity check
+    shape = data.shape
+    try :
+        assert len(shape) == 2
+    except AssertionError :
+        message = '*data* should be a 2d np.array. Found: {} dimensions.'
+        message = message.format(len(shape))
+        raise TypeError(message)
+
+    # Normalize data and transpose if necessary
+    if dim == 1 :
+        data = data.T
+    norm = np.max(data[i0:i1])
+    data /= norm
+
+    # Calculate the indices at which to extract lines.
+    # First the raw step size *delta*
+    if i1 == -1 : i1 = shape[dim]-1
+    delta = (i1 - i0)/n
+    # The maximum number of channels we can integrate around each index is 
+    # delta/2
+    max_integrate = int(delta/2)
+    # Adjust the user supplied *integrate* value, if necessary
+    if type(integrate) != int or integrate > max_integrate :
+        integrate = max_integrate
+    # Construct equidistantly spaced center indices, leaving space above and 
+    # below for the integration.
+    indices = [int(round(i)) for i in 
+               np.linspace(i0+integrate+1, i1-integrate, n)]
+
+    # Extract the lines
+    lines = []
+    sumnorm = 2*integrate + 1
+    for i in range(n) :
+        start = indices[i] - integrate
+        stop = indices[i] + integrate + 1
+        line = np.sum(data[start:stop], 0)/sumnorm + i*offset
+        lines.append(line)
+    return lines, indices
+

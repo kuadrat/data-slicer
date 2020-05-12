@@ -11,6 +11,7 @@ import pkg_resources
 import sys
 from copy import copy
 
+import matplotlib.pyplot as plt
 import numpy as np
 #import pyqtgraph as pg
 import pyqtgraph.console
@@ -312,6 +313,63 @@ class PITDataHandler() :
         self.main_window.set_axes()
         if update :
             self._roll_state = (self._roll_state + i) % NDIM
+
+    def lineplot(self, plot='main', dim=0, ax=None, n=10, offset=0.2, lw=0.5, 
+                 color='k', label_fmt='{:.2f}', n_ticks=5, **getlines_kwargs) :
+        """
+        Create a matplotlib figure with *n* lines extracted out of one of the 
+        visible plots. The lines are normalized to their global maximum and 
+        shifted from each other by *offset*.
+        See :func: `get_lines <data_slicer.utilities.get_lines>` for more 
+        options on the extraction of the lines.
+        This wraps the :class: `ImagePlot <data_slicer.imageplot.ImagePlot>`'s
+        lineplot method.
+
+        *Parameters*
+        ===============  =======================================================
+        plot             str; either "main" or "cut", specifies from which 
+                         plot to extract the lines.
+        dim              int; either 0 or 1, specifies in which direction to 
+                         take the lines.
+        ax               matplotlib.axes.Axes; the axes in which to plot. If 
+                         *None*, create a new figure with a fresh axes.
+        n                int; number of lines to extract.
+        offset           float; spacing between neighboring lines.
+        lw               float; linewidth of the plotted lines.
+        color            any color argument understood by matplotlib; color 
+                         of the plotted lines.
+        label_fmt        str; a format string for the ticklabels.
+        n_ticks          int; number of ticks to print.
+        getlines_kwargs  other kwargs are passed to :func: `get_lines 
+                         <data_slicer.utilities.get_lines>`
+        ===============  =======================================================
+
+        *Returns*
+        ===========  ===========================================================
+        lines2ds     list of Line2D objects; the drawn lines.
+        xticks       list of float; locations of the 0 intensity value of 
+                     each line.
+        xtickvalues  list of float; if *momenta* were supplied, corresponding 
+                     xtick values in units of *momenta*. Otherwise this is 
+                     just a copy of *xticks*.
+        xticklabels  list of str; *xtickvalues* formatted according to 
+                     *label_fmt*.
+        ===========  ===========================================================
+        """
+        # Get the specified data
+        if plot == 'main' :
+            imageplot = self.main_window.main_plot
+        elif plot == 'cut' :
+            imageplot = self.main_window.cut_plot
+        else :
+            raise ValueError('*plot* should be one of ("main", "cut").')
+
+        # Create a mpl axis object if none was given
+        if ax is None : fig, ax = plt.subplots(1)
+
+        return imageplot.lineplot(ax=ax, dim=dim, n=n, offset=offset, lw=lw, 
+                                  color=color, label_fmt=label_fmt, 
+                                  n_ticks=n_ticks, **getlines_kwargs)
 
 class MainWindow(QtGui.QMainWindow) :
     """ The main window of PIT. Defines the basic GUI layouts and 
