@@ -20,10 +20,10 @@ from qtconsole.rich_ipython_widget import RichIPythonWidget, RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
 
 import data_slicer.dataloading as dl
-from data_slicer.cmaps import cmaps
+from data_slicer.cmaps import cmaps, convert_ds_to_matplotlib
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import *
-from data_slicer.utilities import CONFIG_DIR, TracedVariable
+from data_slicer.utilities import CONFIG_DIR, plot_cuts, TracedVariable
 
 logger = logging.getLogger('ds.'+__name__)
 
@@ -370,6 +370,46 @@ class PITDataHandler() :
         return imageplot.lineplot(ax=ax, dim=dim, n=n, offset=offset, lw=lw, 
                                   color=color, label_fmt=label_fmt, 
                                   n_ticks=n_ticks, **getlines_kwargs)
+
+    def plot_all_slices(self, dim=2, integrate=0, zs=None, labels='default', 
+                        max_ppf=16, max_nfigs=2) :
+        """ Wrapper for :func: `plot_cuts <data_slicer.utilities.plot_cuts>`.
+        Plot all (or only the ones specified by `zs`) slices along dimension 
+        `dim` on separate suplots onto matplotlib figures.
+
+        *Parameters*
+        =========  ============================================================
+        dim        int; one of (0,1,2). Dimension along which to take the cuts.
+        integrate  int or 'full'; number of slices to integrate around each 
+                   extracted cut. If 'full', take the maximum number possible, 
+                   depending on *zs* and whether the number of cuts is reduced 
+                   due to otherwise exceeding *max_nfigs*.
+        zs         1D np.array; selection of indices along dimension `dim`. Only 
+                   the given indices will be plotted.
+        labels     1D array/list of length z. Optional labels to assign to the 
+                   different cuts. By default the values of the respective axis
+                   are used. Set to *None* to suppress labels.
+        max_ppf    int; maximum number of *p*lots *p*er *f*igure.
+        max_nfigs  int; maximum number of figures that are created. If more would 
+                   be necessary to display all plots, a warning is issued and 
+                   only every N'th plot is created, where N is chosen such that 
+                   the whole 'range' of plots is represented on the figures. 
+        =========  ============================================================
+        """
+        data = self.get_data()
+        if labels == 'default' :
+            # Use the values of the respective axis as default labels
+            labels = self.axes[dim]
+
+        # The default values for the colormap are taken from the main_window 
+        # settings
+        gamma = self.main_window.gamma
+        vmax = self.main_window.vmax * data.max()
+        cmap = convert_ds_to_matplotlib(self.main_window.cmap, 
+                                        self.main_window.cmap_name)
+        plot_cuts(data, dim=dim, integrate=integrate, zs=zs, labels=labels, 
+                  cmap=cmap, vmax=vmax, gamma=gamma, max_ppf=max_ppf, 
+                  max_nfigs=max_nfigs)
 
 class MainWindow(QtGui.QMainWindow) :
     """ The main window of PIT. Defines the basic GUI layouts and 

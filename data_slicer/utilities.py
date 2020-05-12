@@ -1,7 +1,11 @@
 
 import logging
+import warnings
 
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.colors import PowerNorm
+from matplotlib.patheffects import withStroke
 from pyqtgraph import Qt as qt
 
 logger = logging.getLogger('ds.'+__name__)
@@ -304,4 +308,115 @@ def get_lines(data, n, dim=0, i0=0, i1=-1, offset=0.2, integrate='max',
         line = np.sum(data[start:stop], 0)/sumnorm + i*offset
         lines.append(line)
     return lines, indices
+
+def plot_cuts(data, dim=0, integrate=0, zs=None, labels=None, max_ppf=16, 
+              max_nfigs=4, **kwargs) :
+    """ Plot all (or only the ones specified by `zs`) cuts along dimension `dim` 
+    on separate subplots onto matplotlib figures.
+
+    *Parameters*
+    =========  =================================================================
+    data       3D np.array with shape (z,y,x); the data cube.
+    dim        int; one of (0,1,2). Dimension along which to take the cuts.
+    integrate  int or 'full'; number of slices to integrate around each 
+               extracted cut. If 'full', take the maximum number possible, 
+               depending whether the number of cuts is reduced due to 
+               otherwise exceeding *max_nfigs*. 'full' does not work if *zs* 
+               are given.
+    zs         1D np.array; selection of indices along dimension `dim`. Only 
+               the given indices will be plotted.
+    labels     1D array/list of length z. Optional labels to assign to the 
+               different cuts
+    max_ppf    int; maximum number of *p*lots *p*er *f*igure.
+    max_nfigs  int; maximum number of figures that are created. If more would 
+               be necessary to display all plots, a warning is issued and 
+               only every N'th plot is created, where N is chosen such that 
+               the whole 'range' of plots is represented on the figures. 
+    kwargs     dict; keyword arguments passed on to :func: `pcolormesh 
+               <matplotlib.axes._subplots.AxesSubplot.pcolormesh>`. 
+               Additionally, the kwarg `gamma` for power-law color mapping 
+               is accepted.
+    =========  =================================================================
+    """
+    # Create a list of all indices in case no list (`zs`) is given
+    if zs is None :
+        zs = np.arange(data.shape[dim])
+    elif integrate == 'full' :
+        warnings.warn('*full* option does not work when *zs* are specified.')
+        integrate = 0
+
+    # The total number of plots and figures to be created
+    n_plots = len(zs)
+    n_figs = int( np.ceil(n_plots/max_ppf) )
+    nth = 1
+    if n_figs > max_nfigs :
+        # Only plot every nth plot
+        nth = round(n_plots/(max_ppf*max_nfigs))
+        # Get the right English suffix depending on the value of nth
+        if nth <= 3 :
+            suffix = ['st', 'nd', 'rd'][nth-1]
+        else :
+            suffix = 'th'
+        warnings.warn((
+        'Number of necessary figures n_figs ({0}) > max_nfigs ({1}).' +
+        'Setting n_figs to {1} and only plotting every {2}`{3} cut.').format( 
+            n_figs, max_nfigs, nth, suffix))
+        n_figs = max_nfigs
+        n_plots = max_ppf*n_figs
+
+    # Figure out how much we should integrate
+    if integrate == 'full' or integrate > nth/2 :
+        integrate = int(nth/2)
+
+    # If we have just one figure, make the subplots as big as possible by 
+    # setting the number of subplots per row (ppr) to a reasonable value
+    if n_figs == 1 :
+        ppr = int( np.ceil(np.sqrt(n_plots)) )
+    else :
+        ppr = int( np.ceil(np.sqrt(max_ppf)) )
+
+    # Depending on the dimension we need to extract the cuts differently. 
+    # Account for this by moving the axes
+    x = np.arange(len(data.shape))
+    data = np.moveaxis(data, x, np.roll(x, dim))
+
+    # Extract additional kwarg from kwargs
+    if 'gamma' in kwargs :
+        gamma = kwargs.pop('gamma')
+    else :
+        gamma = 1
+
+    # Define the beginnings of the plot in figure units
+    margins = dict(left=0, right=1, bottom=0, top=1)
+
+    figures = []
+    for i in range(n_figs) :
+        # Create the figure with pyplot 
+        fig = plt.figure()
+        start = i*ppr*ppr
+        stop = (i+1)*ppr*ppr
+        # Iterate over the cuts that go on this figure
+        for j,z in enumerate(zs[start:stop]) :
+            # Try to extract the cut and create the axes 
+            cut_index = z*nth
+            if cut_index < data.shape[0] :
+                cut = make_slice(data, 0, cut_index, integrate)
+            else :
+                continue
+            ax = fig.add_subplot(ppr, ppr, j+1)
+            ax.pcolormesh(cut, norm=PowerNorm(gamma=gamma), **kwargs)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            if labels is not None :
+                labeltext = str(labels[cut_index])
+            else :
+                labeltext = str(cut_index)
+            label = ax.text(0, 0, labeltext, size=10)
+            label.set_path_effects([withStroke(linewidth=2, foreground='w', 
+                                               alpha=0.5)])
+
+        fig.subplots_adjust(hspace=0.01, wspace=0.01, **margins)
+        figures.append(fig)
+
+    return figures
 
