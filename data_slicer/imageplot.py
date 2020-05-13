@@ -75,13 +75,19 @@ class MPLExportDialog(qt.QtGui.QDialog) :
         self.box_height.setValidator(qt.QtGui.QDoubleValidator(0, 99, 2))
         self.box_height.setText(str(self.figheight))
 
-        # Update preview button
-        self.update_button = qt.QtGui.QPushButton('Update Preview')
-        self.update_button.clicked.connect(self.plot_preview)
+        # Make changes update the figure
+        for box in [self.box_title, self.box_xlabel, self.box_ylabel, 
+                    self.box_xmin, self.box_xmax, self.box_ymin, 
+                    self.box_ymax, self.box_width, self.box_height] :
+#            box.editingFinished.connect(self.plot_preview)
+            box.textChanged.connect(self.plot_preview)
+        for checkbox in [self.checkbox_invertx, self.checkbox_inverty, 
+                         self.checkbox_transpose] :
+            checkbox.stateChanged.connect(self.plot_preview)
 
         # Figsize warning label
         self.label_figsize = qt.QtGui.QLabel('Preview figure size is not to '
-                                             'scale')
+                                             'scale.')
 
         # Preview canvas
         self.figure = Figure(figsize=(self.figwidth, self.figheight), 
@@ -139,8 +145,7 @@ class MPLExportDialog(qt.QtGui.QDialog) :
         layout.addWidget(self.box_height, i, 4, 1, 1)
         i += 1
         # Preview
-        layout.addWidget(self.update_button, i, 1, 1, 1)
-        layout.addWidget(self.label_figsize, i, 2, 1, ncol-1)
+        layout.addWidget(self.label_figsize, i, 1, 1, ncol)
         i += 1
         layout.addWidget(self.canvas, i, 1, 1, ncol)
         i += 1
