@@ -159,8 +159,12 @@ def indexof(value, array) :
     """
     return np.argmin(np.abs(array - value))
 
-def make_slice(data, d, i, integrate=0, silent=False) :
-    """ Create a slice out of the 3d data (l x m x n) along dimension d 
+def make_slice_3d(data, d, i, integrate=0, silent=False) :
+    """ 
+    ..:deprecated: Use :func: `make_slice <data_slicer.utilities.make_slice>`
+                   instead.
+
+    Create a slice out of the 3d data (l x m x n) along dimension d 
     (0,1,2) at index i. Optionally integrate around i.
 
     *Parameters*
@@ -211,6 +215,56 @@ def make_slice(data, d, i, integrate=0, silent=False) :
         sliced = data[:,:,start:stop].sum(d)
 
     return sliced
+
+def make_slice(data, index, integrate=0, dim=0, silent=False) :
+    """
+    Take a slice out of an N dimensional dataset *data* at *index* along 
+    dimension *dim*. Optionally integrate by +- *integrate* channels around 
+    *index*.
+    If *data* has shape
+        (n0, n1, ..., n(dim-1), n(dim), n(dim+1), ..., n(N-1))
+    the result will be of dimension N-1 and have shape 
+        (n0, n1, ..., n(dim-1), n(dim+1), ..., n(N-1))
+    .
+    """
+    # Find the dimensionality and the number of slices along the specified 
+    # dimension.
+    shape = data.shape
+    ndim = len(shape)
+    try :
+        n_slices = shape[dim]
+    except IndexError :
+        message = ('*dim* ({}) needs to be smaller than the dimension of '
+                   '*data* ({})').format(dim, ndim)
+        raise IndexError(message)
+
+    # Set the integration indices and adjust them if they go out of scope
+    start = index - integrate
+    stop = index + integrate + 1
+    if start < 0 :
+        if not silent :
+            warnings.warn(
+            'i - integrate ({}) < 0, setting start=0'.format(start))       
+        start = 0
+    if stop > n_slices :
+        if not silent :
+            warning = ('i + integrate ({}) > n_slices ({}), setting '
+                       'stop=n_slices').format(stop, n_slices)       
+            warnings.warn(warning)
+        stop = n_slices
+    
+    # Roll the original data such that the specified dimension comes first
+    i_original = np.arange(ndim)
+    i_rolled = np.roll(i_original, dim)
+    data = np.moveaxis(data, i_original, i_rolled)
+    # Take the slice
+    sliced = data[start:stop].sum(0)
+    # Bring back to more intuitive form. For that we have to remove the now 
+    # lost dimension from the index arrays and shift all indices.
+    i_original = np.concatenate((i_original[:dim], i_original[dim+1:]))
+    i_original[i_original>dim] -= 1
+    i_rolled = np.roll(i_original, dim)
+    return np.moveaxis(sliced, i_rolled, i_original)
 
 def roll_array(a, i) :
     """ Cycle the arrangement of the dimensions in an *N* dimensional array.
@@ -420,3 +474,9 @@ def plot_cuts(data, dim=0, integrate=0, zs=None, labels=None, max_ppf=16,
 
     return figures
 
+if __name__ == '__main__' :
+    u, w, x, y, z = 2, 3, 4, 5, 6
+    d = np.ones(u*w*x*y*z).reshape(u, w, x, y, z)
+
+    sliced = make_slice_nd(d, 0, 0, dim=3)
+    print(sliced.shape)
