@@ -23,7 +23,8 @@ import data_slicer.dataloading as dl
 from data_slicer.cmaps import cmaps, convert_ds_to_matplotlib
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import *
-from data_slicer.utilities import CONFIG_DIR, plot_cuts, TracedVariable
+from data_slicer.utilities import CONFIG_DIR, make_slice, plot_cuts, \
+                                  TracedVariable
 
 logger = logging.getLogger('ds.'+__name__)
 
@@ -131,7 +132,8 @@ class PITDataHandler() :
         self.on_z_dim_change()
         
         # Connect signal handling so changes in data are immediately reflected
-        self.z.sig_value_changed.connect(self.main_window.update_main_plot)
+        self.z.sig_value_changed.connect( \
+            lambda : self.main_window.update_main_plot(emit=False))
         self.data.sig_value_changed.connect(self.on_data_change)
 
         self.main_window.update_main_plot()
@@ -222,8 +224,8 @@ class PITDataHandler() :
     def update_image_data(self) :
         """ Get the right (possibly integrated) slice out of *self.data*, 
         apply postprocessings and store it in *self.image_data*. 
-        Skip this if the z value should be out of range, which can happen if 
-        the image data changes and the z scale hasn't been updated yet.
+        Skip this if the z value happens to be out of range, which can happen 
+        if the image data changes and the z scale hasn't been updated yet.
         """
         logger.debug('update_image_data()')
         z = self.z.get_value()
@@ -231,14 +233,17 @@ class PITDataHandler() :
         int(self.main_window.integrated_plot.slider_width.get_value()/2)
         data = self.get_data()
         try :
-            self.main_window.image_data = self.make_slice(data, 2, z, 
-                                                          integrate_z)
+            self.main_window.image_data = \
+                    self.make_slice(data, dim=2, index=z, integrate=integrate_z)
         except IndexError :
             logger.debug(('update_image_data(): z index {} out of range for '
                           'data of length {}.').format(
                              z, self.image_data.shape[0]))
 
-    def make_slice(self, data, dimension, index, integrate) :
+    def make_slice(self, data, dim, index, integrate) :
+        return make_slice(data, dim, index, integrate)
+
+    def make_slice_old(self, data, dimension, index, integrate) :
         """ Create a slice out of the 3d data (l x m x n) along dimension d 
         (0,1,2) at index i. Optionally integrate around i.
 
@@ -493,7 +498,8 @@ class MainWindow(QtGui.QMainWindow) :
         ip = CursorPlot(name='z selector')
         ip.register_traced_variable(self.data_handler.z)
         ip.change_width_enabled = True
-        ip.slider_width.sig_value_changed.connect(self.update_main_plot)
+        ip.slider_width.sig_value_changed.connect( \
+            lambda : self.update_main_plot(emit=False))
         self.integrated_plot = ip
 
         # Add ROI to the main ImageView

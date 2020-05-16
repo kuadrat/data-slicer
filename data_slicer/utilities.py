@@ -162,7 +162,8 @@ def indexof(value, array) :
 def make_slice_3d(data, d, i, integrate=0, silent=False) :
     """ 
     ..:deprecated: Use :func: `make_slice <data_slicer.utilities.make_slice>`
-                   instead.
+                   instead. (though this ~might~ be slightly faster for 3d 
+                   datasets)
 
     Create a slice out of the 3d data (l x m x n) along dimension d 
     (0,1,2) at index i. Optionally integrate around i.
@@ -216,7 +217,7 @@ def make_slice_3d(data, d, i, integrate=0, silent=False) :
 
     return sliced
 
-def make_slice(data, index, integrate=0, dim=0, silent=False) :
+def make_slice(data, dim, index, integrate=0, silent=False) :
     """
     Take a slice out of an N dimensional dataset *data* at *index* along 
     dimension *dim*. Optionally integrate by +- *integrate* channels around 
@@ -225,7 +226,28 @@ def make_slice(data, index, integrate=0, dim=0, silent=False) :
         (n0, n1, ..., n(dim-1), n(dim), n(dim+1), ..., n(N-1))
     the result will be of dimension N-1 and have shape 
         (n0, n1, ..., n(dim-1), n(dim+1), ..., n(N-1))
+    or in other words
+        shape(result) = shape(data)[:dim] + shape(data)[dim+1:]
     .
+
+    *Parameters*
+    =========  =================================================================
+    data       array-like; N dimensional dataset.
+    dim        int, 0 <= d < N; dimension along which to slice.
+    index      int, 0 <= index < data.size[d]; The index at which to create 
+               the slice.
+    integrate  int, 0 <= integrate < |index|; the number of slices above 
+               and below slice *index* over which to integrate. A warning is 
+               issued if the integration range would exceed the data (can be 
+               turned off with *silent*).
+    silent     bool; toggle warning messages.
+    =========  =================================================================
+
+    *Returns*
+    ===  =======================================================================
+    res  np.array; slice at *index* alond *dim* with dimensions shape[:d] + 
+         shape[d+1:].
+    ===  =======================================================================
     """
     # Find the dimensionality and the number of slices along the specified 
     # dimension.
@@ -478,5 +500,9 @@ if __name__ == '__main__' :
     u, w, x, y, z = 2, 3, 4, 5, 6
     d = np.ones(u*w*x*y*z).reshape(u, w, x, y, z)
 
-    sliced = make_slice_nd(d, 0, 0, dim=3)
+    sliced = make_slice(d, 0, 0, dim=3)
     print(sliced.shape)
+
+    sliced1d = make_slice(np.arange(100), 0, 20, dim=0)
+    print(sliced1d)
+
