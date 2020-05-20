@@ -5,6 +5,7 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import PowerNorm
+from matplotlib.figure import Figure
 from matplotlib.patheffects import withStroke
 from pyqtgraph import Qt as qt
 
@@ -496,13 +497,78 @@ def plot_cuts(data, dim=0, integrate=0, zs=None, labels=None, max_ppf=16,
 
     return figures
 
+def get_contours(data, x=None, y=None, levels=0) :
+    """ Use matplotlib`s contour function to get contour lines where the 2 
+    dimensional dataset *data* intersects *levels*. 
+
+    *Parameters*
+    ======  ====================================================================
+    data    2d-array; shape (nx, ny)
+    x       array-like; can be a linear array of shape (nx) or a meshgrid of 
+            shape (nx, ny)
+    y       array-like; can be a linear array of shape (ny) or a meshgrid of 
+            shape (nx, ny)
+    levels  float or list of float; the levels at which to extract the 
+            contour lines. Due to a matplotlib limitation, these numbers have 
+            to be in ascending order.
+    ======  ====================================================================
+
+    *Returns*
+    ========  ==================================================================
+    contours  list of 2d-arrays; each array of shape (2, N) contains the x and
+              y coordinates of a contour line.
+    ========  ==================================================================
+    """
+    # Handle input
+    data = np.asarray(data)
+    shape = data.shape
+    if len(shape) != 2 :
+        raise ValueError('*data* should be a 2-d array. '
+                         'shape(data)={}'.format(shape))
+    # Default to index arrays
+    if x is None or y is None :
+        x = np.arange(shape[0])
+        y = np.arange(shape[1])
+    else :
+        x = np.asarray(x)
+        y = np.asarray(y)
+    # Make meshgrid and sanity check for shapes
+    if len(x.shape) == 1 and len(y.shape) == 1 :
+        X, Y = np.meshgrid(x, y)
+    elif len(x.shape) == 2 and len(y.shape) == 2 :
+        X, Y = x, y
+    else :
+        raise ValueError('*x* and *y* should have the same shape. '
+                         'x.shape={}, y.shape={}'.format(x.shape, y.shape))
+    if isinstance(levels, int) : levels = [levels]
+
+    # Create invisible figure and axes to get access to the contour function
+    ghost_fig = Figure()
+    ghost_ax = ghost_fig.add_subplot(111)
+
+    # Use contour to do the work
+    collections = ghost_ax.contour(X, Y, data, levels=levels).collections
+    contours = []
+    for collection in collections :
+        verts = collection.get_paths()[0].vertices
+        contours.append(np.array([verts[:,0], verts[:,1]]))
+
+    # Clean up
+    ghost_fig.clear()
+    del ghost_fig
+
+    return contours
+
 if __name__ == '__main__' :
-    u, w, x, y, z = 2, 3, 4, 5, 6
-    d = np.ones(u*w*x*y*z).reshape(u, w, x, y, z)
+    N = 100
+    x = np.arange(N)
+    y = np.arange(N)
+    X, Y = np.meshgrid(x, y)
+    data = (X-N/2)**2 + (Y-N/2)**2
+    contours = get_contours(data, levels=[100, 200, 300, 400])
 
-    sliced = make_slice(d, 0, 0, dim=3)
-    print(sliced.shape)
+    plt.pcolormesh(X, Y, data)
 
-    sliced1d = make_slice(np.arange(100), 0, 20, dim=0)
-    print(sliced1d)
-
+    for contour in contours :
+        plt.plot(contour[0], contour[1])
+    plt.show()

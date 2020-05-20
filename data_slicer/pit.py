@@ -233,62 +233,12 @@ class PITDataHandler() :
         int(self.main_window.integrated_plot.slider_width.get_value()/2)
         data = self.get_data()
         try :
-            self.main_window.image_data = \
-                    self.make_slice(data, dim=2, index=z, integrate=integrate_z)
+            self.main_window.image_data = make_slice(data, dim=2, index=z, 
+                                                     integrate=integrate_z) 
         except IndexError :
             logger.debug(('update_image_data(): z index {} out of range for '
                           'data of length {}.').format(
                              z, self.image_data.shape[0]))
-
-    def make_slice(self, data, dim, index, integrate) :
-        return make_slice(data, dim, index, integrate)
-
-    def make_slice_old(self, data, dimension, index, integrate) :
-        """ Create a slice out of the 3d data (l x m x n) along dimension d 
-        (0,1,2) at index i. Optionally integrate around i.
-
-        *Parameters*
-        =======================================================================
-        data       array-like; data of the shape (l x m x n)
-        dimension  int, d in (0, 1, 2); dimension along which to slice
-        index      int, 0 <= i < data.size[d]; The index at which to create 
-                   the slice
-        integrate  int, 0 <= integrate < |i - n|; the number of slices above 
-                   and below slice i over which to integrate
-        =======================================================================
-
-        *Returns*
-        =======================================================================
-        res        np.array; Slice at index with dimensions shape[:d] + shape[d+1:]
-                   where shape = (l, m, n).
-        =======================================================================
-        """
-        # Get the relevant dimensions
-        shape = data.shape
-        try :
-            n_slices = shape[dimension]
-        except IndexError :
-            print(('dimension ({}) can only be 0, 1 or 2 and data must be '
-                   '3D.').format(dimension))
-            return
-
-        # Set the integration indices and adjust them if they go out of scope
-        start = index - integrate
-        stop = index + integrate + 1
-        if start < 0 :
-            start = 0
-        if stop > n_slices :
-            stop = n_slices
-
-        # Initialize data container and fill it with data from selected slices
-        if dimension == 0 :
-            sliced = data[start:stop,:,:].sum(dimension)
-        elif dimension == 1 :
-            sliced = data[:,start:stop,:].sum(dimension)
-        elif dimension == 2 :
-            sliced = data[:,:,start:stop].sum(dimension)
-
-        return sliced
 
     def roll_axes(self, i=1) :
         """ Change the way we look at the data cube. While initially we see 
