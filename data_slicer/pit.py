@@ -10,6 +10,7 @@ import pickle
 import pkg_resources
 import sys
 from copy import copy
+from types import FunctionType
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -23,6 +24,7 @@ import data_slicer.dataloading as dl
 from data_slicer.cmaps import cmaps, convert_ds_to_matplotlib
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import *
+from data_slicer.model import Model
 from data_slicer.utilities import CONFIG_DIR, make_slice, plot_cuts, \
                                   TracedVariable
 
@@ -365,6 +367,83 @@ class PITDataHandler() :
         plot_cuts(data, dim=dim, integrate=integrate, zs=zs, labels=labels, 
                   cmap=cmap, vmax=vmax, gamma=gamma, max_ppf=max_ppf, 
                   max_nfigs=max_nfigs)
+
+    def overlay_model(self, model) :
+        """ Display a model over the data. *model* should be function of two 
+        variables, namely the currently displayed x- and y-axes.
+
+        *Parameters*
+        =====  =================================================================
+        model  callable or :class:`Model <data_slicer.model.Model>`;
+        =====  =================================================================
+        """
+        if isinstance(model, FunctionType) :
+            model = Model(model)
+        elif not isinstance(model, Model) :
+            raise ValueError('*model* has to be a function or a '
+                             'data_slicer.Model instance')
+        # Remove the old model
+        self.remove_model()
+
+        # Calculate model data in the required range and get an isocurve
+        self.model = model
+        # Bypass the minimum axes size limitation
+        self.model.MIN_AXIS_LENGTH = 0
+        self.model.set_axes([self.axes[i] for i in self.displayed_axes])
+        self._update_isocurve()
+        self._update_model_cut()
+
+        # Connect signal handling
+        self.z.sig_value_changed.connect(self._update_isocurve)
+        self.main_window.cutline.sig_region_changed.connect(self._update_model_cut)
+
+    def remove_model(self) :
+        """ Remove the current model's visible and invisible parts. """
+        # Remove the visible items from the plots
+        try :
+            self.main_window.main_plot.removeItem(self.iso)
+            self.iso = None
+            self.model = None
+        except AttributeError :
+            logger.debug('remove_model(): no model to remove found.')
+            return
+        # Remove signal handling
+        try :
+            self.z.sig_value_changed.disconnect(self._update_isocurve)
+        except TypeError as e :
+            logger.debug(e)
+        try :
+            self.main_window.cutline.sig_region_changed.disconnect(
+                self._update_model_cut)
+        except TypeError as e :
+            logger.debug(e)
+
+        # Redraw clean plots
+        self.redraw_plots()
+
+    def _update_isocurve(self) :
+        try :
+            self.iso = self.model.get_isocurve(self.z.get_value(), 
+                                               axisOrder='row-major')
+        except AttributeError :
+            logger.debug('_update_isocurve(): no model found.')
+            return
+        # Make sure the isocurveItem is above the plot and add it to the main 
+        # plot
+        self.iso.setZValue(10)
+        self.iso.setParentItem(self.main_window.main_plot.image_item)
+
+    def _update_model_cut(self) :
+        try :
+            model_cut = self.main_window.cutline.get_array_region(
+                            self.model.data.T,
+                            self.main_window.main_plot.image_item,
+                            self.displayed_axes)
+        except AttributeError :
+            logger.debug('_update_model_cut(): model or data not found.')
+            return
+        self.model_cut = self.main_window.cut_plot.plot(model_cut, 
+                                                        pen=self.iso.pen)
 
 class MainWindow(QtGui.QMainWindow) :
     """ The main window of PIT. Defines the basic GUI layouts and 
