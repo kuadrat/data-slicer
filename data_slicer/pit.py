@@ -389,7 +389,12 @@ class PITDataHandler() :
         self.model = model
         # Bypass the minimum axes size limitation
         self.model.MIN_AXIS_LENGTH = 0
-        self.model.set_axes([self.axes[i] for i in self.displayed_axes])
+        model_axes = [self.axes[i] for i in self.displayed_axes]
+        # Invert order for transposed view
+        if self.main_window.main_plot.transposed.get_value() :
+            self.model.set_axes(model_axes[::-1])
+        else :
+            self.model.set_axes(model_axes)
         self._update_isocurve()
         self._update_model_cut()
 
@@ -419,7 +424,7 @@ class PITDataHandler() :
             logger.debug(e)
 
         # Redraw clean plots
-        self.redraw_plots()
+        self.main_window.redraw_plots()
 
     def _update_isocurve(self) :
         try :

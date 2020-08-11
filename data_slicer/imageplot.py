@@ -224,7 +224,8 @@ class ImagePlot(pg.PlotWidget) :
     sig_image_changed = qt.QtCore.Signal()
     sig_axes_changed = qt.QtCore.Signal()
     transform_factors = []
-
+    transposed = TracedVariable(False, name='transposed')
+    
     def __init__(self, image=None, parent=None, background='default', 
                  name=None, **kwargs) :
         """ Allows setting of the image upon initialization. 
@@ -275,27 +276,32 @@ class ImagePlot(pg.PlotWidget) :
         kwargs  `ImageItem <pyqtgraph.graphicsItems.ImageItem.ImageItem>`
         ======  ================================================================
         """
-        self.image_data = image
-
         # Convert array to ImageItem
         if isinstance(image, ndarray) :
             if 0 not in image.shape :
-                image = ImageItem(image, *args, **kwargs)
+                image_item = ImageItem(image, *args, **kwargs)
             else :
                 logger.debug(('<{}>.set_image(): image.shape is {}. Not '
                               'setting image.').format(self.name, image.shape))
                 return
+        else :
+            image_item = image
         # Throw an exception if image is not an ImageItem
-        if not isinstance(image, ImageItem) :
+        if not isinstance(image_item, ImageItem) :
             message = '''`image` should be a np.array or pg.ImageItem instance,
             not {}'''.format(type(image))
             raise TypeError(message)
 
+        # Transpose if necessary
+        if self.transposed.get_value() :
+            image_item = ImageItem(image_item.image.T, *args, **kwargs)
+
         # Replace the image
         self.remove_image()
-        self.image_item = image
+        self.image_item = image_item
+        self.image_data = image_item.image
         logger.debug('<{}>Setting image.'.format(self.name))
-        self.addItem(image)
+        self.addItem(image_item)
         self._set_axes_scales(emit=emit)
 
         if emit :
@@ -306,8 +312,26 @@ class ImagePlot(pg.PlotWidget) :
         """ Set the xscale of the plot. *xscale* is an array of the length 
         ``len(self.image_item.shape[0])``.
         """
+        if self.transposed.get_value() :
+            self._set_yscale(xscale, update)
+        else :
+            self._set_xscale(xscale, update)
+
+    def set_yscale(self, yscale, update=False) :
+        """ Set the yscale of the plot. *yscale* is an array of the length 
+        ``len(self.image_item.image.shape[1])``.
+        """
+        if self.transposed.get_value() :
+            self._set_xscale(yscale, update)
+        else :
+            self._set_yscale(yscale, update)
+
+    def _set_xscale(self, xscale, update=False, force=False) :
+        """ Set the scale of the horizontal axis of the plot. *force* can be 
+        used to bypass the length checking.
+        """
         # Sanity check
-        if len(xscale) != self.image_item.image.shape[0] :
+        if not force and len(xscale) != self.image_item.image.shape[0] :
             raise TypeError('Shape of xscale does not match data dimensions.')
 
         self.xscale = xscale
@@ -317,12 +341,13 @@ class ImagePlot(pg.PlotWidget) :
         if update :
             self._set_axes_scales(emit=True)
 
-    def set_yscale(self, yscale, update=False) :
-        """ Set the yscale of the plot. *yscale* is an array of the length 
-        ``len(self.image_item.image.shape[1])``.
+    def _set_yscale(self, yscale, update=False, force=False) :
+        """ Set the scale of the vertical axis of the plot. *force* can be 
+        used to bypass the length checking.
         """
+        # Sanity check
          # Sanity check
-        if len(yscale) != self.image_item.image.shape[1] :
+        if not force and len(yscale) != self.image_item.image.shape[1] :
             raise TypeError('Shape of yscale does not match data dimensions.')
 
         self.yscale = yscale
@@ -332,15 +357,30 @@ class ImagePlot(pg.PlotWidget) :
         if update :
             self._set_axes_scales(emit=True)
 
+    def transpose(self) :
+        """ Transpose the image, i.e. swap the x- and y-axes. """
+        self.transposed.set_value(not self.transposed.get_value())
+        # Swap the scales
+        new_xscale = self.yscale
+        new_yscale = self.xscale
+        self._set_xscale(new_xscale, force=True)
+        self._set_yscale(new_yscale, force=True)
+        # Update the image
+        if not self.transposed.get_value() :
+            # Take care of the back-transposition here
+            self.set_image(self.image_item.image.T, lut=self.image_item.lut)
+        else :
+            self.set_image(self.image_item, lut=self.image_item.lut)
+
     def set_xlabel(self, label) :
         """ Shorthand for setting this plots x axis label. """
-        xaxis = self.getAxis('bottom')
-        xaxis.setLabel(label)
+        axis = self.getAxis('bottom')
+        axis.setLabel(label)
 
     def set_ylabel(self, label) :
         """ Shorthand for setting this plots y axis label. """
-        xaxis = self.getAxis('left')
-        xaxis.setLabel(label)
+        axis = self.getAxis('left')
+        axis.setLabel(label)
 
     def _set_axes_scales(self, emit=False) :
         """ Transform the image such that it matches the desired x and y 
