@@ -478,7 +478,8 @@ class MainWindow(QtGui.QMainWindow) :
         self.setStyleSheet(app_style)
         self.set_cmap(DEFAULT_CMAP)
 
-        # Autoload plugins
+        # Autoload plugins (needs to happen before _init_UI() because the 
+        # plugins are needed to populate the console's namespace)
         self._autoloaded_plugins = self._autoload_plugins()
 
         self._init_UI()
@@ -527,6 +528,10 @@ class MainWindow(QtGui.QMainWindow) :
         self.console.kernel.shell.run_cell('%pylab qt')
         self.console.setStyleSheet(console_style)
 #        self.console.syntax_style = 'monokai'
+        
+        # Connect singal handling for printing to console
+        self.main_plot.sig_clicked.connect(self.print_to_console)
+        self.cut_plot.sig_clicked.connect(self.print_to_console)
 
         # Create the integrated intensity plot
         ip = CursorPlot(name='z selector')
@@ -659,7 +664,13 @@ class MainWindow(QtGui.QMainWindow) :
         module = importlib.import_module(plugin_name)
         plugin = module.main(self, self.data_handler)
         print('Importing plugin {} ({}).'.format(plugin_name, plugin.name))
+#        self.print_to_console('Importing plugin {} ({}).'.format(plugin_name, 
+#                                                                 plugin.name))
         return plugin
+
+    def print_to_console(self, message) :
+        """ Print a *message* to the embedded ipython console. """
+        self.console.kernel.stdout.write(str(message) + '\n')
 
     def update_main_plot(self, **image_kwargs) :
         """ Change *self.main_plot*`s currently displayed

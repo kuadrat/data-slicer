@@ -210,6 +210,7 @@ class ImagePlot(pg.PlotWidget) :
     *Signals*
     sig_image_changed  emitted whenever the image is updated
     sig_axes_changed   emitted when the axes are updated
+    sig_clicked        emitted when user clicks inside the imageplot
     =================  =========================================================
     """
     # np.array, raw image data
@@ -223,6 +224,7 @@ class ImagePlot(pg.PlotWidget) :
     yscale = None
     sig_image_changed = qt.QtCore.Signal()
     sig_axes_changed = qt.QtCore.Signal()
+    sig_clicked = qt.QtCore.Signal(object)
     transform_factors = []
     transposed = TracedVariable(False, name='transposed')
     
@@ -252,6 +254,17 @@ class ImagePlot(pg.PlotWidget) :
             self.set_image(image)
 
         self.sig_axes_changed.connect(self.fix_viewrange)
+
+    def mousePressEvent(self, event) :
+        """ Figure out where the click happened in data coordinates and make 
+        the position available through the signal :signal: `sig_clicked 
+        <data_slicer.imageplot.ImagePlot.sig_clicked>`.
+        """
+        vb = self.plotItem.vb
+        last_click = vb.mapToView(vb.mapFromScene(event.localPos()))
+        message = 'Last click at ( {:.4f} | {:.4f} )'
+        self.sig_clicked.emit(message.format(last_click.x(), last_click.y()))
+        super().mousePressEvent(event)
 
     def remove_image(self) :
         """ Removes the current image using the parent's :func: `removeItem` 
