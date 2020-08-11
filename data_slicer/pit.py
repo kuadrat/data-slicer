@@ -712,7 +712,10 @@ class MainWindow(QtGui.QMainWindow) :
         i_x = int( min(pos.get_value(), pos.allowed_values.max()-1))
         logger.debug(('xp.pos.get_value()={}; i_x: '
                       '{}').format(xp.pos.get_value(), i_x))
-        xprofile = self.data_handler.cut_data[i_x]
+        if not self.main_plot.transposed.get_value() :
+            xprofile = self.data_handler.cut_data[i_x]
+        else :
+            xprofile = self.data_handler.cut_data[:,i_x]
         y = np.arange(len(xprofile)) + 0.5
         xp.plot(xprofile, y)
 
@@ -730,7 +733,10 @@ class MainWindow(QtGui.QMainWindow) :
         i_y = int( min(pos.get_value(), pos.allowed_values.max()-1)) 
         logger.debug(('yp.pos.get_value()={}; i_y: '
                       '{}').format(yp.pos.get_value(), i_y))
-        yprofile = self.data_handler.cut_data[:,i_y]
+        if not self.main_plot.transposed.get_value() :
+            yprofile = self.data_handler.cut_data[:,i_y]
+        else :
+            yprofile = self.data_handler.cut_data[i_y]
         x = np.arange(len(yprofile)) + 0.5
         yp.plot(x, yprofile)
 
@@ -762,6 +768,13 @@ class MainWindow(QtGui.QMainWindow) :
         """
         self.lut = self.cmap.getLookupTable()
         self.redraw_plots()
+
+    def transpose(self) :
+        """ Transpose the main_plot, i.e. swap out its x- and y-axes. This 
+        wraps the main_plot's :attr: `transpose 
+        <data_slicer.imageplot.ImagePlot.transpose>` method.
+        """
+        self.main_plot.transpose()
 
     def rotate(self, alpha=0) :
         """ Rotate the main image by the given angle *alpha* (in degrees). """
@@ -822,10 +835,15 @@ class MainWindow(QtGui.QMainWindow) :
         is used to update only the cut plot without affecting the main plot.
         """
         logger.debug('update_cut()')
+        data = self.data_handler.get_data()
+        axes = self.data_handler.displayed_axes
+        # Transpose, if necessary
+        if self.main_plot.transposed.get_value() :
+            axes = axes[::-1]
         try :
-            cut = self.cutline.get_array_region(self.data_handler.get_data(), 
-                                       self.main_plot.image_item, 
-                                       axes=self.data_handler.displayed_axes)
+            cut = self.cutline.get_array_region(data, 
+                                                self.main_plot.image_item,
+                                                axes=axes)
         except Exception as e :
             logger.error(e)
             return
