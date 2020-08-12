@@ -8,7 +8,7 @@ with open("README.md", "r") as fh :
 
 setuptools.setup(
     name='data-slicer',
-    version='0.0.2',
+    version='0.0.3',
 #    version='0.0.14',
     author='Kevin Kramer',
     author_email='kevin.kramer@uzh.ch',

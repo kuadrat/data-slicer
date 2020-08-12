@@ -14,7 +14,7 @@ from types import FunctionType
 
 import matplotlib.pyplot as plt
 import numpy as np
-#import pyqtgraph as pg
+import pyqtgraph as pg
 import pyqtgraph.console
 from pyqtgraph.Qt import QtGui, QtCore
 from qtconsole.rich_ipython_widget import RichIPythonWidget, RichJupyterWidget
@@ -507,6 +507,7 @@ class MainWindow(QtGui.QMainWindow) :
 
         # Create the 3D (main) and cut ImagePlots 
         self.main_plot = ImagePlot(name='main_plot')
+        self.main_plot.show_cursor()
         self.cut_plot = CrosshairImagePlot(name='cut_plot')
 
         # Create the intensity distribution plots

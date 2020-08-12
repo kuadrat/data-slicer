@@ -17,7 +17,8 @@ from data_slicer.utilities import get_lines, TracedVariable, indexof
 
 logger = logging.getLogger('ds.'+__name__)
 
-HOVER_COLOR = (195,155,0)
+BASE_LINECOLOR = (255,255,0,255)
+HOVER_COLOR = (195,155,0,255)
 
 class MPLExportDialog(qt.QtGui.QDialog) :
 
@@ -197,6 +198,90 @@ class MPLExportDialog(qt.QtGui.QDialog) :
 
         self.canvas.draw()
 
+class Crosshair() :
+    """ Crosshair made up of two InfiniteLines. """
+
+    def __init__(self, pos=(0,0)) :
+        # Store the positions in TracedVariables
+        self.hpos = TracedVariable(pos[1], name='hpos')
+        self.vpos = TracedVariable(pos[0], name='vpos')
+
+        # Initialize the InfiniteLines
+        self.hline = pg.InfiniteLine(pos[1], movable=True, angle=0)
+        self.vline = pg.InfiniteLine(pos[0], movable=True, angle=90)
+
+        # Set the color
+        self.set_color(BASE_LINECOLOR, HOVER_COLOR)
+
+        # Register some callbacks
+        self.hpos.sig_value_changed.connect(self.update_position_h)
+        self.vpos.sig_value_changed.connect(self.update_position_v)
+
+        self.hline.sigDragged.connect(self.on_dragged_h)
+        self.vline.sigDragged.connect(self.on_dragged_v)
+
+    def add_to(self, widget) :
+        """ Add this crosshair to a Qt widget. """
+        for line in [self.hline, self.vline] :
+            line.setZValue(1)
+            widget.addItem(line)
+
+    def remove_from(self, widget) :
+        """ Remove this crosshair from a pyqtgraph widget. """
+        for line in [self.hline, self.vline] :
+            widget.removeItem(line)
+
+    def set_color(self, linecolor=BASE_LINECOLOR, hover_color=HOVER_COLOR) :
+        """ Set the color and hover color of both InfiniteLines that make up 
+        the crosshair. The arguments can be any pyqtgraph compatible color 
+        specifiers.
+        """
+        for line in [self.hline, self.vline] :
+            line.setPen(linecolor)
+            line.setHoverPen(hover_color)
+
+    def set_movable(self, movable=True) :
+        """ Set whether or not this crosshair can be dragged by the mouse. """
+        for line in [self.hline, self.vline] :
+            line.setMovable = movable
+
+    def move_to(self, pos) :
+        """
+        pos  2-tuple; x and y coordinates of the desired location of the 
+             crosshair in data coordinates.
+        """
+        self.hpos.set_value(pos[1])
+        self.vpos.set_value(pos[0])
+
+    def update_position_h(self) :
+        """ Callback for the :signal: `sig_value_changed 
+        <data_slicer.utilities.TracedVariable.sig_value_changed>`. Whenever the 
+        value of this TracedVariable is updated (possibly from outside this 
+        Crosshair object), put the crosshair to the appropriate position.
+        """
+        self.hline.setValue(self.hpos.get_value())
+
+    def update_position_v(self) :
+        """ Confer update_position_h. """
+        self.vline.setValue(self.vpos.get_value())
+
+    def on_dragged_h(self) :
+        """ Callback for dragging of InfiniteLines. Their visual position 
+        should be reflected in the TracedVariables self.hpos and self.vpos.
+        """
+        self.hpos.set_value(self.hline.value())
+
+    def on_dragged_v(self) :
+        """ Callback for dragging of InfiniteLines. Their visual position 
+        should be reflected in the TracedVariables self.hpos and self.vpos.
+        """
+        self.vpos.set_value(self.vline.value())
+
+    def set_bounds(self, xmin, xmax, ymin, ymax) :
+        """ Set the area in which the infinitelines can be dragged. """
+        self.hline.setBounds([ymin, ymax])
+        self.vline.setBounds([xmin, xmax])
+
 class ImagePlot(pg.PlotWidget) :
     """
     A PlotWidget which mostly contains a single 2D image (intensity 
@@ -254,6 +339,40 @@ class ImagePlot(pg.PlotWidget) :
             self.set_image(image)
 
         self.sig_axes_changed.connect(self.fix_viewrange)
+
+    def show_cursor(self, show=True) :
+        """
+        Toggle whether or not to show a crosshair cursor that tracks the mouse movement.
+        """
+        if show :
+            crosshair_cursor = Crosshair()
+            crosshair_cursor.set_movable(False)
+            crosshair_cursor.set_color((255, 255, 255, 255), 
+                                       (255, 255, 255, 255))
+            crosshair_cursor.add_to(self)
+            self.scene().sigMouseMoved.connect(self.on_mouse_move)
+            self.crosshair_cursor = crosshair_cursor
+        else :
+            try :
+                self.scene().sigMouseMoved.disconnect(self.on_mouse_move)
+            except TypeError :
+                pass
+            try :
+                self.crosshair_cursor.remove_from(self)
+            except AttributeError :
+                pass
+
+    def on_mouse_move(self, pos) :
+        """ Slot for mouse movement over the plot. Calculate the mouse 
+        position in data coordinates and move the crosshair_cursor there.
+
+        pos  QPointF object; x and y position of the mouse as returned by 
+             :signal: `sigMouseMoved 
+             <data_slicer.imageplot.ImagePlot.sigMouseMoved>`.
+        """
+        if self.plotItem.sceneBoundingRect().contains(pos) :
+            data_point = self.plotItem.vb.mapSceneToView(pos)
+            self.crosshair_cursor.move_to((data_point.x(), data_point.y()))
 
     def mousePressEvent(self, event) :
         """ Figure out where the click happened in data coordinates and make 
@@ -619,65 +738,6 @@ class ImagePlot(pg.PlotWidget) :
         ax.set_xticklabels(xticklabels[::nth])
 
         return line2ds, xticks, xtickvalues, xticklabels
-
-class Crosshair() :
-    """ Crosshair made up of two InfiniteLines. """
-
-    def __init__(self, pos=(0,0)) :
-        # Store the positions in TracedVariables
-        self.hpos = TracedVariable(pos[1], name='hpos')
-        self.vpos = TracedVariable(pos[0], name='vpos')
-
-        # Initialize the InfiniteLines
-        self.hline = pg.InfiniteLine(pos[1], movable=True, angle=0)
-        self.vline = pg.InfiniteLine(pos[0], movable=True, angle=90)
-
-        # Set the color
-        for line in [self.hline, self.vline] :
-            line.setPen((255,255,0,255))
-            line.setHoverPen(HOVER_COLOR)
-
-        # Register some callbacks
-        self.hpos.sig_value_changed.connect(self.update_position_h)
-        self.vpos.sig_value_changed.connect(self.update_position_v)
-
-        self.hline.sigDragged.connect(self.on_dragged_h)
-        self.vline.sigDragged.connect(self.on_dragged_v)
-
-    def add_to(self, widget) :
-        """ Add this crosshair to a Qt widget. """
-        for line in [self.hline, self.vline] :
-            line.setZValue(1)
-            widget.addItem(line)
-
-    def update_position_h(self) :
-        """ Callback for the :signal: `sig_value_changed 
-        <data_slicer.utilities.TracedVariable.sig_value_changed>`. Whenever the 
-        value of this TracedVariable is updated (possibly from outside this 
-        Crosshair object), put the crosshair to the appropriate position.
-        """
-        self.hline.setValue(self.hpos.get_value())
-
-    def update_position_v(self) :
-        """ Confer update_position_h. """
-        self.vline.setValue(self.vpos.get_value())
-
-    def on_dragged_h(self) :
-        """ Callback for dragging of InfiniteLines. Their visual position 
-        should be reflected in the TracedVariables self.hpos and self.vpos.
-        """
-        self.hpos.set_value(self.hline.value())
-
-    def on_dragged_v(self) :
-        """ Callback for dragging of InfiniteLines. Their visual position 
-        should be reflected in the TracedVariables self.hpos and self.vpos.
-        """
-        self.vpos.set_value(self.vline.value())
-
-    def set_bounds(self, xmin, xmax, ymin, ymax) :
-        """ Set the area in which the infinitelines can be dragged. """
-        self.hline.setBounds([ymin, ymax])
-        self.vline.setBounds([xmin, xmax])
 
 class CrosshairImagePlot(ImagePlot) :
     """ An imageplot with a draggable crosshair. """
