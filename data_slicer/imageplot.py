@@ -312,6 +312,7 @@ class ImagePlot(pg.PlotWidget) :
     sig_clicked = qt.QtCore.Signal(object)
     transform_factors = []
     transposed = TracedVariable(False, name='transposed')
+    crosshair_cursor_visible = False
     
     def __init__(self, image=None, parent=None, background='default', 
                  name=None, **kwargs) :
@@ -361,6 +362,12 @@ class ImagePlot(pg.PlotWidget) :
                 self.crosshair_cursor.remove_from(self)
             except AttributeError :
                 pass
+        self.crosshair_cursor_visible = show
+        self.plotItem.vb.menu.toggle_cursor.setChecked(show)
+
+    def toggle_cursor(self) :
+        """ Change the visibility of the crosshair cursor. """
+        self.show_cursor(not self.crosshair_cursor_visible)
 
     def on_mouse_move(self, pos) :
         """ Slot for mouse movement over the plot. Calculate the mouse 
@@ -379,10 +386,11 @@ class ImagePlot(pg.PlotWidget) :
         the position available through the signal :signal: `sig_clicked 
         <data_slicer.imageplot.ImagePlot.sig_clicked>`.
         """
-        vb = self.plotItem.vb
-        last_click = vb.mapToView(vb.mapFromScene(event.localPos()))
-        message = 'Last click at ( {:.4f} | {:.4f} )'
-        self.sig_clicked.emit(message.format(last_click.x(), last_click.y()))
+        if event.button() == qt.QtCore.Qt.LeftButton :
+            vb = self.plotItem.vb
+            last_click = vb.mapToView(vb.mapFromScene(event.localPos()))
+            message = 'Last click at ( {:.4f} | {:.4f} )'
+            self.sig_clicked.emit(message.format(last_click.x(), last_click.y()))
         super().mousePressEvent(event)
 
     def remove_image(self) :
