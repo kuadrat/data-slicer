@@ -527,6 +527,8 @@ class MainWindow(QtGui.QMainWindow) :
         self.console = EmbedIPython(**namespace)
         self.console.kernel.shell.run_cell('%pylab qt')
         self.console.setStyleSheet(console_style)
+        for name, plugin in self._autoloaded_plugins :
+            self.print_to_console('Autoloaded plugin {}'.format(name))
 #        self.console.syntax_style = 'monokai'
         
         # Connect singal handling for printing to console
