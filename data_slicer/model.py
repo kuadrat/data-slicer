@@ -32,7 +32,6 @@ class Model() :
     calculated data.
     """
     MIN_AXIS_LENGTH = 100
-    data = None
 
     def __init__(self, model=None) :
         """ 
@@ -43,6 +42,8 @@ class Model() :
 
         ..:See also: :attr: `set_model <data_slicer.model.Model.set_model>`
         """
+        self.data = None
+
         if model is not None :
             self.set_model(model)
         else :

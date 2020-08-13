@@ -49,11 +49,14 @@ class TracedVariable(qt.QtCore.QObject) :
     sig_value_changed = qt.QtCore.Signal()
     sig_value_read = qt.QtCore.Signal()
     sig_allowed_values_changed = qt.QtCore.Signal()
-    allowed_values = None
 
     def __init__(self, value=None, name=None) :
+        # Initialize instance variables
+        self.allowed_values = None
+
         # Have to call superclass init for signals to work
         super().__init__()
+
         self._value = value
         if name is not None :
             self.name = name

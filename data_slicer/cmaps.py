@@ -19,12 +19,14 @@ class ds_cmap(ColorMap) :
     """ Simple subclass of :class: `<pyqtgraph.ColorMap>`. Adds vmax, 
     powerlaw normalization and a convenience function to change alpha.
     """
-    alpha = 0.5
-    vmax = 1
-    gamma = 1
-
     def __init__(self, pos, color, gamma=1, **kwargs) :
         super().__init__(pos, color, **kwargs)
+
+        # Initialize instance variables
+        self.alpha = 0.5
+        self.vmax = 1
+        self.gamma = 1
+
         # Retain a copy of the originally given positions
         self.original_pos = self.pos.copy()
         # Apply the powerlaw-norm

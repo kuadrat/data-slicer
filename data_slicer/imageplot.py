@@ -200,7 +200,6 @@ class MPLExportDialog(qt.QtGui.QDialog) :
 
 class Crosshair() :
     """ Crosshair made up of two InfiniteLines. """
-
     def __init__(self, pos=(0,0)) :
         # Store the positions in TracedVariables
         self.hpos = TracedVariable(pos[1], name='hpos')
@@ -298,22 +297,10 @@ class ImagePlot(pg.PlotWidget) :
     sig_clicked        emitted when user clicks inside the imageplot
     =================  =========================================================
     """
-    # np.array, raw image data
-    image_data = None
-    # pg.ImageItem of *image_data*
-    image_item = None
-    image_kwargs = {}
-    xlim = None
-    ylim = None
-    xscale = None
-    yscale = None
     sig_image_changed = qt.QtCore.Signal()
     sig_axes_changed = qt.QtCore.Signal()
     sig_clicked = qt.QtCore.Signal(object)
-    transform_factors = []
-    transposed = TracedVariable(False, name='transposed')
-    crosshair_cursor_visible = False
-    
+
     def __init__(self, image=None, parent=None, background='default', 
                  name=None, **kwargs) :
         """ Allows setting of the image upon initialization. 
@@ -326,8 +313,23 @@ class ImagePlot(pg.PlotWidget) :
         name        str; allows giving a name for debug purposes
         ==========  ============================================================
         """
+        # Initialize instance variables
+        # np.array, raw image data
+        self.image_data = None
+        # pg.ImageItem of *image_data*
+        self.image_item = None
+        self.image_kwargs = {}
+        self.xlim = None
+        self.ylim = None
+        self.xscale = None
+        self.yscale = None
+        self.transform_factors = []
+        self.transposed = TracedVariable(False, name='transposed')
+        self.crosshair_cursor_visible = False
+
         super().__init__(parent=parent, background=background, 
                          viewBox=DSViewBox(imageplot=self), **kwargs) 
+
         self.name = name
 
         # Show top and tight axes by default, but without ticklabels
@@ -755,7 +757,6 @@ class ImagePlot(pg.PlotWidget) :
 
 class CrosshairImagePlot(ImagePlot) :
     """ An imageplot with a draggable crosshair. """
-
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs) 
 
@@ -814,10 +815,7 @@ class CursorPlot(pg.PlotWidget) :
     `TracedVariable <data_slicer.utilities.TracedVariable>` self.pos and its 
     width with the `TracedVariable` self.slider_width.
     """
-    name = 'Unnamed'
     hover_color = HOVER_COLOR
-    # Whether to allow changing the slider width with arrow keys
-    change_width_enabled = False
 
     def __init__(self, parent=None, background='default', name=None, 
                  orientation='vertical', slider_width=1, **kwargs) : 
@@ -833,6 +831,9 @@ class CursorPlot(pg.PlotWidget) :
         """
         super().__init__(parent=parent, background=background, **kwargs) 
 
+        # Whether to allow changing the slider width with arrow keys
+        self.change_width_enabled = False
+
         if orientation not in ['horizontal', 'vertical'] :
             raise ValueError('Only `horizontal` or `vertical` are allowed for '
                              'orientation.')
@@ -841,6 +842,8 @@ class CursorPlot(pg.PlotWidget) :
 
         if name is not None :
             self.name = name
+        else :
+            self.name = 'Unnamed'
 
         # Hide the pyqtgraph auto-rescale button
         self.getPlotItem().buttonsHidden = True
@@ -1087,7 +1090,6 @@ class Scalebar(CursorPlot) :
                         inside the Scalebar.
     ==================  ========================================================
     """
-
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
 

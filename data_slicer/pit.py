@@ -81,20 +81,21 @@ class PITDataHandler() :
     seen as the Model, while :class: `MainWindow 
     <data_slicer.pit.MainWindow>` would be the View part.
     """
-    # np.array that contains the 3D data
-    data = None
-    axes = np.array([[0, 1], [0, 1], [0, 1]])
-    # Indices of *data* that are displayed in the main plot 
-    displayed_axes = (0,1)
-    # Index along the z axis at which to produce a slice
-    z = TracedVariable(0, name='z')
-    # Number of slices to integrate along z
-#    integrate_z = TracedVariable(value=0, name='integrate_z')
-    # How often we have rolled the axes from the original setup
-    _roll_state = 0
-
     def __init__(self, main_window) :
         self.main_window = main_window
+
+        # Initialize instance variables
+        # np.array that contains the 3D data
+        self.data = None
+        self.axes = np.array([[0, 1], [0, 1], [0, 1]])
+        # Indices of *data* that are displayed in the main plot 
+        self.displayed_axes = (0,1)
+        # Index along the z axis at which to produce a slice
+        self.z = TracedVariable(0, name='z')
+        ## Number of slices to integrate along z
+        #integrate_z = TracedVariable(value=0, name='integrate_z')
+        # How often we have rolled the axes from the original setup
+        self._roll_state = 0
 
     def get_data(self) :
         """ Convenience `getter` method. Allows writing `self.get_data()` 
@@ -459,23 +460,24 @@ class MainWindow(QtGui.QMainWindow) :
     acts as the controller, keeping track of the data and handling the 
     communication between the different GUI elements. 
     """
-
     title = 'Python Image Tool'
     # width, height in pixels
     size = (1200, 800)
 
-    # Plot transparency alpha
-    alpha = 1
-    # Plot powerlaw normalization exponent gamma
-    gamma = 1
-    # Relative colormap maximum
-    vmax = 1
-
-    # Need to store original transformation information for `rotate()`
-    _transform_factors = []
-
     def __init__(self, data=None, background='default') :
         super().__init__()
+
+        # Initialize instance variables
+        # Plot transparency alpha
+        self.alpha = 1
+        # Plot powerlaw normalization exponent gamma
+        self.gamma = 1
+        # Relative colormap maximum
+        self.vmax = 1
+
+        # Need to store original transformation information for `rotate()`
+        self._transform_factors = []
+
         self.data_handler = PITDataHandler(self)
 
          # Aesthetics

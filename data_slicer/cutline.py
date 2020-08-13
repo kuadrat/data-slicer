@@ -13,7 +13,6 @@ class CustomizableLineSegmentROI(pg.LineSegmentROI) :
     <pyqtgraph.graphicsItems.ROI.LineSegmentROI`. Implements a few features 
     that were missing from the parent class, namely customizable hover pen.
     """
-
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
         # Set a default pen
@@ -45,7 +44,6 @@ class CustomizableHandle(pg.graphicsItems.ROI.Handle) :
        handles for `CustomizableLineSegmentROI`. Too much work for a 
        relatively unimportant feature.
     """
-
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
         # Set a default pen
@@ -103,12 +101,13 @@ class Cutline(qt.QtCore.QObject) :
                         created and assigned as this :class: `Cutline`'s `roi`.
     ==================  ========================================================
     """
-
     sig_initialized = qt.QtCore.Signal()
 
     def __init__(self, plot_widget=None, orientation='horizontal', 
                  handles=(None, None), **kwargs) :
         super().__init__(**kwargs)
+
+
         if plot_widget :
             self.add_to_plot(plot_widget)
         self.orientation = orientation

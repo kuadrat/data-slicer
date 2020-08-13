@@ -33,17 +33,14 @@ class ColorSliders(QtGui.QWidget) :
     vmax_changed   emitted when the value of *vmax* changes
     =============  =============================================================
     """
-
-    gamma = 1
-    vmax = 1
-
-    # Signals
     sig_gamma_changed = QtCore.Signal()
     sig_vmax_changed = QtCore.Signal()
 
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
 
+        self.gamma = 1
+        self.vmax = 1
 
         # gamma
         gamma_slider = Scalebar()
@@ -97,17 +94,18 @@ class ThreeDWidget(QtGui.QWidget) :
     This class mostly functions as a base class for more refined variations.
     """
 
-    data = TracedVariable(None, name='data')
-    cmap = cmaps[DEFAULT_CMAP]
-    lut = cmaps[DEFAULT_CMAP].getLookupTable()
-    gloptions = 'translucent'
-
     def __init__(self, *args, data=None, **kwargs) :
         """
         Set up the :class: `GLViewWidget <pyqtgraph.opengl.GLViewWidget>` 
         as this widget's central widget.
         """
         super().__init__(*args, **kwargs)
+
+        # Initialize instance variables
+        self.data = TracedVariable(None, name='data')
+        self.cmap = cmaps[DEFAULT_CMAP]
+        self.lut = cmaps[DEFAULT_CMAP].getLookupTable()
+        self.gloptions = 'translucent'
 
         # Create a GLViewWidget and put it into the layout of this view
         self.layout = QtGui.QGridLayout()
@@ -429,7 +427,6 @@ class FreeSliceWidget(ThreeDWidget) :
     <data_slicer.cutline.Cutline> with which arbitrary slices can be 
     generated, which will in turn be shown in the 3D GLView.
     """
-
     def _initialize_sub_widgets(self) :
         """ Create the ImagePlot with the Cutline. """
         super()._initialize_sub_widgets()
