@@ -10,6 +10,8 @@ from matplotlib.patheffects import withStroke
 from pyqtgraph import Qt as qt
 
 logger = logging.getLogger('ds.'+__name__)
+# The logging level for signals
+SIGNALS = 5
 
 #_Constants_____________________________________________________________________
 
@@ -67,16 +69,16 @@ class TracedVariable(qt.QtCore.QObject) :
         if self.allowed_values is not None :
             value = self.find_closest_allowed(value)
         self._value = value
-        logger.debug(('{} {}: Emitting sig_value_changed.').format(
-            self.__class__.__name__, self.name))
+        logger.log(SIGNALS, '{} {}: Emitting sig_value_changed.'.format(
+                   self.__class__.__name__, self.name))
         self.sig_value_changed.emit()
 
     def get_value(self) :
         """ Emit sig_value_changed and return the internal self._value. 
         NOTE: the signal is emitted here before the caller actually receives 
         the return value. This could lead to unexpected behaviour. """
-        logger.debug('{} {}: Emitting sig_value_read.'.format( 
-            self.__class__.__name__, self.name))
+        logger.log(SIGNALS, '{} {}: Emitting sig_value_read.'.format( 
+                   self.__class__.__name__, self.name))
         self.sig_value_read.emit()
         return self._value
 
@@ -126,8 +128,9 @@ class TracedVariable(qt.QtCore.QObject) :
             self.min_allowed = values[0]
             self.max_allowed = values[-1]
 
-        logger.debug('{} {}: Emitting sig_allowed_values_changed.'.format(
-            self.__class__.__name__, self.name))
+        logger.log(SIGNALS, 
+                   '{} {}: Emitting sig_allowed_values_changed.'.format(
+                   self.__class__.__name__, self.name))
 
         # Update the current value to within the allowed range
         self.set_value(self._value)
