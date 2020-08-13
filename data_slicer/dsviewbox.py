@@ -13,10 +13,27 @@ class DSViewBoxMenu(ViewBoxMenu.ViewBoxMenu) :
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
 
+        self._remove_unwanted_actions()
+
         # Define own menu entries
         self.mpl_export = QtGui.QAction('MPL export', self)
+        self.addAction(self.mpl_export)
+
         self.transpose = QtGui.QAction('Transpose', self)
+        self.addAction(self.transpose)
+
         self.toggle_cursor = QtGui.QAction('Show cursor', self, checkable=True)
+        self.addAction(self.toggle_cursor)
+
+    def _remove_unwanted_actions(self) :
+        # Remove unwanted menu entries
+        unwanted_texts = ['View All',
+                          'Mouse Mode',
+                          'Plot Options',
+                          'Export...']
+        for action in self.actions() :
+            if action.text() in unwanted_texts :
+                self.removeAction(action)
 
 class DSViewBox(ViewBox) :
     """
@@ -32,11 +49,6 @@ class DSViewBox(ViewBox) :
         self.menu = DSViewBoxMenu(self)
 
         self.menu.mpl_export.triggered.connect(self.imageplot.mpl_export)
-        self.menu.addAction(self.menu.mpl_export)
-
         self.menu.transpose.triggered.connect(self.imageplot.transpose)
-        self.menu.addAction(self.menu.transpose)
-
         self.menu.toggle_cursor.triggered.connect(self.imageplot.toggle_cursor)
-        self.menu.addAction(self.menu.toggle_cursor)
 

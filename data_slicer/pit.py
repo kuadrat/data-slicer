@@ -550,6 +550,10 @@ class MainWindow(QtGui.QMainWindow) :
             lambda : self.update_main_plot(emit=False))
         self.integrated_plot = ip
 
+        # Disable context menus
+        for plot in [self.x_plot, self.y_plot, self.integrated_plot] :
+            plot.plotItem.vb.setMenuEnabled(False)
+
         # Add ROI to the main ImageView
         self.cutline = Cutline(self.main_plot)
         self.cutline.initialize()

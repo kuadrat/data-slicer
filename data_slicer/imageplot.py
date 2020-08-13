@@ -1093,6 +1093,9 @@ class Scalebar(CursorPlot) :
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
 
+        # Disable the context menu
+        self.plotItem.vb.setMenuEnabled(False)
+
         self.disableAutoRange()
 
         # Aesthetics and other widget configs
