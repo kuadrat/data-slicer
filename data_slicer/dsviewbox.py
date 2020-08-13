@@ -15,6 +15,7 @@ class DSViewBoxMenu(ViewBoxMenu.ViewBoxMenu) :
 
         # Define own menu entries
         self.mpl_export = QtGui.QAction('MPL export', self)
+        self.transpose = QtGui.QAction('Transpose', self)
         self.toggle_cursor = QtGui.QAction('Show cursor', self, checkable=True)
 
 class DSViewBox(ViewBox) :
@@ -32,6 +33,9 @@ class DSViewBox(ViewBox) :
 
         self.menu.mpl_export.triggered.connect(self.imageplot.mpl_export)
         self.menu.addAction(self.menu.mpl_export)
+
+        self.menu.transpose.triggered.connect(self.imageplot.transpose)
+        self.menu.addAction(self.menu.transpose)
 
         self.menu.toggle_cursor.triggered.connect(self.imageplot.toggle_cursor)
         self.menu.addAction(self.menu.toggle_cursor)
