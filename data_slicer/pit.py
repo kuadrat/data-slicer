@@ -267,6 +267,10 @@ class PITDataHandler() :
         self.set_data(np.moveaxis(data, [0,1,2], res))
         # Setting the data triggers a call to self.redraw_plots()
         self.on_z_dim_change()
+        # Reset cut_plot's axes
+        cp = self.main_window.cut_plot
+#        cp.xlim = None
+#        cp.ylim = None
         self.main_window.set_axes()
         if update :
             self._roll_state = (self._roll_state + i) % NDIM

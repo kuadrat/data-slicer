@@ -442,6 +442,12 @@ class ImagePlot(pg.PlotWidget) :
         self.image_data = image_item.image
         logger.debug('<{}>Setting image.'.format(self.name))
         self.addItem(image_item)
+        # Reset limits if necessary
+        if self.xscale is not None and self.yscale is not None :
+            axes_shape = (len(self.xscale), len(self.yscale))
+            if axes_shape != self.image_data.shape :
+                self.xlim = None
+                self.ylim = None
         self._set_axes_scales(emit=emit)
 
         if emit :
@@ -471,7 +477,8 @@ class ImagePlot(pg.PlotWidget) :
         used to bypass the length checking.
         """
         # Sanity check
-        if not force and len(xscale) != self.image_item.image.shape[0] :
+        if not force and self.image_item is not None and \
+        len(xscale) != self.image_item.image.shape[0] :
             raise TypeError('Shape of xscale does not match data dimensions.')
 
         self.xscale = xscale
@@ -486,8 +493,8 @@ class ImagePlot(pg.PlotWidget) :
         used to bypass the length checking.
         """
         # Sanity check
-         # Sanity check
-        if not force and len(yscale) != self.image_item.image.shape[1] :
+        if not force and self.image_item is not None and \
+        len(yscale) != self.image_item.image.shape[1] :
             raise TypeError('Shape of yscale does not match data dimensions.')
 
         self.yscale = yscale
@@ -558,14 +565,13 @@ class ImagePlot(pg.PlotWidget) :
         else :
             x, y = 1, 1
 
-        if self.xlim is not None :
-            x_min, x_max = self.xlim
-        else :
-            x_min, x_max = 0, x
-        if self.ylim is not None :
-            y_min, y_max = self.ylim
-        else :
-            y_min, y_max = 0, y
+        # Set the limits to image pixels if they are not defined
+        if self.xlim is None :
+            self.set_xscale(arange(0, x))
+        x_min, x_max = self.xlim
+        if self.ylim is None :
+            self.set_yscale(arange(0, y))
+        y_min, y_max = self.ylim
 
         logger.debug(('<{}>get_limits(): [[x_min, x_max], [y_min, y_max]] = '
                     + '[[{}, {}], [{}, {}]]').format(self.name, x_min, x_max, 
