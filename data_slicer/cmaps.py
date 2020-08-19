@@ -6,6 +6,7 @@ import copy
 import os
 import pathlib
 import pkg_resources
+import warnings
 
 import numpy as np
 from matplotlib import cm
@@ -99,7 +100,7 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
     """
     # Get the colormap object if a colormap name is given 
     if isinstance(matplotlib_cmap, str) :
-        matplotlib_cmap = cm.cmap_d[matplotlib_cmap]
+        matplotlib_cmap = cm.get_cmap(matplotlib_cmap)
     # Number of entries in the matplotlib colormap
     N = matplotlib_cmap.N
     # Create the mapping values in the interval [0, 1]
@@ -160,12 +161,19 @@ def load_custom_cmap(filename) :
 # Convert all matplotlib colormaps to pyqtgraph ones and make them available 
 # in the dict cmaps
 cmaps = dict()
-for name,cmap in cm.cmap_d.items() :
+for name in colormaps() :
+    cmap = cm.get_cmap(name)
     cmaps.update({name: convert_matplotlib_to_pyqtgraph(cmap)})
 
 # Add additional colormaps from package
 data_path = pkg_resources.resource_filename('data_slicer', 'data/')
-for cmap in os.listdir(data_path) :
+try :
+    datafiles = os.listdir(data_path)
+except FileNotFoundError :
+    warnings.warn('Package colormaps were not found.')
+    datafiles = []
+
+for cmap in datafiles :
     name, suffix = cmap.split('.')
     # Only load files with the .cmap suffix
     if suffix != 'cmap' :
@@ -199,4 +207,4 @@ for cmap in files :
 # | Testing | # ================================================================
 # +---------+ #
 if __name__ == '__main__' :
-    print(cmaps)
+    print(cmaps.keys())
