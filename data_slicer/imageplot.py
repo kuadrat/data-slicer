@@ -21,9 +21,12 @@ BASE_LINECOLOR = (255,255,0,255)
 HOVER_COLOR = (195,155,0,255)
 
 class MPLExportDialog(qt.QtGui.QDialog) :
-
+    """ A dialog that provides a GUI to 
+    :meth:`~data_slicer.imageplot.ImagePlot.mpl_export`.
+    """
     figwidth = 5
     figheight = 5
+
     def __init__(self, imageplot, *args, **kwargs) :
         super().__init__(*args, **kwargs)
         self.imageplot = imageplot
@@ -246,14 +249,18 @@ class Crosshair() :
 
     def move_to(self, pos) :
         """
+        **Parameters**
+
+        ===  ===================================================================
         pos  2-tuple; x and y coordinates of the desired location of the 
              crosshair in data coordinates.
+        ===  ===================================================================
         """
         self.hpos.set_value(pos[1])
         self.vpos.set_value(pos[0])
 
     def update_position_h(self) :
-        """ Callback for the :signal: `sig_value_changed 
+        """ Callback for the :signal:`sig_value_changed 
         <data_slicer.utilities.TracedVariable.sig_value_changed>`. Whenever the 
         value of this TracedVariable is updated (possibly from outside this 
         Crosshair object), put the crosshair to the appropriate position.
@@ -290,8 +297,9 @@ class ImagePlot(pg.PlotWidget) :
     In addition, this allows one to use custom axes scales as opposed to 
     being limited to pixel coordinates.
 
+    **Signals**
+
     =================  =========================================================
-    *Signals*
     sig_image_changed  emitted whenever the image is updated
     sig_axes_changed   emitted when the axes are updated
     sig_clicked        emitted when user clicks inside the imageplot
@@ -305,6 +313,8 @@ class ImagePlot(pg.PlotWidget) :
                  name=None, **kwargs) :
         """ Allows setting of the image upon initialization. 
         
+        **Parameters**
+
         ==========  ============================================================
         image       np.ndarray or pyqtgraph.ImageItem instance; the image to be
                     displayed.
@@ -375,9 +385,13 @@ class ImagePlot(pg.PlotWidget) :
         """ Slot for mouse movement over the plot. Calculate the mouse 
         position in data coordinates and move the crosshair_cursor there.
 
+        **Parameters**
+
+        ===  ===================================================================
         pos  QPointF object; x and y position of the mouse as returned by 
-             :signal: `sigMouseMoved 
+             :signal:`sigMouseMoved 
              <data_slicer.imageplot.ImagePlot.sigMouseMoved>`.
+        ===  ===================================================================
         """
         if self.plotItem.sceneBoundingRect().contains(pos) :
             data_point = self.plotItem.vb.mapSceneToView(pos)
@@ -385,7 +399,7 @@ class ImagePlot(pg.PlotWidget) :
 
     def mousePressEvent(self, event) :
         """ Figure out where the click happened in data coordinates and make 
-        the position available through the signal :signal: `sig_clicked 
+        the position available through the signal :signal:`sig_clicked 
         <data_slicer.imageplot.ImagePlot.sig_clicked>`.
         """
         if event.button() == qt.QtCore.Qt.LeftButton :
@@ -396,27 +410,30 @@ class ImagePlot(pg.PlotWidget) :
         super().mousePressEvent(event)
 
     def remove_image(self) :
-        """ Removes the current image using the parent's :func: `removeItem` 
-        function. 
+        """ Removes the current image using the parent's :meth:`removeItem 
+        <pyqtgraph.PlotWidget.removeItem>` function. 
         """
         if self.image_item is not None :
             self.removeItem(self.image_item)
         self.image_item = None
 
     def set_image(self, image, emit=True, *args, **kwargs) :
-        """ Expects both, np.arrays and pg.ImageItems as input and sets them 
+        """ Expects either np.arrays or pg.ImageItems as input and sets them 
         correctly to this PlotWidget's Image with `addItem`. Also makes sure 
         there is only one Image by deleting the previous image.
 
-        Emits :signal: `sig_image_changed`
+        Emits :signal:`sig_image_changed`
 
-        ======  ================================================================
-        image   np.ndarray or pyqtgraph.ImageItem instance; the image to be
-                displayed.
-        emit    bool; whether or not to emit :signal: `sig_image_changed`
-        args    positional and keyword arguments that are passed on to :class:
-        kwargs  `ImageItem <pyqtgraph.graphicsItems.ImageItem.ImageItem>`
-        ======  ================================================================
+        **Parameters**
+
+        ========  ==============================================================
+        image     np.ndarray or pyqtgraph.ImageItem instance; the image to be
+                  displayed.
+        emit      bool; whether or not to emit :signal:`sig_image_changed`
+        (kw)args  positional and keyword arguments that are passed on to 
+                  :class:`ImageItem 
+                  <pyqtgraph.graphicsItems.ImageItem.ImageItem>`
+        ========  ==============================================================
         """
         # Convert array to ImageItem
         if isinstance(image, ndarray) :
@@ -522,12 +539,12 @@ class ImagePlot(pg.PlotWidget) :
             self.set_image(self.image_item, lut=self.image_item.lut)
 
     def set_xlabel(self, label) :
-        """ Shorthand for setting this plots x axis label. """
+        """ Shorthand for setting this plot's x axis label. """
         axis = self.getAxis('bottom')
         axis.setLabel(label)
 
     def set_ylabel(self, label) :
-        """ Shorthand for setting this plots y axis label. """
+        """ Shorthand for setting this plot's y axis label. """
         axis = self.getAxis('left')
         axis.setLabel(label)
 
@@ -588,7 +605,7 @@ class ImagePlot(pg.PlotWidget) :
                       maxXRange=x_max-x_min, maxYRange=y_max-y_min)
 
     def release_viewrange(self) :
-        """ Undo the effects of :func: `fix_viewrange 
+        """ Undo the effects of :meth:`fix_viewrange 
         <data_slicer.imageplot.ImagePlot.fix_viewrange>`
         """
         logger.debug('<{}>release_viewrange().'.format(self.name))
@@ -602,7 +619,7 @@ class ImagePlot(pg.PlotWidget) :
     def _update_transform_factors(self) :
         """ Create a copy of the parameters that are necessary to reproduce 
         the current transform. This is necessary e.g. for the calculation of 
-        the transform in :func: `rotate 
+        the transform in :meth:`rotate 
         <data_slicer.imageplot.ImagePlot.rotate>`.
         """
         transform = self.image_item.transform()
@@ -646,7 +663,8 @@ class ImagePlot(pg.PlotWidget) :
         and should therefore be more readable than pyqtgraph's native plot
         export options.
 
-        *Parameters*
+        **Parameters**
+
         =======  ===============================================================
         figsize  tuple of float; (height, width) of figure in inches
         title    str; figure title
@@ -686,10 +704,11 @@ class ImagePlot(pg.PlotWidget) :
         Create a matplotlib plot with *n* lines extracted out of one of the 
         visible plots. The lines are normalized to their global maximum and 
         shifted from each other by *offset*.
-        See :func: `get_lines <data_slicer.utilities.get_lines>` for more 
+        See :func:`get_lines <data_slicer.utilities.get_lines>` for more 
         options on the extraction of the lines.
 
-        *Parameters*
+        **Parameters**
+
         ===============  =======================================================
         plot             str; either "main" or "cut", specifies from which 
                          plot to extract the lines.
@@ -703,11 +722,12 @@ class ImagePlot(pg.PlotWidget) :
                          of the plotted lines.
         label_fmt        str; a format string for the ticklabels.
         n_ticks          int; number of ticks to print.
-        getlines_kwargs  other kwargs are passed to :func: `get_lines 
+        getlines_kwargs  other kwargs are passed to :func:`get_lines 
                          <data_slicer.utilities.get_lines>`
         ===============  =======================================================
 
-        *Returns*
+        **Returns**
+
         ===========  ===========================================================
         lines2ds     list of Line2D objects; the drawn lines.
         xticks       list of float; locations of the 0 intensity value of 
@@ -809,11 +829,11 @@ class CrosshairImagePlot(ImagePlot) :
 
 class CursorPlot(pg.PlotWidget) :
     """ Implements a simple, draggable scalebar represented by a line 
-    (:class: `InfiniteLine <pyqtgraph.InfiniteLine>) on an axis (:class: 
-    `PlotWidget <pyqtgraph.PlotWidget>).
-    The current position of the slider is tracked with the :class: 
-    `TracedVariable <data_slicer.utilities.TracedVariable>` self.pos and its 
-    width with the `TracedVariable` self.slider_width.
+    (:class:`InfiniteLine <pyqtgraph.InfiniteLine>) on an axis 
+    (:class:`PlotWidget <pyqtgraph.PlotWidget>).
+    The current position of the slider is tracked with the 
+    :class:`TracedVariable <data_slicer.utilities.TracedVariable>` self.pos 
+    and its width with the `TracedVariable` self.slider_width.
     """
     hover_color = HOVER_COLOR
 
@@ -821,6 +841,8 @@ class CursorPlot(pg.PlotWidget) :
                  orientation='vertical', slider_width=1, **kwargs) : 
         """ Initialize the slider and set up the visual tweaks to make a 
         PlotWidget look more like a scalebar.
+
+        **Parameters**
 
         ===========  ============================================================
         parent       QtWidget instance; parent widget of this widget
@@ -908,7 +930,7 @@ class CursorPlot(pg.PlotWidget) :
         self.pos.sig_allowed_values_changed.connect(self.on_allowed_values_change)
 
     def on_position_change(self) :
-        """ Callback for the :signal: `sigDragged 
+        """ Callback for the :signal:`sigDragged 
         <pyqtgraph.InfiniteLine.sigDragged>`. Set the value of the 
         TracedVariable instance self.pos to the current slider position. 
         """
@@ -918,7 +940,7 @@ class CursorPlot(pg.PlotWidget) :
         self.pos.set_value(current_pos)
 
     def on_allowed_values_change(self) :
-        """ Callback for the :signal: `sig_allowed_values_changed
+        """ Callback for the :signal:`sig_allowed_values_changed
         <pyqtgraph.utilities.TracedVariable.sig_allowed_values_changed>`. 
         With a change of the allowed values in the TracedVariable, we should 
         update our bounds accordingly.
@@ -939,7 +961,7 @@ class CursorPlot(pg.PlotWidget) :
         self.slider_width.set_allowed_values(allowed_widths)
 
     def set_position(self) :
-        """ Callback for the :signal: `sig_value_changed 
+        """ Callback for the :signal:`sig_value_changed 
         <data_slicer.utilities.TracedVariable.sig_value_changed>`. Whenever the 
         value of this TracedVariable is updated (possibly from outside this 
         Scalebar object), put the slider to the appropriate position.
@@ -969,7 +991,7 @@ class CursorPlot(pg.PlotWidget) :
     
     def set_secondary_axis(self, min_val, max_val) :
         """ Create (or replace) a second x-axis on the top which ranges from 
-        :param: `min_val` to :param: `max_val`.
+        `min_val` to `max_val`.
         This is the right axis in case of the horizontal orientation.
         """
         # Get a handle on the underlying plotItem
@@ -986,9 +1008,9 @@ class CursorPlot(pg.PlotWidget) :
         plotItem.layout.addItem(new_axis, *self.secondary_axis_grid)
 
     def set_slider_pen(self, color=None, width=None, hover_color=None) :
-        """ Define the color and thickness of the slider (`InfiniteLine 
-        object <pyqtgraph.InfiniteLine>`) and store these attribute in :attr: 
-        `self.slider_width` and :attr: `self.cursor_color`).
+        """ Define the color and thickness of the slider (InfiniteLine 
+        object :class:`<pyqtgraph.InfiniteLine>`) and store these attribute 
+        in `self.slider_width` and `self.cursor_color`).
         """
         # Default to the current values if none are given
         if color is None :
@@ -1077,18 +1099,19 @@ class CursorPlot(pg.PlotWidget) :
         self.increase_pos(increment)
 
 class Scalebar(CursorPlot) :
-    """ Simple subclass of :class: `CursorPlot 
-    <data_slicer.imageview.CursorPlot>` that is intended to simulate a 
+    """ Simple subclass of :class:`CursorPlot 
+    <data_slicer.imageplot.CursorPlot>` that is intended to simulate a 
     scalebar. This is achieved by providing simply a long, flat plot without 
     any data and no y axis, but the same draggable slider as in CursorPlot.
 
-    ==================  ========================================================
-    ..:attr: textItems  list of (t, (rx, ry)) tuples; t is a :class: 
-                        `TextItem <pyqtgraph.graphicsItems.TextItem>` 
-                        instance and rx, ry are float in the range [0, 1] 
-                        indicating the relative positioning of the textitems 
-                        inside the Scalebar.
-    ==================  ========================================================
+    **Attributes**
+
+    =========  =================================================================
+    textItems  list of (t, (rx, ry)) tuples; t is a :class:`TextItem 
+               <pyqtgraph.graphicsItems.TextItem>` instance and rx, ry are 
+               floats in the range [0, 1] indicating the relative positioning 
+               of the textitems inside the Scalebar.
+    =========  =================================================================
     """
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
@@ -1139,7 +1162,8 @@ class Scalebar(CursorPlot) :
         """ 
         Add text to the scalebar.
 
-        *Parameters*
+        **Parameters**
+
         ======  ================================================================
         text    string; the text to be displayed.
         pos     tuple; (x, y) position of the text relative to the scalebar.

@@ -78,8 +78,8 @@ NDIM = 3
 class PITDataHandler() :
     """ Object that keeps track of a set of 3D data and allows 
     manipulations on it. In a Model-View-Controller framework this could be 
-    seen as the Model, while :class: `MainWindow 
-    <data_slicer.pit.MainWindow>` would be the View part.
+    seen as the Model, while :class:`MainWindow <data_slicer.pit.MainWindow>` 
+    would be the View part.
     """
     def __init__(self, main_window) :
         self.main_window = main_window
@@ -98,13 +98,13 @@ class PITDataHandler() :
         self._roll_state = 0
 
     def get_data(self) :
-        """ Convenience `getter` method. Allows writing `self.get_data()` 
+        """ Convenience `getter` method. Allows writing ``self.get_data()``
         instead of ``self.data.get_value()``. 
         """
         return self.data.get_value()
 
     def set_data(self, data) :
-        """ Convenience `setter` method. Allows writing `self.set_data(d)` 
+        """ Convenience `setter` method. Allows writing ``self.set_data(d)`` 
         instead of ``self.data.set_value(d)``. 
         """
         self.data.set_value(data)
@@ -113,7 +113,8 @@ class PITDataHandler() :
         """ Load the specified data and prepare the corresponding z range. 
         Then display the newly loaded data.
 
-        *Parameters*
+        **Parameters**
+
         ====  ==================================================================
         data  3d array; the data to display
         axes  len(3) list or array of 1d-arrays or None; the units along the 
@@ -143,11 +144,11 @@ class PITDataHandler() :
         self.main_window.set_axes()
 
     def load(self, filename) :
-        """ Alias to :func: `open <data_slicer.pit.PITDataHandler.open>`. """ 
+        """ Alias to :func:`open <data_slicer.pit.PITDataHandler.open>`. """ 
         self.open(filename)
 
     def open(self, filename) :
-        """ Open a file that's readable by :module: `dataloading 
+        """ Open a file that's readable by :mod:`dataloading 
         <data_slicer.dataloading>`.
         """
         D = dl.load_data(filename)
@@ -195,7 +196,7 @@ class PITDataHandler() :
 
     def on_z_dim_change(self) :
         """ Called when either completely new data is loaded or the dimension 
-        from which we look at the data changed (e.g. through :func: `roll_axes 
+        from which we look at the data changed (e.g. through :func:`roll_axes 
         <data_slicer.pit.PITDataHandler.roll_axes>`).
         Update the z range and the integrated intensity plot.
         """
@@ -249,7 +250,8 @@ class PITDataHandler() :
         would roll it to X vs. Z and, finally, a third call brings us back to 
         the original situation.
 
-        *Parameters*
+        **Parameters**
+
         =  =====================================================================
         i  int; Number of dimensions to roll.
         =  =====================================================================
@@ -257,9 +259,9 @@ class PITDataHandler() :
         self._roll_axes(i, update=True)
 
     def _roll_axes(self, i=1, update=True) :
-        """ Backend for :func: `roll_axes <arpys.pit.PITDataHandler.roll_axes>`
+        """ Backend for :func:`roll_axes <arpys.pit.PITDataHandler.roll_axes>`
         that allows suppressing updating the roll-state, which is useful for
-        :func: `reset_data <arpys.pit.PITDataHandler.reset_data>`.
+        :func:`reset_data <arpys.pit.PITDataHandler.reset_data>`.
         """
         logger.debug('roll_axes()')
         data = self.get_data()
@@ -282,12 +284,13 @@ class PITDataHandler() :
         Create a matplotlib figure with *n* lines extracted out of one of the 
         visible plots. The lines are normalized to their global maximum and 
         shifted from each other by *offset*.
-        See :func: `get_lines <data_slicer.utilities.get_lines>` for more 
+        See :func:`get_lines <data_slicer.utilities.get_lines>` for more 
         options on the extraction of the lines.
-        This wraps the :class: `ImagePlot <data_slicer.imageplot.ImagePlot>`'s
+        This wraps the :class:`ImagePlot <data_slicer.imageplot.ImagePlot>`'s
         lineplot method.
 
-        *Parameters*
+        **Parameters**
+
         ===============  =======================================================
         plot             str; either "main" or "cut", specifies from which 
                          plot to extract the lines.
@@ -302,11 +305,12 @@ class PITDataHandler() :
                          of the plotted lines.
         label_fmt        str; a format string for the ticklabels.
         n_ticks          int; number of ticks to print.
-        getlines_kwargs  other kwargs are passed to :func: `get_lines 
+        getlines_kwargs  other kwargs are passed to :func:`get_lines 
                          <data_slicer.utilities.get_lines>`
         ===============  =======================================================
 
-        *Returns*
+        **Returns**
+
         ===========  ===========================================================
         lines2ds     list of Line2D objects; the drawn lines.
         xticks       list of float; locations of the 0 intensity value of 
@@ -317,6 +321,9 @@ class PITDataHandler() :
         xticklabels  list of str; *xtickvalues* formatted according to 
                      *label_fmt*.
         ===========  ===========================================================
+
+        .. seealso::
+            :func:`get_lines <data_slicer.utilities.get_lines>`
         """
         # Get the specified data
         if plot == 'main' :
@@ -335,11 +342,12 @@ class PITDataHandler() :
 
     def plot_all_slices(self, dim=2, integrate=0, zs=None, labels='default', 
                         max_ppf=16, max_nfigs=2) :
-        """ Wrapper for :func: `plot_cuts <data_slicer.utilities.plot_cuts>`.
+        """ Wrapper for :func:`plot_cuts <data_slicer.utilities.plot_cuts>`.
         Plot all (or only the ones specified by `zs`) slices along dimension 
         `dim` on separate suplots onto matplotlib figures.
 
-        *Parameters*
+        **Parameters**
+
         =========  ============================================================
         dim        int; one of (0,1,2). Dimension along which to take the cuts.
         integrate  int or 'full'; number of slices to integrate around each 
@@ -351,12 +359,15 @@ class PITDataHandler() :
         labels     1D array/list of length z. Optional labels to assign to the 
                    different cuts. By default the values of the respective axis
                    are used. Set to *None* to suppress labels.
-        max_ppf    int; maximum number of *p*lots *p*er *f*igure.
+        max_ppf    int; maximum number of plots per figure.
         max_nfigs  int; maximum number of figures that are created. If more would 
                    be necessary to display all plots, a warning is issued and 
                    only every N'th plot is created, where N is chosen such that 
                    the whole 'range' of plots is represented on the figures. 
         =========  ============================================================
+
+        .. seealso::
+            :func:`~data_slicer.utilities.plot_cuts`
         """
         data = self.get_data()
         if labels == 'default' :
@@ -377,10 +388,14 @@ class PITDataHandler() :
         """ Display a model over the data. *model* should be function of two 
         variables, namely the currently displayed x- and y-axes.
 
-        *Parameters*
+        **Parameters**
+
         =====  =================================================================
         model  callable or :class:`Model <data_slicer.model.Model>`;
         =====  =================================================================
+
+        .. seealso::
+            :class:`Model <data_slicer.model.Model>`
         """
         if isinstance(model, FunctionType) :
             model = Model(model)
@@ -585,20 +600,20 @@ class MainWindow(QtGui.QMainWindow) :
         self.show()
 
     def _align(self) :
-        """ Align all the GUI elements in the QLayout. 
+        """ Align all the GUI elements in the QLayout::
         
-          0   1   2   3   4
-        +---+---+---+---+---+
-        |       |       | e | 0
-        + main  |  cut  | d +
-        |       |       | c | 1
-        +-------+-------+---+
-        |       |  mdc  |   | 2
-        +   z   +-------+---+
-        |       |  console  | 3
-        +---+---+---+---+---+
-        
-        (Units of subdivision [sd])
+              0   1   2   3   4
+            +---+---+---+---+---+
+            |       |       | e | 0
+            + main  |  cut  | d +
+            |       |       | c | 1
+            +-------+-------+---+
+            |       |  mdc  |   | 2
+            +   z   +-------+---+
+            |       |  console  | 3
+            +---+---+---+---+---+
+            
+            (Units of subdivision [sd])
         """
         # subdivision 
         sd = 3
@@ -633,7 +648,7 @@ class MainWindow(QtGui.QMainWindow) :
 
     def _autoload_plugins(self) :
         """ Load all the plugins specified in the config file 
-        `CONF_DIR/plugins/autoload.txt`.
+        ``CONF_DIR/plugins/autoload.txt``.
         """
         logger.debug('Autoloading plugins...')
 
@@ -664,7 +679,8 @@ class MainWindow(QtGui.QMainWindow) :
         The plugin should be a python module which is placed in the 
         pythonpath or in the `plugins` directory. 
 
-        *Parameters*
+        **Parameters**
+
         ===========  ===========================================================
         plugin_name  str; name of the plugin module as it appears in the 
                      `plugins` directory.
@@ -687,9 +703,9 @@ class MainWindow(QtGui.QMainWindow) :
 
     def update_main_plot(self, **image_kwargs) :
         """ Change *self.main_plot*`s currently displayed
-        `image_item <data_slicer.imageplot.ImagePlot.image_item>` to the slice 
-        of *self.data_handler.data* corresponding to the current value of 
-        *self.z*.
+        :class:`image_item <data_slicer.imageplot.ImagePlot.image_item>` to 
+        the slice of *self.data_handler.data* corresponding to the current 
+        value of *self.z*.
         """
         logger.debug('update_main_plot()')
 
@@ -704,7 +720,7 @@ class MainWindow(QtGui.QMainWindow) :
         self.set_image(self.image_data, **image_kwargs)
 
     def set_axes(self) :
-        """ Set the x- and y-scales of the plots. The :class: `ImagePlot 
+        """ Set the x- and y-scales of the plots. The :class:`ImagePlot 
         <data_slicer.imageplot.ImagePlot>` object takes care of keeping the 
         scales as they are, once they are set.
         """
@@ -772,7 +788,7 @@ class MainWindow(QtGui.QMainWindow) :
 
     def set_cmap(self, cmap) :
         """ Set the colormap to *cmap* where *cmap* is one of the names 
-        registered in `<data_slicer.cmaps>` which includes all matplotlib and 
+        registered in :mod:`<data_slicer.cmaps>` which includes all matplotlib and 
         kustom cmaps.
         """
         try :
@@ -795,7 +811,7 @@ class MainWindow(QtGui.QMainWindow) :
 
     def transpose(self) :
         """ Transpose the main_plot, i.e. swap out its x- and y-axes. This 
-        wraps the main_plot's :attr: `transpose 
+        wraps the main_plot's :meth:`transpose 
         <data_slicer.imageplot.ImagePlot.transpose>` method.
         """
         self.main_plot.transpose()
@@ -808,11 +824,12 @@ class MainWindow(QtGui.QMainWindow) :
         """ Define all responses to keyboard presses. 
         Currently defined:
 
+        ===     ================================================================
         key     action
-        ========================================================================
+        ===     ================================================================
         r       Flip orientation of cutline. Also useful to bring it back to 
                 visibility.
-        ========================================================================
+        ===     ================================================================
         """
         key = event.key()
         logger.debug('keyPressEvent(): key={}'.format(key))
@@ -845,7 +862,7 @@ class MainWindow(QtGui.QMainWindow) :
 
     def set_image(self, image=None, *args, **kwargs) :
         """ Wraps the underlying ImagePlot3d's set_image method.
-        See :func: `<data_slicer.imageplot.ImagePlot3d.set_image>`. *image* can 
+        See :func:`~data_slicer.imageplot.ImagePlot3d.set_image`. *image* can 
         be *None* i.e. in order to just update the plot with a new colormap.
         """
         # Reset the transformation

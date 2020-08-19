@@ -27,8 +27,9 @@ T = -0.5
 class ColorSliders(QtGui.QWidget) :
     """ A simple widget providing a *gamma* and *vmax* slider. 
     
+    **Signals**
+
     =============  =============================================================
-    *Signals*
     gamma_changed  emitted when the value of *gamma* changes
     vmax_changed   emitted when the value of *vmax* changes
     =============  =============================================================
@@ -88,7 +89,7 @@ class ColorSliders(QtGui.QWidget) :
 
 class ThreeDWidget(QtGui.QWidget) :
     """
-    A widget that contains a :class: `GLViewWidget 
+    A widget that contains a :class:`GLViewWidget 
     <pyqtgraph.opengl.GLViewWidget>` that allows displaying 2D colormeshes in 
     a three dimensional scene.
     This class mostly functions as a base class for more refined variations.
@@ -147,7 +148,8 @@ class ThreeDWidget(QtGui.QWidget) :
         """ 
         Turn the visibility of the coordinate axes on or off. 
 
-        *Parameters*
+        **Parameters**
+
         ==  ====================================================================
         on  bool or one of ('on', 1); if not `True` or any of the values stated,
             turn the axes off. Otherwise turn them on.
@@ -162,11 +164,12 @@ class ThreeDWidget(QtGui.QWidget) :
 
     def set_data(self, data) :
         """
-        Set this widget's data in a :class: `TracedVariable 
+        Set this widget's data in a :class:`TracedVariable 
         <data_slicer.utilities.TracedVariable>` instance to allow direct 
         updates whenever the data changes.
 
-        *Parameters*
+        **Parameters**
+
         ====  ==================================================================
         data  np.array of shape (x, y, z); the data cube to be displayed.
         ====  ==================================================================
@@ -189,7 +192,7 @@ class ThreeDWidget(QtGui.QWidget) :
 
     def get_slice(self, d, i, integrate=0, silent=True) :
         """
-        Wrap :func: `make_slice <data_slicer.utilities.make_slice>` to create 
+        Wrap :func:`make_slice <data_slicer.utilities.make_slice>` to create 
         slices out of this widget's `self.data`.
         Confer respective documentation for details.
         """
@@ -202,7 +205,7 @@ class ThreeDWidget(QtGui.QWidget) :
         return self.get_slice(2, i, integrate)
 
     def make_texture(self, cut) :
-        """ Wrapper for :func: `makeRGBA <pyqtgraph.makeRGBA>`. """
+        """ Wrapper for :func:`makeRGBA <pyqtgraph.makeRGBA>`."""
         return pg.makeRGBA(cut, levels=self.levels, 
                            lut=self.lut)[0]
 
@@ -243,7 +246,7 @@ class ThreeDWidget(QtGui.QWidget) :
         self.xy.setData(texture)
 
     def set_cmap(self, cmap) :
-        """ Change the used colormap to a :class: `ds_cmap 
+        """ Change the used colormap to a :class:`ds_cmap 
         <data_slicer.cmaps.ds_cmap>` instance.
         """
         if isinstance(cmap, str) :
@@ -263,7 +266,7 @@ class ThreeDWidget(QtGui.QWidget) :
 
 class ThreeDSliceWidget(ThreeDWidget) :
     """
-    A :class: `ThreeDWidget <data_slicer.widgets.ThreeDWidget>` that can 
+    A :class:`ThreeDWidget <data_slicer.widgets.ThreeDWidget>` that can 
     slice along x, y and z.
     """
     def __init__(self, *args, **kwargs) :
@@ -271,24 +274,24 @@ class ThreeDSliceWidget(ThreeDWidget) :
 
     def align(self) :
         """ 
-        Put all sub-widgets and elements into the layout as follows:
+        Put all sub-widgets and elements into the layout as follows::
 
           
-           0     1     2  
-        +-----+-----+-----+
-        |                 | 0
-        +                 +  
-        |                 | 1
-        +     GLView      +
-        |                 | 2
-        +                 +  
-        |                 | 3
-        +-----+-----+-----+
-        | xy  | yz  | zx  | 4
-        +-----+-----+-----+
+               0     1     2  
+            +-----+-----+-----+
+            |                 | 0
+            +                 +  
+            |                 | 1
+            +     GLView      +
+            |                 | 2
+            +                 +  
+            |                 | 3
+            +-----+-----+-----+
+            | xy  | yz  | zx  | 4
+            +-----+-----+-----+
 
-        5 units in height
-        3 units in width
+            5 units in height
+            3 units in width
         """
         l = self.layout
 
@@ -302,7 +305,7 @@ class ThreeDSliceWidget(ThreeDWidget) :
         l.addWidget(self.slider_zx, 4, 2, 1, 1)
 
     def _initialize_sub_widgets(self) :
-        """ Create all three sliders (:class: `Scalebar 
+        """ Create all three sliders (:class:`Scalebar 
         <data_slicer.imageplot.Scalebar>` instances.
         """
         # xy
@@ -421,10 +424,10 @@ class ThreeDSliceWidget(ThreeDWidget) :
         self.update_zx()
 
 class FreeSliceWidget(ThreeDWidget) :
-    """ A :class: `ThreeDWidget <data_slicer.widgets.ThreeDWidget>` which 
+    """ A :class:`ThreeDWidget <data_slicer.widgets.ThreeDWidget>` which 
     represents its xy plane in an additional 2D panel.
-    In this "selector" panel, there's a :class: `Cutline 
-    <data_slicer.cutline.Cutline> with which arbitrary slices can be 
+    In this "selector" panel, there's a :class:`Cutline 
+    <data_slicer.cutline.Cutline>` with which arbitrary slices can be 
     generated, which will in turn be shown in the 3D GLView.
     """
     def _initialize_sub_widgets(self) :
@@ -435,18 +438,20 @@ class FreeSliceWidget(ThreeDWidget) :
 
     def align(self) :
         """
-          0   1   2   3   4   5   6   7
-        +---+---+---+---+---+---+---+---+
-        |               |               | 0
-        +               |               +
-        |               |               | 1
-        +  Selector     |   GLView      +
-        |               |               | 2
-        +               |               +  
-        |               |               | 3
-        +               |   +---+---+   +
-        |               |   |  xy   |   | 4
-        +---+---+---+---+---+---+---+---+
+        Layout::
+
+              0   1   2   3   4   5   6   7
+            +---+---+---+---+---+---+---+---+
+            |               |               | 0
+            +               |               +
+            |               |               | 1
+            +  Selector     |   GLView      +
+            |               |               | 2
+            +               |               +  
+            |               |               | 3
+            +               |   +---+---+   +
+            |               |   |  xy   |   | 4
+            +---+---+---+---+---+---+---+---+
         """
         l = self.layout
 
@@ -484,7 +489,8 @@ class FreeSliceWidget(ThreeDWidget) :
         self.cutline.sig_region_changed.connect(self.update_cut)
 
     def get_cutline_cut(self) :
-        """ Wrapper for Curline.get_array_region() """
+        """ Wrapper for :meth:`~data_slicer.cutline.Cutline.get_array_region`.
+        """
         data = self.data.get_value()
         cut, coords = self.cutline.get_array_region(data, 
                                            self.selector.image_item, 

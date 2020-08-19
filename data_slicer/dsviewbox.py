@@ -37,8 +37,8 @@ class DSViewBoxMenu(ViewBoxMenu.ViewBoxMenu) :
 
 class DSViewBox(ViewBox) :
     """
-    Subclass of ViewBox with custom menu items, as defined in `DSViewBoxMenu 
-    <data_slicer.dsviewbox.DSViewBoxMenu>`.
+    Subclass of ViewBox with custom menu items, as defined in 
+    :class:`~data_slicer.dsviewbox.DSViewBoxMenu`.
     """
     def __init__(self, imageplot, *args, **kwargs) :
         super().__init__(*args, **kwargs)

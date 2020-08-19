@@ -16,7 +16,7 @@ from pyqtgraph import ColorMap
 from data_slicer.utilities import CONFIG_DIR
 
 class ds_cmap(ColorMap) :
-    """ Simple subclass of :class: `<pyqtgraph.ColorMap>`. Adds vmax, 
+    """ Simple subclass of :class:`<pyqtgraph.ColorMap>`. Adds vmax, 
     powerlaw normalization and a convenience function to change alpha.
     """
     def __init__(self, pos, color, gamma=1, **kwargs) :
@@ -35,7 +35,7 @@ class ds_cmap(ColorMap) :
     def apply_transformations(self) :
         """ Recalculate the positions where the colormapping is defined by 
         applying (in sequence) alpha, then a linear map to the range 
-        [0, vmax] and finally the powerlaw scaling: pos' = pos**gamma.
+        [0, vmax] and finally the powerlaw scaling: ``pos' = pos**gamma``.
         """
         # Reset the cache in pyqtgraph.Colormap
         self.stopsCache = dict()
@@ -78,21 +78,23 @@ class ds_cmap(ColorMap) :
 def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
     """ Take a matplotlib colormap and convert it to a pyqtgraph ColorMap.
 
-    *Parameters*
+    **Parameters**
+
     ===============  ===========================================================
     matplotlib_cmap  either a str representing the name of a matplotlib 
-                     colormap or a :class: 
-                     `<matplotlib.colors.LinearSegmentedColormap>` or :class: 
-                     `<matplotlib.colors.ListedColormap>` instance.
+                     colormap or a 
+                     :class:`<matplotlib.colors.LinearSegmentedColormap>` or 
+                     :class:`<matplotlib.colors.ListedColormap>` instance.
     alpha            float or array of same length as there are defined 
                      colors in the matplotlib cmap; the alpha (transparency) 
                      value to be assigned to the whole cmap. matplotlib cmaps 
                      default to 1.
     ===============  ===========================================================
 
-    *Returns*
+    **Returns**
+
     ===============  ===========================================================
-    pyqtgraph_cmap   :class: `<pyqtgraph.ColorMap>`
+    pyqtgraph_cmap   :class:`<pyqtgraph.ColorMap>`
     ===============  ===========================================================
     """
     # Get the colormap object if a colormap name is given 
@@ -111,18 +113,20 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
     return ds_cmap(values, rgba)
 
 def convert_ds_to_matplotlib(data_slicer_cmap, cmap_name='converted_cmap') :
-    """ Create a matplotlib colormap from a :class: `ds_cmap 
+    """ Create a matplotlib colormap from a :class:`ds_cmap 
     <data_slicer.cmaps.ds_cmap>` instance.
 
-    *Parameters*
+    **Parameters**
+
     ================  ==========================================================
-    data_slicer_cmap  :class: `ds_cmap <data_slicer.cmaps.ds_cmap>`
+    data_slicer_cmap  :class:`ds_cmap <data_slicer.cmaps.ds_cmap>`
     cmap_name         str; optional name for the created cmap.
     ================  ==========================================================
 
-    *Returns*
+    **Returns**
+
     ===============  ===========================================================
-    matplotlib_cmap  :class: `<matplotlib.colors.LinearSegmentedColormap>`
+    matplotlib_cmap  :class:`<matplotlib.colors.LinearSegmentedColormap>`
     ===============  ===========================================================
     """
     # Reset the transformations - matplotlib can take care of them itself
@@ -136,7 +140,7 @@ def convert_ds_to_matplotlib(data_slicer_cmap, cmap_name='converted_cmap') :
     return matplotlib_cmap
 
 def load_custom_cmap(filename) :
-    """ Create a :class: `ds_cmap <data_slicer.cmaps.ds_cmap>` instance from 
+    """ Create a :class:`ds_cmap <data_slicer.cmaps.ds_cmap>` instance from 
     data stored in a file with three columns, red, green and blue - either in 
     integer form from 0-255 or as floats from 0.0 to 1.0 (ignores fourth 
     alpha column).

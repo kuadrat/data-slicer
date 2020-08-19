@@ -9,8 +9,8 @@ from pyqtgraph.functions import affineSlice
 logger = logging.getLogger('ds.'+__name__)
 
 class CustomizableLineSegmentROI(pg.LineSegmentROI) :
-    """ Subclass of :class: `LineSegmentROI 
-    <pyqtgraph.graphicsItems.ROI.LineSegmentROI`. Implements a few features 
+    """ Subclass of :class:`LineSegmentROI 
+    <pyqtgraph.graphicsItems.ROI.LineSegmentROI>`. Implements a few features 
     that were missing from the parent class, namely customizable hover pen.
     """
     def __init__(self, *args, **kwargs) :
@@ -36,12 +36,14 @@ class CustomizableLineSegmentROI(pg.LineSegmentROI) :
             return self.pen
 
 class CustomizableHandle(pg.graphicsItems.ROI.Handle) :
-    """ Same concept as :class: `CustomizableLineSegmentROI 
+    """ Same concept as :class:`CustomizableLineSegmentROI 
     <data_slicer.cutline.CustomizableLineSegmentROI`>. Subclass to allow 
     customization of hover pen.
 
-    .. :Unused: because that would require setting these handles as the 
-       handles for `CustomizableLineSegmentROI`. Too much work for a 
+    .. Note::
+
+       This class is unused because that would require setting these handles 
+       as the handles for `CustomizableLineSegmentROI`. Too much work for a 
        relatively unimportant feature.
     """
     def __init__(self, *args, **kwargs) :
@@ -51,7 +53,7 @@ class CustomizableHandle(pg.graphicsItems.ROI.Handle) :
 
     def set_hover_pen(self, *args, **kwargs) :
         """ Set the pen used for drawing this widget when it is in the 
-        `hovered` state. Accepts function arguments to :func: `mkPen 
+        *hovered* state. Accepts function arguments to :func:`mkPen 
         <pyqtgraph.mkPen()>`
         """
         self.hover_pen = pg.mkPen(*args, **kwargs)
@@ -79,26 +81,28 @@ class CustomizableHandle(pg.graphicsItems.ROI.Handle) :
         self.update()
 
 class Cutline(qt.QtCore.QObject) :
-    """ Wrapper class allowing easy adding and removing of :class: 
-    `LineSegmentROI <pyqtgraph.LineSegmentROI>`s to a :class: `PlotWidget 
-    <pyqtgraph.PlotWidget>`.
+    """ Wrapper class allowing easy adding and removing of 
+    :class:`LineSegmentROI <pyqtgraph.LineSegmentROI>`s to a 
+    :class:`PlotWidget <pyqtgraph.PlotWidget>`.
     It both
     has-a LineSegmentROI
     and
     has-a PlotWidget
     and handles interactions between the two.
 
-    Needs to inherit from :class: `QObject <pyqtgraph.Qt.QtCore.QObject>` in 
+    Needs to inherit from :class:`QObject <pyqtgraph.Qt.QtCore.QObject>` in 
     order to have signals.
 
+    **Signals**
+
     ==================  ========================================================
-    *Signals*
-    sig_region_changed  wraps the underlying :class: `LineSegmentROI 
+    sig_region_changed  wraps the underlying :class:`LineSegmentROI 
                         <pyqtgraph.LineSegmentROI>`'s sigRegionChange. 
                         Emitted whenever the ROI is moved or changed.
-    sig_initialized     emitted when a new :class: 
-                        `LineSegmentROI <pyqtgraph.LineSegmentROI>` has been 
-                        created and assigned as this :class: `Cutline`'s `roi`.
+    sig_initialized     emitted when a new :class:`LineSegmentROI 
+                        <pyqtgraph.LineSegmentROI>` has been 
+                        created and assigned as this :class:`Cutline 
+                        <data_slicer.cutline.Cutline>`'s `roi`.
     ==================  ========================================================
     """
     sig_initialized = qt.QtCore.Signal()
@@ -118,9 +122,9 @@ class Cutline(qt.QtCore.QObject) :
         self.hover_pen = pg.mkPen((255, 150, 10), width=3)
 
     def add_to_plot(self, plot_widget) :
-        """ Add this cutline to a :class: `PlotWidget <pyqtgraph.PlotWidget>`.
-        This is effectively implemented by setting this :class: `Cutline 
-        <data_slicer.cutline.Cutline>`s plot attribute to the given *plot_widget*.
+        """ Add this cutline to a :class:`PlotWidget <pyqtgraph.PlotWidget>`.
+        This is effectively implemented by setting this :class:`Cutline 
+        <data_slicer.cutline.Cutline>`'s plot attribute to the given *plot_widget*.
         """
         self.plot = plot_widget
         # Signal connection: whenever the viewRange changes, the cutline should 
@@ -133,7 +137,7 @@ class Cutline(qt.QtCore.QObject) :
         self.plot.sig_axes_changed.connect(self.initialize)
 
     def initialize(self, orientation=None) :
-        """ Emits :signal: `sig_initialized`. """
+        """ Emits :signal:`sig_initialized`. """
         logger.debug('initialize()')
         # Change the orientation if one is given
         if orientation :
@@ -177,8 +181,9 @@ class Cutline(qt.QtCore.QObject) :
         lower_left, upper_right = self.calculate_endpoints()
 
     def calculate_endpoints(self) :
-        """ Get sensible initial values for the endpoints of the :class: 
-        LineSegmentROI from the :class: PlotWidget's current view range.  
+        """ Get sensible initial values for the endpoints of the 
+        :class:`LineSegmentROI <pyqtgraph.graphicsItems.ROI.LineSegmentROI>` 
+        from the :class:`pyqtrgaph.widgets.PlotWidget`'s current view range.  
         Depending on the state of `self.orientation` these endpoints 
         correspond either to a vertical or horizontal line centered at the 
         center of the plot and spanning exactly the whole plot range.
@@ -217,6 +222,8 @@ class Cutline(qt.QtCore.QObject) :
         self.initialize()
 
     def get_array_region(self, *args, **kwargs) :
-        """ Wrapper for :attr: `self.roi.getArrayRegion`. """
+        """ Wrapper for the underlying ROI's
+        :meth:`~data_slicer.cutline.Cutline.roi.getArrayRegion`. 
+        """
         return self.roi.getArrayRegion(*args, **kwargs)
  

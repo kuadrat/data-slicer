@@ -1,6 +1,6 @@
 help_message = ''' 
 Use python`s built-in help function to get help on this plugin`s functions, 
-e.g.  
+e.g.::
 
     help(<plugin_name>.<function_name>)
 
@@ -17,7 +17,8 @@ class Plugin() :
 
     def help(self) :
         """ Print a list of available functions and a help message to 
-        standard output. """
+        standard output. 
+        """
         # Create a list of this plugin's functions
         all_attributes = self.__dir__()
         functions = []

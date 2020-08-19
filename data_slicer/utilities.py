@@ -25,26 +25,31 @@ class TracedVariable(qt.QtCore.QObject) :
     Basically this is just a wrapper around any python object which ensures 
     that pyQt signals are emitted whenever the object is accessed or changed.
 
-    In order to use pyqt's signals, this has to be a subclass of :class: 
-    `QObject <pyqtgraph.Qt.QtCore.QObject>`.
+    In order to use pyqt's signals, this has to be a subclass of 
+    :class:`QObject <pyqtgraph.Qt.QtCore.QObject>`.
     
-    =================  =========================================================
-    _value             the python object represented by this TracedVariable 
-                       instance. Should never be accessed directly but only 
-                       through the getter and setter methods.
-    sig_value_changed  :class: `Signal <pyqtgraph.Qt.QtCore.Signal>`; the signal 
-                       that is emitted whenever :attr: self._value is changed.
-    sig_value_read     :class: `Signal <pyqtgraph.Qt.QtCore.Signal>`; the signal 
-                       that is emitted whenever :attr: self._value is read.
-    sig_allowed_values_changed
-                       :class: `Signal <pyqtgraph.Qt.QtCore.Signal>`; the signal 
-                       that is emitted whenever :attr: self.allowed_values 
-                       are set or unset.
-    allowed_values     :class: `array <numpy.ndarray>`; a sorted list of all 
-                       values that self._value can assume. If set, all tries 
-                       to set the value will automatically set it to the 
-                       closest allowed one.
-    =================  =========================================================
+    **Attributes**
+
+    ==========================  ================================================
+    _value                      the python object represented by this 
+                                TracedVariable instance. Should never be 
+                                accessed directly but only through the getter 
+                                and setter methods.
+    sig_value_changed           :class:`Signal <pyqtgraph.Qt.QtCore.Signal>`; 
+                                the signal that is emitted whenever 
+                                ``self._value`` is changed.
+    sig_value_read              :class:`Signal <pyqtgraph.Qt.QtCore.Signal>`; 
+                                the signal that is emitted whenever 
+                                ``self._value`` is read.
+    sig_allowed_values_changed  :class:`Signal <pyqtgraph.Qt.QtCore.Signal>`; 
+                                the signal that is emitted whenever 
+                                ``self.allowed_values`` are set or unset.
+    allowed_values              :class:`array <numpy.ndarray>`; a sorted 
+                                list of all values that self._value can 
+                                assume. If set, all tries to set the value 
+                                will automatically set it to the closest 
+                                allowed one.
+    ==========================  ================================================
     """
     sig_value_changed = qt.QtCore.Signal()
     sig_value_read = qt.QtCore.Signal()
@@ -78,21 +83,24 @@ class TracedVariable(qt.QtCore.QObject) :
 
     def get_value(self) :
         """ Emit sig_value_changed and return the internal self._value. 
-        NOTE: the signal is emitted here before the caller actually receives 
-        the return value. This could lead to unexpected behaviour. """
+
+        .. warning:: 
+            the signal is emitted here before the caller actually receives 
+            the return value. This could lead to unexpected behaviour. 
+        """
         logger.log(SIGNALS, '{} {}: Emitting sig_value_read.'.format( 
                    self.__class__.__name__, self.name))
         self.sig_value_read.emit()
         return self._value
 
     def on_change(self, callback) :
-        """ Convenience wrapper for :class: `Signal 
+        """ Convenience wrapper for :class:`Signal 
         <pyqtgraph.Qt.QtCore.Signal>`'s 'connect'. 
         """
         self.sig_value_changed.connect(callback)
 
     def on_read(self, callback) :
-        """ Convenience wrapper for :class: `Signal 
+        """ Convenience wrapper for :class:`Signal 
         <pyqtgraph.Qt.QtCore.Signal>`'s 'connect'. 
         """
         self.sig_value_read.connect(callback)
@@ -101,14 +109,17 @@ class TracedVariable(qt.QtCore.QObject) :
         """ Define a set/range/list of values that are allowed for this 
         Variable. Once set, all future calls to set_value will automatically 
         try to pick the most reasonable of the allowed values to assign. 
-        Emits :signal: `sig_allowed_values_changed`
 
-        ====== =================================================================
-        values iterable; The complete list of allowed (numerical) values. This
-               is converted to a sorted np.array internally. If values is 
-               `None`, all restrictions on allowed values will be lifted and 
-               all values are allowed.
-        ====== =================================================================
+        Emits :signal:`sig_allowed_values_changed`
+
+        **Parameters**
+
+        ======  =================================================================
+        values  iterable; The complete list of allowed (numerical) values. This
+                is converted to a sorted np.array internally. If values is 
+                `None`, all restrictions on allowed values will be lifted and 
+                all values are allowed.
+        ======  =================================================================
         """
         if values is None :
             # Reset the allowed values, i.e. all values are allowed
@@ -154,42 +165,46 @@ class TracedVariable(qt.QtCore.QObject) :
 def indexof(value, array) :
     """ 
     Return the first index of the value in the array closest to the given 
-    :param: `value`.
+    `value`.
 
-    Example
-    -------
-    >>> a = np.array([1, 0, 0, 2, 1])
-    >>> indexof(0, a)
-    1
-    >>> indexof(0.9, a)
-    0
+    Example::
+
+        >>> a = np.array([1, 0, 0, 2, 1])
+        >>> indexof(0, a)
+        1
+        >>> indexof(0.9, a)
+        0
     """
     return np.argmin(np.abs(array - value))
 
 def make_slice_3d(data, d, i, integrate=0, silent=False) :
     """ 
-    ..:deprecated: Use :func: `make_slice <data_slicer.utilities.make_slice>`
-                   instead. (though this ~might~ be slightly faster for 3d 
-                   datasets)
+    :deprecated: 
+
+    .. warning::
+        Use :func:`make_slice <data_slicer.utilities.make_slice>`
+        instead. (though this ~might~ be slightly faster for 3d datasets)
 
     Create a slice out of the 3d data (l x m x n) along dimension d 
     (0,1,2) at index i. Optionally integrate around i.
 
-    *Parameters*
-    ============================================================================
+    **Parameters**
+
+    =========  =================================================================
     data       array-like; data of the shape (x, y, z)
     d          int, d in (0, 1, 2); dimension along which to slice
     i          int, 0 <= i < data.size[d]; The index at which to create the slice
-    integrate  int, 0 <= integrate < |i - n|; the number of slices above 
+    integrate  int, ``0 <= integrate < |i - n|``; the number of slices above 
                and below slice i over which to integrate
     silent     bool; toggle warning messages
-    ============================================================================
+    =========  =================================================================
 
-    *Returns*
-    ============================================================================
-    res        np.array; Slice at index with dimensions shape[:d] + shape[d+1:]
-               where shape = (x, y, z).
-    ============================================================================
+    **Returns**
+
+    ===  =======================================================================
+    res  np.array; Slice at index with dimensions ``shape[:d] + shape[d+1:]`` 
+         where shape = (x, y, z).
+    ===  =======================================================================
     """
     # Get the relevant dimensions
     shape = data.shape
@@ -229,28 +244,36 @@ def make_slice(data, dim, index, integrate=0, silent=False) :
     Take a slice out of an N dimensional dataset *data* at *index* along 
     dimension *dim*. Optionally integrate by +- *integrate* channels around 
     *index*.
-    If *data* has shape
+    If *data* has shape::
+
         (n0, n1, ..., n(dim-1), n(dim), n(dim+1), ..., n(N-1))
-    the result will be of dimension N-1 and have shape 
+
+    the result will be of dimension N-1 and have shape::
+
         (n0, n1, ..., n(dim-1), n(dim+1), ..., n(N-1))
-    or in other words
+
+    or in other words::
+
         shape(result) = shape(data)[:dim] + shape(data)[dim+1:]
+
     .
 
-    *Parameters*
+    **Parameters**
+
     =========  =================================================================
     data       array-like; N dimensional dataset.
     dim        int, 0 <= d < N; dimension along which to slice.
     index      int, 0 <= index < data.size[d]; The index at which to create 
                the slice.
-    integrate  int, 0 <= integrate < |index|; the number of slices above 
+    integrate  int, ``0 <= integrate < |index|``; the number of slices above 
                and below slice *index* over which to integrate. A warning is 
                issued if the integration range would exceed the data (can be 
                turned off with *silent*).
     silent     bool; toggle warning messages.
     =========  =================================================================
 
-    *Returns*
+    **Returns**
+
     ===  =======================================================================
     res  np.array; slice at *index* alond *dim* with dimensions shape[:d] + 
          shape[d+1:].
@@ -299,18 +322,21 @@ def roll_array(a, i) :
     """ Cycle the arrangement of the dimensions in an *N* dimensional array.
     For example, change an X-Y-Z arrangement to Y-Z-X.
 
-    *Parameters*
+    **Parameters**
+
     =  =========================================================================
     a  array of *N* dimensions, i.e. `len(a.shape) = N`.
     i  int; number of dimensions to roll
     =  =========================================================================
 
-    *Returns*
+    **Returns**
+
     ===  =======================================================================
     res  array of *N* dimensions where the axes have been rearranged as 
-         follows: 
+         follows::
+
              before: `shape(a) = (d[0], d[1], ..., d[N])`
-             after:  `shape(res) = (d[(0+i)%N], d[(1+i)%N], ..., d[(N+i)%N])
+             after:  `shape(res) = (d[(0+i)%N], d[(1+i)%N], ..., d[(N+i)%N])`
     ===  =======================================================================
     """
     # Create indices and rolled indices
@@ -328,9 +354,10 @@ def get_lines(data, n, dim=0, i0=0, i1=-1, offset=0.2, integrate='max',
     Extract *n* evenly spaced rows/columns from data along dimension *dim* 
     between indices *i0* and *i1*. The extracted lines are normalized and offset
     such that they can be nicely plotted close by each other - as is done, for
-    example in :func: `lineplot <>`.
+    example in :func:`lineplot <data_slicer.pit.PITDataHandler.lineplot>`.
 
-    *Parameters*
+    **Parameters**
+
     =========  =================================================================
     data       2d np.array; the data from which to extract lines.
     n          int; the number of lines to extract.
@@ -346,7 +373,8 @@ def get_lines(data, n, dim=0, i0=0, i1=-1, offset=0.2, integrate='max',
     kwargs     any other passed keyword arguments are discarded.
     =========  =================================================================
 
-    *Returns*
+    **Returns**
+
     =======  ===================================================================
     lines    list of 1d np.arrays; the extracted lines.
     indices  list of int; the indices at which the lines were extracted.
@@ -397,7 +425,8 @@ def plot_cuts(data, dim=0, integrate=0, zs=None, labels=None, max_ppf=16,
     """ Plot all (or only the ones specified by `zs`) cuts along dimension `dim` 
     on separate subplots onto matplotlib figures.
 
-    *Parameters*
+    **Parameters**
+
     =========  =================================================================
     data       3D np.array with shape (z,y,x); the data cube.
     dim        int; one of (0,1,2). Dimension along which to take the cuts.
@@ -410,12 +439,12 @@ def plot_cuts(data, dim=0, integrate=0, zs=None, labels=None, max_ppf=16,
                the given indices will be plotted.
     labels     1D array/list of length z. Optional labels to assign to the 
                different cuts
-    max_ppf    int; maximum number of *p*lots *p*er *f*igure.
+    max_ppf    int; maximum number of plots per figure.
     max_nfigs  int; maximum number of figures that are created. If more would 
                be necessary to display all plots, a warning is issued and 
                only every N'th plot is created, where N is chosen such that 
                the whole 'range' of plots is represented on the figures. 
-    kwargs     dict; keyword arguments passed on to :func: `pcolormesh 
+    kwargs     dict; keyword arguments passed on to :func:`pcolormesh 
                <matplotlib.axes._subplots.AxesSubplot.pcolormesh>`. 
                Additionally, the kwarg `gamma` for power-law color mapping 
                is accepted.
@@ -507,7 +536,8 @@ def get_contours(data, x=None, y=None, levels=0) :
     """ Use matplotlib`s contour function to get contour lines where the 2 
     dimensional dataset *data* intersects *levels*. 
 
-    *Parameters*
+    **Parameters**
+
     ======  ====================================================================
     data    2d-array; shape (nx, ny)
     x       array-like; can be a linear array of shape (nx) or a meshgrid of 
@@ -519,7 +549,8 @@ def get_contours(data, x=None, y=None, levels=0) :
             to be in ascending order.
     ======  ====================================================================
 
-    *Returns*
+    **Returns**
+
     ========  ==================================================================
     contours  list of 2d-arrays; each array of shape (2, N) contains the x and
               y coordinates of a contour line.

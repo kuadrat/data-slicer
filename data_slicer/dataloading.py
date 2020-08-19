@@ -11,7 +11,7 @@ import numpy as np
 class Dataloader() :
     """ 
     Base dataloader class (interface) from which others inherit some 
-    methods (specifically the __repr__() function). 
+    methods (specifically the ``__repr__()`` function). 
     """
     name = 'Base'
 
@@ -29,16 +29,21 @@ class Dataloader() :
     def load_data(self, *args, **kwargs) :
         """ Method stub to be overwritten by subclasses. Return data in the 
         form of an argparse.Namespace object *D* with the following structure: 
-            D.data  np.array containing the data.
-            D.axes  list of length len(D.data.shape). Contains a 1d np.array 
-                    representing each axis (or *None*)
+
+        ======  ============================================================
+        D.data  np.array containing the data.
+        D.axes  list of length len(D.data.shape). Contains a 1d np.array 
+                representing each axis (or *None*)
+        ======  ============================================================
         """
         raise NotImplementedError(('{} is an abstract base class. Use an '
                                    'appropriate subclass instead.').format(
                                    type(self)))
 
 class Dataloader_Pickle(Dataloader) :
-    """ Confer documentation of :func: Dataloader_Pickle.load_data(). """
+    """ Confer documentation of 
+    :func:`~data_slicer.dataloading.Dataloader_Pickle.load_data()`. 
+    """
     name = 'Pickle'
 
     def load_data(self, filename) :
@@ -68,39 +73,41 @@ class Dataloader_Pickle(Dataloader) :
         return D
 
 class Dataloader_3dtxt(Dataloader) :
-    """ Confer documentation of :func: Dataloader_3dtxt.load_data(). """
+    """ Confer documentation of 
+    :func:`~data_slicer.dataloading.Dataloader_3dtxt.load_data()`. 
+    """
     name = '3d txt'
 
     def load_data(self, filename) :
         """ Load data of shape (nx, ny, nz) that is stored in a .txt file in 
-        the format:
-        ```
-        #Z      Y       X       I(X, Y, Z)
-        z0      y0      x0      I(0, 0, 0)
-        z1      y0      x0      I(0, 0, 1)
-        z2      y0      x0      I(0, 0, 2)
-        z3      y0      x0      I(0, 0, 3)
-        ...
-        z(nz-1) y0      x0      I(0, 0, nz-1)
-        z(nz)   y0      x0      I(0, 0, nz)
-        z0      y1      x0      I(0, 1, 0)
-        z1      y1      x0      I(0, 1, 1)
-        z2      y1      x0      I(0, 1, 2)
-        ...
-        z(nz-1) y1      x0      I(0, 1, nz-1)
-        z(nz)   y1      x0      I(0, 1, nz)
-        ...
-        ...
-        z0      y(ny)   x0      I(0, ny, 0)
-        z1      y(ny)   x0      I(0, ny, 1)
-        ...
-        z(nz)   y(ny)   x0      I(0, ny, nz)
-        z0      y0      x1      I(1, 0, 0)
-        z1      y0      x1      I(1, 0, 1)
-        ...
-        ...
-        z(nz)   y(ny)   x(nx)   I(nz, ny, nx)
-        ```
+        the format::
+
+            #Z      Y       X       I(X, Y, Z)
+            z0      y0      x0      I(0, 0, 0)
+            z1      y0      x0      I(0, 0, 1)
+            z2      y0      x0      I(0, 0, 2)
+            z3      y0      x0      I(0, 0, 3)
+            ...
+            z(nz-1) y0      x0      I(0, 0, nz-1)
+            z(nz)   y0      x0      I(0, 0, nz)
+            z0      y1      x0      I(0, 1, 0)
+            z1      y1      x0      I(0, 1, 1)
+            z2      y1      x0      I(0, 1, 2)
+            ...
+            z(nz-1) y1      x0      I(0, 1, nz-1)
+            z(nz)   y1      x0      I(0, 1, nz)
+            ...
+            ...
+            z0      y(ny)   x0      I(0, ny, 0)
+            z1      y(ny)   x0      I(0, ny, 1)
+            ...
+            z(nz)   y(ny)   x0      I(0, ny, nz)
+            z0      y0      x1      I(1, 0, 0)
+            z1      y0      x1      I(1, 0, 1)
+            ...
+            ...
+            z(nz)   y(ny)   x(nx)   I(nz, ny, nx)
+
         """
         data = np.loadtxt(filename)
 
@@ -190,9 +197,11 @@ def load_data(filename, exclude=None, suppress_warnings=False) :
 
 # Convenience for creating txt files
 def three_d_to_txt(outfilename, data, axes=3*[None], force=False) :
-    """ Create a txt file that can be read by :class: `Dataloader_txt.
+    """ Create a txt file that can be read by 
+    :class:`~data_slicer.dataloading.Dataloader_txt`.
 
-    *Parameters*
+    **Parameters**
+
     ===========  ==============================================================
     outfilename  str; filename and/or path to the file to write into.
     data         np.array; 3d array of the data.

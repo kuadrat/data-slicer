@@ -35,12 +35,14 @@ class Model() :
 
     def __init__(self, model=None) :
         """ 
-        *Parameters*
+        **Parameters**
+
         =====  =================================================================
         model  callable; a python function representing the model.
         =====  =================================================================
 
-        ..:See also: :attr: `set_model <data_slicer.model.Model.set_model>`
+        .. seealso::
+            :meth:`set_model <data_slicer.model.Model.set_model>`
         """
         self.data = None
 
@@ -60,20 +62,21 @@ class Model() :
 
     def set_model(self, model) :
         """ Specify the function that represents the model. This should be a 
-        function with the call signature:
+        function with the call signature::
 
             model(axis1, axis2, ..., axisN, kwarg1=kwarg1_default, ..., 
                   kwargN=kwargN_default, **kwargs)
         
         I.e. all the positional arguments (*axis1* to *axisN*) correspond to 
-        a required input variables. The keyword arguments (*kwarg1* to 
+        the required input variables. The keyword arguments (*kwarg1* to 
         *kwargN*) as well as further unspecified *kwargs* can be used for the 
         model parameters.
 
         Information about the number of arguments is obtained through 
-        inspection.
+        introspection.
 
-        *Parameters*
+        **Parameters**
+
         =====  =================================================================
         model  callable; a python function representing the model.
         =====  =================================================================
@@ -131,14 +134,16 @@ class Model() :
         just start and stop values are given, linearly space values between 
         start and stop will be given.
         
-        *Parameters*
+        **Parameters**
+
         ====  ==================================================================
         axes  list of len(self.n_args); an error will be thrown if the number 
               of supplied axes does not match what is necessary for self.model.
         ====  ==================================================================
 
-        ..:see also: :attr: `set_axis <data_slicer.model.Model.set_axis>` to 
-                     set just one specific axis.
+        .. seealso::
+            :meth:`set_axis <data_slicer.model.Model.set_axis>` to set just 
+            one specific axis.
         """
         if len(axes) != self.n_args :
             message = ('The number of supplied axes ({}) does not match the '
@@ -149,10 +154,11 @@ class Model() :
 
     def set_axis(self, axis, dim=0) :
         """ Set the axis (input to the model) at position *dim*. See 
-        documentation of :attr: `set_axes <data_slicer.model.Model.set_axes>` 
+        documentation of :meth:`set_axes <data_slicer.model.Model.set_axes>` 
         for more details.
         
-        *Parameters*
+        **Parameters**
+
         ====  ==================================================================
         axis  1d array-like; the values at which the model should be 
               evaluated along this dimension. If the length is smaller than 
@@ -160,8 +166,9 @@ class Model() :
               and last value in *axis* will be created. 
         ====  ==================================================================
 
-        ..:see also: :attr: `set_axes <data_slicer.model.Model.set_axes>` to 
-                     set all axes at once.
+        ..  seealso::
+            :meth:`set_axes <data_slicer.model.Model.set_axes>` to set all 
+            axes at once.
         """
         self._check_if_model_defined()
         if len(axis) < self.MIN_AXIS_LENGTH :
@@ -183,15 +190,16 @@ class Model() :
         
     def calculate_model_data(self, axes=None, **kwargs) :
         """
-        Evaluate the given model function :attr: `model 
+        Evaluate the given model function :meth:`model 
         <data_slicer.model.Model.model>` at every point in the hypervolume 
         defined by the *axes*. This means that every possible combination of 
         coordinates of all *axes* is created, and the model evaluated at 
         every such point.
 
-        *Parameters*
+        **Parameters**
+
         ======  ================================================================
-        axes    if specified, this is passed on to :attr: `set_axes 
+        axes    if specified, this is passed on to :meth:`set_axes 
                 <data_slicer.model.Model.set_axes>`. Otherwise the previously 
                 set axes will be used.
         kwargs  all keyword arguments are passed to the model function.
@@ -211,7 +219,7 @@ class Model() :
     def make_slice(self, dim, index, integrate=0, silent=False) :
         """ Return a slice out of the model data. If the data has not yet 
         been calculated, try to do it first.
-        This wraps :func: `make_slice <data_slicer.utilities.make_slice>`.
+        This wraps :func:`make_slice <data_slicer.utilities.make_slice>`.
         Confer respective documentation for information on the arguments.
         """
         try :
@@ -221,22 +229,27 @@ class Model() :
         return util.make_slice(data, dim, index, integrate, silent)
 
     def get_isocurve(self, level, pen=dict(color='r', width=2), **kwargs) :
-        """ Only possible for 2D models (i.e. self.n_args==2).
+        """ 
+        .. warning::
+            Only possible for 2D models (i.e. self.n_args==2).
+
         Return an isocurve (:class:`IsocurveItem 
         <pyqtgraph.graphicsItems.IsocurveItem>` of the model data at the 
         selected *level*.
 
-        This used pyqtgraph's icocurve function, which is based on the 
+        This uses pyqtgraph's icocurve function, which is based on the 
         marching squares algorithm.
 
-        *Parameters*
+        **Parameters**
+
         =====  =================================================================
         level  float; value at which the isocurve is generated.
         pen    arguments for the visual properties of the isocurve. Can be 
                anything which is valid for :func:`mkPen <pyqtgraph.mkPen>`.
         =====  =================================================================
 
-        *Returns*
+        **Returns**
+
         ============  ==========================================================
         isocurveItem  :class:`IsocurveItem 
                       <pyqtgraph.graphicsItems.IsocurveItem>`
@@ -254,7 +267,10 @@ class Model() :
         return IsocurveItem(data=self.data, level=level, pen=pen, **kwargs)
 
     def get_values_around(self, value, eps) :
-        """ :unfinished: """
+        """ 
+        .. warning::
+            unfinished
+        """
         mask = np.where(np.abs(self.data - value) < eps)
         points = self.data[mask]
         return [mesh[mask] for mesh in self.meshes], points
