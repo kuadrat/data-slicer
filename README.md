@@ -37,6 +37,11 @@ see something like `Successfully installed data_slicer` towards the end.
 This should bring up a window with some example data.
 
 
+## Documentatio
+
+The documentation is hosted by the friendly people over at ReadTheDocs.org:
+https://data-slicer.readthedocs.io/en/latest/
+
 ## Footnotes
 
 (footnote 1) You most likely have many different python packages installed on 

@@ -10,8 +10,8 @@ logger = logging.getLogger('ds.'+__name__)
 
 class CustomizableLineSegmentROI(pg.LineSegmentROI) :
     """ Subclass of :class:`LineSegmentROI 
-    <pyqtgraph.graphicsItems.ROI.LineSegmentROI>`. Implements a few features 
-    that were missing from the parent class, namely customizable hover pen.
+    <pyqtgraph.LineSegmentROI>`. Implements a few features that were missing 
+    from the parent class, namely customizable hover pen.
     """
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
@@ -21,7 +21,7 @@ class CustomizableLineSegmentROI(pg.LineSegmentROI) :
     def set_hover_pen(self, *args, **kwargs) :
         """ Set the pen used for drawing this widget when it is in the 
         `hovered` state. Accepts function arguments to :func: `mkPen 
-        <pyqtgraph.mkPen()>`
+        pyqtgraph.mkPen`
         """
         self.hover_pen = pg.mkPen(*args, **kwargs)
 
@@ -53,8 +53,8 @@ class CustomizableHandle(pg.graphicsItems.ROI.Handle) :
 
     def set_hover_pen(self, *args, **kwargs) :
         """ Set the pen used for drawing this widget when it is in the 
-        *hovered* state. Accepts function arguments to :func:`mkPen 
-        <pyqtgraph.mkPen()>`
+        *hovered* state. Accepts function arguments to :func:` 
+        pyqtgraph.mkPen` 
         """
         self.hover_pen = pg.mkPen(*args, **kwargs)
 
@@ -82,16 +82,16 @@ class CustomizableHandle(pg.graphicsItems.ROI.Handle) :
 
 class Cutline(qt.QtCore.QObject) :
     """ Wrapper class allowing easy adding and removing of 
-    :class:`LineSegmentROI <pyqtgraph.LineSegmentROI>`s to a 
-    :class:`PlotWidget <pyqtgraph.PlotWidget>`.
+    :class:`pyqtgraph.LineSegmentROI` to a 
+    :class:`pyqtgraph.PlotWidget`.
     It both
     has-a LineSegmentROI
     and
     has-a PlotWidget
     and handles interactions between the two.
 
-    Needs to inherit from :class:`QObject <pyqtgraph.Qt.QtCore.QObject>` in 
-    order to have signals.
+    Needs to inherit from :class:`pyqtgraph.qt.QtCore.QObject` in order to 
+    have signals.
 
     **Signals**
 
@@ -182,11 +182,11 @@ class Cutline(qt.QtCore.QObject) :
 
     def calculate_endpoints(self) :
         """ Get sensible initial values for the endpoints of the 
-        :class:`LineSegmentROI <pyqtgraph.graphicsItems.ROI.LineSegmentROI>` 
-        from the :class:`pyqtrgaph.widgets.PlotWidget`'s current view range.  
-        Depending on the state of `self.orientation` these endpoints 
-        correspond either to a vertical or horizontal line centered at the 
-        center of the plot and spanning exactly the whole plot range.
+        :class:`LineSegmentROI <pyqtgraph.LineSegmentROI>` from the 
+        :class:`pyqtrgaph.PlotWidget`'s current view range.  Depending on the 
+        state of `self.orientation` these endpoints correspond either to a 
+        vertical or horizontal line centered at the center of the plot and 
+        spanning exactly the whole plot range.
 
         Returns a tuple of len(2) lists: (lower_left, top_right) 
         corresponding to the  two endpoints.

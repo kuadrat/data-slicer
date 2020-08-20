@@ -17,7 +17,7 @@ from pyqtgraph import ColorMap
 from data_slicer.utilities import CONFIG_DIR
 
 class ds_cmap(ColorMap) :
-    """ Simple subclass of :class:`<pyqtgraph.ColorMap>`. Adds vmax, 
+    """ Simple subclass of :class:`pyqtgraph.ColorMap`. Adds vmax, 
     powerlaw normalization and a convenience function to change alpha.
     """
     def __init__(self, pos, color, gamma=1, **kwargs) :
@@ -95,7 +95,7 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
     **Returns**
 
     ===============  ===========================================================
-    pyqtgraph_cmap   :class:`<pyqtgraph.ColorMap>`
+    pyqtgraph_cmap   :class:`pyqtgraph.ColorMap`
     ===============  ===========================================================
     """
     # Get the colormap object if a colormap name is given 

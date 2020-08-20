@@ -411,7 +411,7 @@ class ImagePlot(pg.PlotWidget) :
 
     def remove_image(self) :
         """ Removes the current image using the parent's :meth:`removeItem 
-        <pyqtgraph.PlotWidget.removeItem>` function. 
+        pyqtgraph.PlotWidget.removeItem` function. 
         """
         if self.image_item is not None :
             self.removeItem(self.image_item)
@@ -431,8 +431,7 @@ class ImagePlot(pg.PlotWidget) :
                   displayed.
         emit      bool; whether or not to emit :signal:`sig_image_changed`
         (kw)args  positional and keyword arguments that are passed on to 
-                  :class:`ImageItem 
-                  <pyqtgraph.graphicsItems.ImageItem.ImageItem>`
+                  :class:`pyqtgraph.ImageItem`
         ========  ==============================================================
         """
         # Convert array to ImageItem
@@ -829,8 +828,8 @@ class CrosshairImagePlot(ImagePlot) :
 
 class CursorPlot(pg.PlotWidget) :
     """ Implements a simple, draggable scalebar represented by a line 
-    (:class:`InfiniteLine <pyqtgraph.InfiniteLine>) on an axis 
-    (:class:`PlotWidget <pyqtgraph.PlotWidget>).
+    (:class:`pyqtgraph.InfiniteLine) on an axis 
+    (:class:`pyqtgraph.PlotWidget).
     The current position of the slider is tracked with the 
     :class:`TracedVariable <data_slicer.utilities.TracedVariable>` self.pos 
     and its width with the `TracedVariable` self.slider_width.
@@ -941,7 +940,7 @@ class CursorPlot(pg.PlotWidget) :
 
     def on_allowed_values_change(self) :
         """ Callback for the :signal:`sig_allowed_values_changed
-        <pyqtgraph.utilities.TracedVariable.sig_allowed_values_changed>`. 
+        <data_slicer.utilities.TracedVariable.sig_allowed_values_changed>`. 
         With a change of the allowed values in the TracedVariable, we should 
         update our bounds accordingly.
         The number of allowed values can also give us a hint for a reasonable 
@@ -1009,7 +1008,7 @@ class CursorPlot(pg.PlotWidget) :
 
     def set_slider_pen(self, color=None, width=None, hover_color=None) :
         """ Define the color and thickness of the slider (InfiniteLine 
-        object :class:`<pyqtgraph.InfiniteLine>`) and store these attribute 
+        object :class:`pyqtgraph.InfiniteLine`) and store these attribute 
         in `self.slider_width` and `self.cursor_color`).
         """
         # Default to the current values if none are given
@@ -1107,10 +1106,10 @@ class Scalebar(CursorPlot) :
     **Attributes**
 
     =========  =================================================================
-    textItems  list of (t, (rx, ry)) tuples; t is a :class:`TextItem 
-               <pyqtgraph.graphicsItems.TextItem>` instance and rx, ry are 
-               floats in the range [0, 1] indicating the relative positioning 
-               of the textitems inside the Scalebar.
+    textItems  list of (t, (rx, ry)) tuples; t is a 
+               :class:`pyqtgraph.TextItem` instance and rx, ry are floats in 
+               the range [0, 1] indicating the relative positioning of the 
+               textitems inside the Scalebar.
     =========  =================================================================
     """
     def __init__(self, *args, **kwargs) :
