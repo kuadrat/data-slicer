@@ -955,9 +955,12 @@ class MainWindow(QtGui.QMainWindow) :
         self.lut = self.cmap.getLookupTable()
         self.redraw_plots()
 
-if __name__=="__main__" :
-    from data_slicer import set_up_logging
+def start_main_window() :
     app = QtGui.QApplication([])
     mw = MainWindow()
     app.exec_()
+
+if __name__=="__main__" :
+    from data_slicer import set_up_logging
+    start_main_window()
 

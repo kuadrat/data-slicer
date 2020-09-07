@@ -8,8 +8,7 @@ with open("README.md", "r") as fh :
 
 setuptools.setup(
     name='data-slicer',
-    version='0.0.4',
-#    version='0.0.14',
+    version='0.0.5',
     author='Kevin Kramer',
     author_email='kevin.kramer@uzh.ch',
     description='Tools for quick visualization of three dimensional datasets.',
@@ -24,6 +23,11 @@ setuptools.setup(
         'Operating System :: OS Independent',
     ],
     include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'pit = data_slicer.pit:start_main_window',
+        ],
+    }
 #    data_files=[
 #        ('example_data', ['data/testdata_100_150_200.p'])
 #    ],
