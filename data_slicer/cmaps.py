@@ -42,7 +42,7 @@ class ds_cmap(ColorMap) :
         self.stopsCache = dict()
 
         # Apply alpha
-        self.color[:,-1] = self.alpha
+        self.color[:,-1] = 255*self.alpha
 
         # Linearly transform color values to the new range
         old_max = self.original_pos.max()
@@ -110,6 +110,8 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
     rgba = matplotlib_cmap(indices)
     # Apply alpha
     rgba[:,-1] = alpha
+    # Convert to range 0-255
+    rgba *= 255
 
     return ds_cmap(values, rgba)
 
