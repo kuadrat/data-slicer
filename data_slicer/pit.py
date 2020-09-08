@@ -62,7 +62,7 @@ class EmbedIPython(RichJupyterWidget):
 
 # Prepare sample data
 data_path = pkg_resources.resource_filename('data_slicer', 'data/')
-SAMPLE_DATA_FILE = data_path + 'testdata_100_150_200.p'
+SAMPLE_DATA_FILE = data_path + 'pit.p'
 
 # Add the plugin directory to the python path
 plugin_path = pathlib.Path.home() / CONFIG_DIR / 'plugins/'

@@ -1,8 +1,8 @@
 # Data slicer
 
-A 3D data visualization tool.
+3D data visualization tools with plugin capabilites.
 
-![](https://raw.githubusercontent.com/kuadrat/arpys/master/screenshots/pit_demo.gif)
+![](https://raw.githubusercontent.com/kuadrat/data_slicer/master/screenshots/pit_demo.gif)
 
 ## Installation
 
@@ -37,7 +37,7 @@ see something like `Successfully installed data_slicer` towards the end.
 This should bring up a window with some example data.
 
 
-## Documentatio
+## Documentation
 
 The documentation is hosted by the friendly people over at ReadTheDocs.org:
 https://data-slicer.readthedocs.io/en/latest/
