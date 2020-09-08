@@ -177,6 +177,16 @@ def indexof(value, array) :
     """
     return np.argmin(np.abs(array - value))
 
+def pop_kwarg(name, kwargs, default=1) :
+    """ Check if a keyword *name* appears in the dictionary *kwargs*. If yes, 
+    remove it from the dictionary, returning its value. If no, return the 
+    value specified by *default*.
+    """
+    if name in kwargs :
+        return kwargs.pop(name)
+    else :
+        return default
+
 def make_slice_3d(data, d, i, integrate=0, silent=False) :
     """ 
     :deprecated: 
@@ -492,11 +502,10 @@ def plot_cuts(data, dim=0, integrate=0, zs=None, labels=None, max_ppf=16,
     x = np.arange(len(data.shape))
     data = np.moveaxis(data, x, np.roll(x, dim))
 
-    # Extract additional kwarg from kwargs
-    if 'gamma' in kwargs :
-        gamma = kwargs.pop('gamma')
-    else :
-        gamma = 1
+    # Extract kwargs used for the PowerNorm
+    gamma = pop_kwarg('gamma', kwargs, 1)
+    vmin = pop_kwarg('vmin', kwargs, None)
+    vmax = pop_kwarg('vmax', kwargs, None)
 
     # Define the beginnings of the plot in figure units
     margins = dict(left=0, right=1, bottom=0, top=1)
@@ -518,7 +527,9 @@ def plot_cuts(data, dim=0, integrate=0, zs=None, labels=None, max_ppf=16,
             # Transpose to counter matplotlib's transposition
             cut = cut.T
             ax = fig.add_subplot(ppr, ppr, j+1)
-            ax.pcolormesh(cut, norm=PowerNorm(gamma=gamma), **kwargs)
+            ax.pcolormesh(cut, 
+                          norm=PowerNorm(gamma=gamma, vmin=vmin, vmax=vmax), 
+                          **kwargs)
             ax.set_xticks([])
             ax.set_yticks([])
             if labels is not None :

@@ -341,7 +341,7 @@ class PITDataHandler() :
                                   n_ticks=n_ticks, **getlines_kwargs)
 
     def plot_all_slices(self, dim=2, integrate=0, zs=None, labels='default', 
-                        max_ppf=16, max_nfigs=2) :
+                        max_ppf=16, max_nfigs=2, **kwargs) :
         """ Wrapper for :func:`plot_cuts <data_slicer.utilities.plot_cuts>`.
         Plot all (or only the ones specified by `zs`) slices along dimension 
         `dim` on separate suplots onto matplotlib figures.
@@ -354,16 +354,21 @@ class PITDataHandler() :
                    extracted cut. If 'full', take the maximum number possible, 
                    depending on *zs* and whether the number of cuts is reduced 
                    due to otherwise exceeding *max_nfigs*.
-        zs         1D np.array; selection of indices along dimension `dim`. Only 
-                   the given indices will be plotted.
+        zs         1D np.array; selection of indices along dimension `dim`. 
+                   Only the given indices will be plotted.
         labels     1D array/list of length z. Optional labels to assign to the 
                    different cuts. By default the values of the respective axis
                    are used. Set to *None* to suppress labels.
         max_ppf    int; maximum number of plots per figure.
-        max_nfigs  int; maximum number of figures that are created. If more would 
-                   be necessary to display all plots, a warning is issued and 
-                   only every N'th plot is created, where N is chosen such that 
-                   the whole 'range' of plots is represented on the figures. 
+        max_nfigs  int; maximum number of figures that are created. If more 
+                   would be necessary to display all plots, a warning is 
+                   issued and only every N'th plot is created, where N is 
+                   chosen such that the whole 'range' of plots is represented 
+                   on the figures. 
+        kwargs     dict; keyword arguments passed on to :func:`pcolormesh 
+                   <matplotlib.axes._subplots.AxesSubplot.pcolormesh>`. 
+                   Additionally, the kwarg `gamma` for power-law color mapping 
+                   is accepted.
         =========  ============================================================
 
         .. seealso::
