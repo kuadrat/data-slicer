@@ -15,8 +15,8 @@ if __name__ == "__main__" :
     #_Parameters________________________________________________________________
 
     DATA_PATH = pkg_resources.resource_filename('data_slicer', 'data/')
-    datafile = DATA_PATH + 'testdata_100_150_200.p'
-    #datafile = '/home/kevin/Documents/qmap/materials/PLCCO/2018_10_SIS/PLCCO_0000.p'
+#    datafile = DATA_PATH + 'testdata_100_150_200.p'
+    datafile = DATA_PATH + 'pit.p'
 
     ## Visual
     gloption = 'opaque'
@@ -108,7 +108,7 @@ if __name__ == "__main__" :
 
     # A plane representing the cutline
     cut, coords = cutline.get_array_region(data, selector.image_item, 
-                                           returnCoords=True)
+                                           returnMappedCoords=True)
     cut_texture = pg.makeRGBA(cut, levels=levels, lut=lut)[0]
     cutplane = gl.GLImageItem(cut_texture, glOptions=gloption)
 
@@ -146,7 +146,7 @@ if __name__ == "__main__" :
         transform = cutline.roi.getArraySlice(data, selector.image_item)[1]
 
         cut, coords = cutline.get_array_region(data, selector.image_item, 
-                                               returnCoords=True)
+                                               returnMappedCoords=True)
         texture = pg.makeRGBA(cut, levels=levels, lut=lut)[0]
     #    xy.setTexture(texture)
         cutplane.setData(texture)

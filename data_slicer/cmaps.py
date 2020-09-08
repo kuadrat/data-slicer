@@ -150,7 +150,9 @@ def load_custom_cmap(filename) :
     alpha column).
     """
     data = np.loadtxt(filename)[:,:3]
-    data /= data.max()
+    data /= data.max() 
+    # Convert to range [0-255] for pyqtgraph 0.0.11
+    data *= 255
     N = len(data)
     # Append a column of 1's
     cmap = np.hstack([data, np.ones(N).reshape((N, 1))])
@@ -206,6 +208,7 @@ for cmap in files :
     inverse = copy.copy(cmap_object)
     inverse.color = cmap_object.color[::-1]
     cmaps.update({name + '_r': inverse})
+
 # +---------+ #
 # | Testing | # ================================================================
 # +---------+ #

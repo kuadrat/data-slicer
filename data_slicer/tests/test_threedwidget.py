@@ -38,7 +38,8 @@ if __name__ == "__main__" :
 
     # Load example data
     data_path = pkg_resources.resource_filename('data_slicer', 'data/')
-    datafile = 'testdata_100_150_200.p'
+#    datafile = 'testdata_100_150_200.p'
+    datafile = 'pit.p'
     with open(data_path + datafile, 'rb') as f :
         data = pickle.load(f)
     w.set_data(data)

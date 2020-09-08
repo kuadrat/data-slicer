@@ -13,7 +13,8 @@ if __name__ == "__main__" :
     #_Parameters________________________________________________________________
 
     DATA_PATH = pkg_resources.resource_filename('data_slicer', 'data/')
-    datafile = DATA_PATH + 'testdata_100_150_200.p'
+#    datafile = DATA_PATH + 'testdata_100_150_200.p'
+    datafile = DATA_PATH + 'pit.p'
 
     ## Visual
     gloption = 'opaque'
