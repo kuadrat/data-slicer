@@ -515,6 +515,8 @@ def plot_cuts(data, dim=0, integrate=0, zs=None, labels=None, max_ppf=16,
                 cut = make_slice(data, 0, cut_index, integrate)
             else :
                 continue
+            # Transpose to counter matplotlib's transposition
+            cut = cut.T
             ax = fig.add_subplot(ppr, ppr, j+1)
             ax.pcolormesh(cut, norm=PowerNorm(gamma=gamma), **kwargs)
             ax.set_xticks([])

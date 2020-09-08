@@ -135,9 +135,10 @@ def convert_ds_to_matplotlib(data_slicer_cmap, cmap_name='converted_cmap') :
     # Reset the transformations - matplotlib can take care of them itself
     data_slicer_cmap.set_gamma(1)
     data_slicer_cmap.set_vmax(1)
-    # Create the matplotlib colormap
-    colors = data_slicer_cmap.color
+    # Convert the colors from the range [0-255] to [0-1]
+    colors = data_slicer_cmap.color / 255
     N = len(colors)
+    # Create the matplotlib colormap
     matplotlib_cmap = LinearSegmentedColormap.from_list(cmap_name,
                                                         colors, N)
     return matplotlib_cmap
