@@ -1,14 +1,23 @@
-.. data_slicer documentation master file, created by
-   sphinx-quickstart on Wed Aug 19 09:23:38 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to data_slicer's documentation!
 =======================================
 
+Welcome to the documentation for the ``data_slicer`` package!
+These pages are intended to give an overview about what the package provides, 
+and explain how it can be installed and used.
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: Introduction
+
+   introduction
+   installation
+   quickstart
+   plugins
+   configuratin
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Code reference
 
    modules
 

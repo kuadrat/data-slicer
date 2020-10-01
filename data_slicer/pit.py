@@ -97,6 +97,10 @@ class PITDataHandler() :
         # How often we have rolled the axes from the original setup
         self._roll_state = 0
 
+    def get_config_dir(self) :
+        """ Return the path to the configuration directory on this system. """
+        return pathlib.Path.home() / CONFIG_DIR
+
     def get_data(self) :
         """ Convenience `getter` method. Allows writing ``self.get_data()``
         instead of ``self.data.get_value()``. 
