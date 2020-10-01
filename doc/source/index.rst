@@ -13,7 +13,7 @@ and explain how it can be installed and used.
    installation
    quickstart
    plugins
-   configuratin
+   configuration
 
 .. toctree::
    :maxdepth: 1
