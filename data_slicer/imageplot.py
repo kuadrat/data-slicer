@@ -560,6 +560,9 @@ class ImagePlot(pg.PlotWidget) :
         # Calculate the scaling factors
         sx = (x1-x0)/nx
         sy = (y1-y0)/ny
+        # Ensure nonzero
+        sx = 1 if sx==0 else sx
+        sy = 1 if sy==0 else sy
         # Define a transformation matrix that scales and translates the image 
         # such that it appears at the coordinates that match our x and y axes.
         transform = qt.QtGui.QTransform()
@@ -808,8 +811,8 @@ class CrosshairImagePlot(ImagePlot) :
         """
         logger.debug('{}.update_allowed_values()'.format(self.name))
         [[xmin, xmax], [ymin, ymax]] = self.get_limits()
-        self.pos[0].set_allowed_values(arange(xmin, xmax, 1))
-        self.pos[1].set_allowed_values(arange(ymin, ymax, 1))
+        self.pos[0].set_allowed_values(arange(xmin, xmax+1, 1))
+        self.pos[1].set_allowed_values(arange(ymin, ymax+1, 1))
 
     def set_bounds(self, xmin, xmax, ymin, ymax) :
         """ Set both, the displayed area of the axis as well as the the range 
@@ -985,7 +988,7 @@ class CursorPlot(pg.PlotWidget) :
         # Ensure wheel_frames is at least as big as a step in the allowed 
         # values. NOTE This assumes allowed_values to be evenly spaced.
         av = self.pos.allowed_values
-        if av is not None and self.wheel_frames <= 1 :
+        if av is not None and self.wheel_frames <= 1 and len(av) > 1 :
             self.wheel_frames = av[1] - av[0]
     
     def set_secondary_axis(self, min_val, max_val) :
