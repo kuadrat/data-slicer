@@ -7,11 +7,17 @@ and explain how it can be installed and used.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Introduction
+   :caption: Overview
 
    introduction
    installation
    quickstart
+   access
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Other
+
    plugins
    configuration
 

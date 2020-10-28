@@ -9,6 +9,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from numpy import arange, array, clip, inf, linspace, ndarray
 from pyqtgraph import Qt as qt #import QtCore
+from pyqtgraph import PlotDataItem
 from pyqtgraph.graphicsItems.ImageItem import ImageItem
 from pyqtgraph.widgets import PlotWidget, GraphicsView
 
@@ -906,6 +907,20 @@ class CursorPlot(pg.PlotWidget) :
         # The inherited mouseReleaseEvent is probably used for sigDragged 
         # already. Anyhow, overwriting it here leads to inconsistent behaviour.
         #self.mouseReleaseEvent = self.onClick
+
+    def get_data(self) :
+        """ Get the currently displayed data as a tuple of arrays, one 
+        containing the x values and the other the y values.
+
+        **Returns**
+
+        =  =====================================================================
+        x  array containing the x values.
+        y  array containing the y values.
+        =  =====================================================================
+        """
+        pdi = self.listDataItems()[0]
+        return pdi.getData()
 
     def orientate(self) :
         """ Define all aspects that are dependent on the orientation. """

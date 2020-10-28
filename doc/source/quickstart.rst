@@ -1,3 +1,5 @@
+.. _sec-quickstart:
+
 Quick start
 ===========
 
@@ -12,11 +14,11 @@ and the most basic functionality.
    The main window of PIT.
    
    =  ==========================================================================
-   a  main data plot
-   b  cut plot
-   c  vertical profile
-   d  integrated z plot
-   e  horizontal profile
+   a  main data plot; ``mw.main_plot``
+   b  cut plot; ``mw.cut_plot``
+   c  vertical profile; ``mw.x_plot``
+   d  integrated z plot; ``mw.integrated_plot``
+   e  horizontal profile; ``mw.y_plot``
    f  colorscale sliders
    g  interactive ipython console
    =  ==========================================================================

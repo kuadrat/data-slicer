@@ -158,6 +158,44 @@ class PITDataHandler() :
         D = dl.load_data(filename)
         self.prepare_data(D.data, D.axes)
 
+    def get_main_data(self) :
+        """ Return the 2d array that is currently displayed in the main plot. 
+        """
+        return self.main_window.main_plot.image_data
+
+    def get_cut_data(self) :
+        """ Return the 2d array that is currently displayed in the cut plot. 
+        """
+        return self.main_window.cut_plot.image_data
+
+    def get_hprofile(self) :
+        """ Return an array containing the y values displayed in the 
+        horizontal profile plot (mw.y_plot).
+
+        .. seealso::
+            :func:`data_slicer.imageplot.CursorPlot.get_data`
+        """
+        return self.main_window.y_plot.get_data()[1]
+
+    def get_vprofile(self) :
+        """ Return an array containing the x values displayed in the 
+        vertical profile plot (mw.x_plot).
+
+        .. seealso::
+            :func:`data_slicer.imageplot.CursorPlot.get_data`
+        """
+        return self.main_window.x_plot.get_data()[0]
+
+    def get_iprofile(self) :
+        """ Return an array containing the y values displayed in the 
+        integrated intensity profile plot (mw.integrated_plot).
+
+        .. seealso::
+            :func:`data_slicer.imageplot.CursorPlot.get_data`
+        """
+        return self.main_window.integrated_plot.get_data()[1]
+
+
     def update_z_range(self) :
         """ When new data is loaded or the axes are rolled, the limits and 
         allowed values along the z dimension change.
