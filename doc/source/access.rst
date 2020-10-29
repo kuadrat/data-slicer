@@ -1,3 +1,5 @@
+.. _sec-access:
+
 Accessing presented data
 ========================
 

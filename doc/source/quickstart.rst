@@ -65,4 +65,25 @@ normalization (*gamma*).
 
 To change to used colormap, the *ipython console* **(g)** has to be used:
 Type the command ``mw.set_cmap('CMAP_NAME')``.
+Refer to :ref:`the section about using the console <sec-console>` for more.
+
+
+Basics
+------
+
+Data is loaded by using the :func:`pit.open() 
+<data_slicer.pit.PITDataHandler.open>` command from the console.
+Change the way we look at the data using :func:`pit.roll_axes() 
+<data_slicer.pit.PITDataHandler.roll_axes>` and overlay a model over the 
+displayed data with :func:`pit.overlay_model() 
+<data_slicer.pit.PITDataHandler.overlay_model>`.
+
+You can create a matplotlib figure of the *main* or *cut plots* by right 
+clicking and choosing *MPL Export*.
+
+.. note::
+   The *Export...* option from the right click menu is broken due to some 
+   error in pyqtgraph over which I have no control.
+
+Refer to :ref:`sec-console` for more information on what you can do.
 

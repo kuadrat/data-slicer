@@ -12,6 +12,7 @@ and explain how it can be installed and used.
    introduction
    installation
    quickstart
+   console
    access
 
 .. toctree::
@@ -20,12 +21,13 @@ and explain how it can be installed and used.
 
    plugins
    configuration
+   ipython_crash_course
 
 .. toctree::
    :maxdepth: 1
    :caption: Code reference
 
-   modules
+   data_slicer
 
 Indices and tables
 ==================

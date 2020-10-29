@@ -1,5 +1,5 @@
 """
-A widget that combines slices from different sides with intensity 
+PIT is a widget that combines slices from different sides with intensity 
 distribution curves and other convenient features.
 """
 
