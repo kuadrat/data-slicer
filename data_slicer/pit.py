@@ -21,12 +21,14 @@ from qtconsole.rich_ipython_widget import RichIPythonWidget, RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
 
 import data_slicer.dataloading as dl
-from data_slicer.cmaps import cmaps, convert_ds_to_matplotlib
+# Importing ds_cmap is necessary in order to load from pickle
+from data_slicer.cmaps import convert_ds_to_matplotlib, ds_cmap, \
+                              load_user_cmaps
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import *
 from data_slicer.model import Model
-from data_slicer.utilities import CONFIG_DIR, make_slice, plot_cuts, \
-                                  TracedVariable
+from data_slicer.utilities import CACHED_CMAPS_FILENAME, CONFIG_DIR, \
+                                  make_slice, plot_cuts, TracedVariable
 
 logger = logging.getLogger('ds.'+__name__)
 
@@ -67,6 +69,11 @@ SAMPLE_DATA_FILE = data_path + 'pit.p'
 # Add the plugin directory to the python path
 plugin_path = pathlib.Path.home() / CONFIG_DIR / 'plugins/'
 sys.path.append(str(plugin_path))
+
+# Load cmaps
+with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
+    cmaps = pickle.load(f)
+load_user_cmaps(cmaps)
 
 # Number of dimensions to handle
 NDIM = 3

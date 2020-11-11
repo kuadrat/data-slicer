@@ -5,6 +5,7 @@ colormaps.
 import copy
 import os
 import pathlib
+import pickle
 import pkg_resources
 import warnings
 
@@ -14,7 +15,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.pyplot import colormaps
 from pyqtgraph import ColorMap
 
-from data_slicer.utilities import CONFIG_DIR
+from data_slicer.utilities import CACHED_CMAPS_FILENAME, CONFIG_DIR
 
 class ds_cmap(ColorMap) :
     """ Simple subclass of :class:`pyqtgraph.ColorMap`. Adds vmax, 
@@ -159,58 +160,74 @@ def load_custom_cmap(filename) :
     pos = np.linspace(0, 1, N)
     return ds_cmap(pos, cmap)
 
+# Load the cmaps dictionary
+data_path = pkg_resources.resource_filename('data_slicer', 'data/')
+try :
+    with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
+        cmaps = pickle.load(f)
+except AttributeError :
+    cmaps = dict()
+#cmaps = dict()
+
+# Add user supplied colormaps
+def load_user_cmaps(cmaps) :
+    """ Append user supplied colormaps to the dictionary *cmaps*. """
+    config_path = pathlib.Path.home() / CONFIG_DIR / 'cmaps/'
+    try :
+        files = os.listdir(config_path)
+    except FileNotFoundError :
+        files = []
+
+    for cmap in files :
+        name, suffix = cmap.split('.')
+        # Only load files with the .cmap suffix
+        if suffix != 'cmap' :
+            continue
+        cmap_object = load_custom_cmap(config_path / cmap)
+        cmaps.update({name: cmap_object})
+        # Also add the inverse cmap
+        inverse = ds_cmap(cmap_object.pos, cmap_object.color[::-1])
+        cmaps.update({name + '_r': inverse})
+
 # +-------------------+ #
 # | Prepare colormaps | # ======================================================
 # +-------------------+ #
 
-# Convert all matplotlib colormaps to pyqtgraph ones and make them available 
-# in the dict cmaps
-cmaps = dict()
-for name in colormaps() :
-    cmap = cm.get_cmap(name)
-    cmaps.update({name: convert_matplotlib_to_pyqtgraph(cmap)})
-
-# Add additional colormaps from package
-data_path = pkg_resources.resource_filename('data_slicer', 'data/')
-try :
-    datafiles = os.listdir(data_path)
-except FileNotFoundError :
-    warnings.warn('Package colormaps were not found.')
-    datafiles = []
-
-for cmap in datafiles :
-    name, suffix = cmap.split('.')
-    # Only load files with the .cmap suffix
-    if suffix != 'cmap' :
-        continue
-    cmap_object = load_custom_cmap(data_path + cmap)
-    cmaps.update({name: cmap_object})
-    # Also add the inverse cmap
-    inverse = copy.copy(cmap_object)
-    inverse.color = cmap_object.color[::-1]
-    cmaps.update({name + '_r': inverse})
-
-# Add user supplied colormaps
-config_path = pathlib.Path.home() / CONFIG_DIR / 'cmaps/'
-try :
-    files = os.listdir(config_path)
-except FileNotFoundError :
-    files = []
-
-for cmap in files :
-    name, suffix = cmap.split('.')
-    # Only load files with the .cmap suffix
-    if suffix != 'cmap' :
-        continue
-    cmap_object = load_custom_cmap(config_path / cmap)
-    cmaps.update({name: cmap_object})
-    # Also add the inverse cmap
-    inverse = copy.copy(cmap_object)
-    inverse.color = cmap_object.color[::-1]
-    cmaps.update({name + '_r': inverse})
-
-# +---------+ #
-# | Testing | # ================================================================
-# +---------+ #
 if __name__ == '__main__' :
-    print(cmaps.keys())
+    from datetime import datetime
+    print('Caching colormaps...')
+    n = datetime.now
+
+    cmaps = dict()
+    # Convert all matplotlib colormaps to pyqtgraph ones and make them available 
+    # in the dict cmaps
+    start = n()
+    for name in colormaps() :
+        cmap = cm.get_cmap(name)
+        cmaps.update({name: convert_matplotlib_to_pyqtgraph(cmap)})
+    print('mpl: ', n()-start)
+
+    # Add additional colormaps from package
+    data_path = pkg_resources.resource_filename('data_slicer', 'data/')
+    try :
+        datafiles = os.listdir(data_path)
+    except FileNotFoundError :
+        warnings.warn('Package colormaps were not found.')
+        datafiles = []
+
+    for cmap in datafiles :
+        name, suffix = cmap.split('.')
+        # Only load files with the .cmap suffix
+        if suffix != 'cmap' :
+            continue
+        cmap_object = load_custom_cmap(data_path + cmap)
+        cmaps.update({name: cmap_object})
+        # Also add the inverse cmap
+        inverse = ds_cmap(cmap_object.pos, cmap_object.color[::-1])
+        cmaps.update({name + '_r': inverse})
+    print('data/: ', n()-start)
+
+    # Store the cmaps dict
+    with open(data_path + CACHED_CMAPS_FILENAME, 'wb') as f :
+        pickle.dump(cmaps, f)
+
