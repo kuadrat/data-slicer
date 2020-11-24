@@ -3,6 +3,7 @@ Convert some of the nicer matplotlib and kustom colormaps to pyqtgraph
 colormaps.
 """
 import copy
+import logging
 import os
 import pathlib
 import pickle
@@ -16,6 +17,8 @@ from matplotlib.pyplot import colormaps
 from pyqtgraph import ColorMap
 
 from data_slicer.utilities import CACHED_CMAPS_FILENAME, CONFIG_DIR
+
+logger = logging.getLogger('ds.'+__name__)
 
 class ds_cmap(ColorMap) :
     """ Simple subclass of :class:`pyqtgraph.ColorMap`. Adds vmax, 
@@ -160,14 +163,21 @@ def load_custom_cmap(filename) :
     pos = np.linspace(0, 1, N)
     return ds_cmap(pos, cmap)
 
-# Load the cmaps dictionary
+# Load the cmaps dictionary (this is broken)
 data_path = pkg_resources.resource_filename('data_slicer', 'data/')
-try :
+#try :
+#    with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
+#        cmaps = pickle.load(f)
+#except AttributeError :
+#    logger.info('Could not load colormaps from {}.'.format(
+#                data_path + CACHED_CMAPS_FILENAME))
+#    cmaps = dict()
+def get_cmaps() :
+    """ Return cached cmaps. """
+    print(data_path + CACHED_CMAPS_FILENAME)
     with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
         cmaps = pickle.load(f)
-except AttributeError :
-    cmaps = dict()
-#cmaps = dict()
+    return cmaps
 
 # Add user supplied colormaps
 def load_user_cmaps(cmaps) :
