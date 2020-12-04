@@ -9,7 +9,7 @@ import pyqtgraph.opengl as gl
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
 
-from data_slicer.cmaps import cmaps, ds_cmap
+from data_slicer.cmaps import get_cmaps, ds_cmap
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import ImagePlot, Scalebar
 from data_slicer.utilities import make_slice, TracedVariable
@@ -19,6 +19,7 @@ logger = logging.getLogger('ds.'+__name__)
 #_Parameters____________________________________________________________________
 
 DEFAULT_CMAP = 'Greys'
+cmaps = get_cmaps()
 # Default translation for objects
 T = -0.5
 
@@ -576,7 +577,7 @@ if __name__ == "__main__" :
     cw.setLayout(layout)
 
     # Add our custom widgets
-    w = ThreeDSliceWidget()
+#    w = ThreeDSliceWidget()
     w = FreeSliceWidget()
     layout.addWidget(w, 0, 0, 1, 2)
 
@@ -587,10 +588,6 @@ if __name__ == "__main__" :
     button2 = QtGui.QPushButton()
     button2.setText('Randomize')
     layout.addWidget(button2, 1, 1, 1, 1)
-
-    # Necessary for both widgets to be visible
-#    layout.setRowStretch(0, 2)
-#    layout.setRowStretch(1, 2)
 
     # Load example data
     data_path = pkg_resources.resource_filename('data_slicer', 'data/')
@@ -610,8 +607,6 @@ if __name__ == "__main__" :
 
     # Run
     window.show()
-
-    
 
     app.exec_()
 

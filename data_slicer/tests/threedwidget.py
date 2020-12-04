@@ -6,8 +6,10 @@ if __name__ == "__main__" :
     from pyqtgraph.Qt import QtGui
 
     import data_slicer.set_up_logging
+    # ds_cmap has to be imported first, otherwise the unpickling of cmaps 
+    # will break
+    from data_slicer.cmaps import ds_cmap
     from data_slicer.widgets import ThreeDWidget
-
 
     # Set up Qt Application skeleton
     app = QtGui.QApplication([])
@@ -32,10 +34,6 @@ if __name__ == "__main__" :
     button2.setText('Randomize')
     layout.addWidget(button2, 1, 1, 1, 1)
 
-    # Necessary for both widgets to be visible
-    #layout.setRowStretch(0, 2)
-    #layout.setRowStretch(1, 2)
-
     # Load example data
     data_path = pkg_resources.resource_filename('data_slicer', 'data/')
 #    datafile = 'testdata_100_150_200.p'
@@ -55,8 +53,6 @@ if __name__ == "__main__" :
 
     # Run
     window.show()
-
-
 
     app.exec_()
 
