@@ -495,7 +495,7 @@ class FreeSliceWidget(ThreeDWidget) :
         data = self.data.get_value()
         cut, coords = self.cutline.get_array_region(data, 
                                            self.selector.image_item, 
-                                           returnCoords=True)
+                                           returnMappedCoords=True)
         return cut, coords
 
     def update_cut(self) :
