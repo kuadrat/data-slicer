@@ -23,7 +23,7 @@ from qtconsole.inprocess import QtInProcessKernelManager
 import data_slicer.dataloading as dl
 # Importing ds_cmap is necessary in order to load from pickle
 from data_slicer.cmaps import convert_ds_to_matplotlib, ds_cmap, \
-                              load_user_cmaps
+                              load_user_cmaps, get_cmaps
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import *
 from data_slicer.model import Model
@@ -71,8 +71,9 @@ plugin_path = pathlib.Path.home() / CONFIG_DIR / 'plugins/'
 sys.path.append(str(plugin_path))
 
 # Load cmaps
-with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
-    cmaps = pickle.load(f)
+#with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
+#    cmaps = pickle.load(f)
+cmaps = get_cmaps()
 load_user_cmaps(cmaps)
 
 # Number of dimensions to handle
