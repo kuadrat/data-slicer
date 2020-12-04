@@ -22,6 +22,7 @@ and explain how it can be installed and used.
    plugins
    configuration
    ipython_crash_course
+   examples
 
 .. toctree::
    :maxdepth: 1

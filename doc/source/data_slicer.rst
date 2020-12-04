@@ -104,18 +104,3 @@ data\_slicer.widgets module
    :undoc-members:
    :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   data_slicer.tests
-
-Full Module contents
---------------------
-
-.. automodule:: data_slicer
-   :members:
-   :undoc-members:
-   :show-inheritance:
