@@ -127,14 +127,15 @@ class Cutline(qt.QtCore.QObject) :
         <data_slicer.cutline.Cutline>`'s plot attribute to the given *plot_widget*.
         """
         self.plot = plot_widget
-        # Signal connection: whenever the viewRange changes, the cutline should 
-        # be updated. Make sure to not accumulate connections by trying to 
-        # disconnect first.
-        try :
-            self.plot.sigRangeChanged.disconnect(self.initialize)
-        except TypeError :
-            pass
-        self.plot.sig_axes_changed.connect(self.initialize)
+#        # Signal connection: whenever the viewRange changes, the cutline should 
+#        # be updated. Make sure to not accumulate connections by trying to 
+#        # disconnect first.
+#        try :
+#            self.plot.sigRangeChanged.disconnect(self.initialize)
+#        except TypeError :
+#            pass
+#        self.plot.sig_axes_changed.connect(self.initialize)
+#        self.plot.sigRangeChanged.connect(self.initialize)
 
     def initialize(self, orientation=None) :
         """ Emits :signal:`sig_initialized`. """
