@@ -31,16 +31,16 @@ More data is always welcome.
 However, in many disciples human digestion of this large amount of data has 
 now become the bottleneck.
 It is often said that a picture is worth more than 1000 words.
-This saying reflects that our visual information in-take is highly developed.
+This saying reflects that our visual information intake is highly developed.
 Fast visualization is therefore important for quick digestion of large 
 datasets.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
   (a,b) Angular photoemission electron spectroscopy 
-  (ARPES)~\cite{wells92evidence,shai13quasiparticle}, 
-  (c,d) tunnelling spectroscopy (STS)~\cite{giaever62tunneling,zhang19machine} 
+  (ARPES) [@wells92evidence][@shai13quasiparticle], 
+  (c,d) tunnelling spectroscopy (STS) [@giaever62tunneling][@zhang19machine] 
   and (e,f) inelastic neutron scattering 
-  (INS)~\cite{woods60lattice,Wan_2020,Bastien} 
+  (INS) [@woods60lattice][@Wan_2020,Bastien] 
   spectroscopy techniques all started with single spectrum collection 
   (top row). 
   Modern spectroscopic and scattering techniques, however, involve 
@@ -51,7 +51,7 @@ datasets.
 # Summary
 
 data-slicer is a python package that contains several functions and classes which 
-provide modular Qt~\cite{company00qt,00riverbank} widgets, tools and 
+provide modular Qt [@company00qt][@00riverbank] widgets, tools and 
 utilities for the visualization of three-dimensional (3D) datasets.
 These building blocks can be combined freely to create new applications.
 Some of these building blocks are used within the package to form a 
@@ -74,7 +74,7 @@ which is aware of the loaded data as well as of all GUI elements.
 The console immediately enables users to run any analysis routine suitable to 
 their respective needs.
 This includes running python commands live, in a workflow familiar to 
-pylab or Jupyter~\cite{00jupyter} notebook users but 
+pylab or Jupyter [@00jupyter] notebook users but 
 also loading or directly running scripts into or from the console, using 
 ipython's line magic functions \texttt{\%load} and \texttt{\%run} respectively.
 Effectively, this design is central in empowering users to do anything they 
