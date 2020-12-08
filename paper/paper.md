@@ -28,12 +28,7 @@ from physics to psychology and medicine.
 In observational sciences, most measurement techniques undergo steady 
 improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
-Examples for this are put together in \autoref{fig1}, where one can 
-see how Angular photoemission electron spectroscopy 
-(ARPES) [@wells92evidence; @shai13quasiparticle],
-tunnelling spectroscopy (STS) [@giaever62tunneling; @zhang19machine]
-Modern spectroscopic and scattering techniques, however, involve 
-multidimensional data acquisition (bottom row). 
+Examples for this are put together in \autoref{fig1}.
 
 More data is always welcome.
 However, in many disciples human digestion of this large amount of data has 
@@ -44,6 +39,14 @@ Fast visualization is therefore important for quick digestion of large
 datasets.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
+(a,b) Angular photoemission electron spectroscopy (ARPES) [@wells92evidence; 
+@shai13quasiparticle], 
+(c,d) tunnelling spectroscopy (STS) [@giaever62tunneling; @zhang19machine], 
+and (e,f) inelastic neutron scattering (INS) 
+[@woods60lattice; @Wan_2020; @Bastien] spectroscopy 
+techniques all started with single spectrum collection (top row).
+Modern spectroscopic and scattering techniques, however, involve 
+multidimensional data acquisition (bottom row).
   \label{fig1}
 ](fig1.pdf)
 
