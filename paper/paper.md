@@ -27,6 +27,17 @@ from physics to psychology and medicine.
 In observational sciences, most measurement techniques undergo steady 
 improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
+Examples for this are put together in figure \autoref{fig1}.
+  (a,b) Angular photoemission electron spectroscopy 
+  (ARPES) [@wells92evidence][@shai13quasiparticle], 
+  (c,d) tunnelling spectroscopy (STS) [@giaever62tunneling][@zhang19machine] 
+  and (e,f) inelastic neutron scattering 
+  (INS) [@woods60lattice][@Wan_2020,Bastien] 
+  spectroscopy techniques all started with single spectrum collection 
+  (top row). 
+  Modern spectroscopic and scattering techniques, however, involve 
+  multidimensional data acquisition (bottom row). 
+
 More data is always welcome.
 However, in many disciples human digestion of this large amount of data has 
 now become the bottleneck.
@@ -36,22 +47,13 @@ Fast visualization is therefore important for quick digestion of large
 datasets.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
-  (a,b) Angular photoemission electron spectroscopy 
-  (ARPES) [@wells92evidence; @shai13quasiparticle], 
-  (c,d) tunnelling spectroscopy (STS) [@giaever62tunneling; @zhang19machine] 
-  and (e,f) inelastic neutron scattering 
-  (INS) [@woods60lattice; @Bastien] 
-  spectroscopy techniques all started with single spectrum collection 
-  (top row). 
-  Modern spectroscopic and scattering techniques, however, involve 
-  multidimensional data acquisition (bottom row). 
   \label{fig1}
 ](fig1.pdf)
 
 # Summary
 
 data-slicer is a python package that contains several functions and classes which 
-provide modular Qt [@company00qt; @00riverbank] widgets, tools and 
+provide modular Qt [@company00qt][@00riverbank] widgets, tools and 
 utilities for the visualization of three-dimensional (3D) datasets.
 These building blocks can be combined freely to create new applications.
 Some of these building blocks are used within the package to form a 
