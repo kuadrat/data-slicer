@@ -97,7 +97,7 @@ knowledge of the inner workings of PIT.
 In this manner, different communities of users can create and share their 
 field-specific plugins which allow them to customize PIT to their needs.
 
-As an example, we mention the ds-arpes-plugin, which provides 
+As an example, we mention the ds-arpes-plugin [@arpesPlugin], which provides 
 basic functionalities for loading of ARPES datasets and handles for typical 
 analysis functions, customized and taylored to be used from within PIT.
 
@@ -112,9 +112,11 @@ independently available to the user.
 These widgets can be arbitrarily combined to create customized applications 
 in a relatively simple manner.
 
-In summary, the data-slicer package solves the problem of scope discussed in 
-\autoref{sec:intro} by offering a variety of methods for users of varying 
-backgrounds to get exactly the tools they need.
+In summary, the data-slicer package solves the problem of offering the right 
+scope -- neither too specialized that it can only be used by a narrow community 
+nor too bloated such that it becomes hard to do specific operations -- by 
+offering a variety of methods for users of varying backgrounds to get exactly 
+the tools they need.
 On the first and most general level, PIT offers a ready-to-use GUI for quick 
 3D data visualization without any need of programmatic user input.
 Users can satisfy their more specific needs either through use of the console 
