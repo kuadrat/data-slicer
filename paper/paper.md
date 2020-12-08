@@ -27,6 +27,11 @@ from physics to psychology and medicine.
 In observational sciences, most measurement techniques undergo steady 
 improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
+Examples for this are put together in figure \autoref{fig1}, where one can 
+see how Angular photoemission electron spectroscopy 
+(ARPES) [@wells92evidence]
+Modern spectroscopic and scattering techniques, however, involve 
+multidimensional data acquisition (bottom row). 
 
 More data is always welcome.
 However, in many disciples human digestion of this large amount of data has 
@@ -37,6 +42,7 @@ Fast visualization is therefore important for quick digestion of large
 datasets.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
+  \label{fig1}
 ](fig1.pdf)
 
 # Summary
@@ -102,7 +108,8 @@ These widgets can be arbitrarily combined to create customized applications
 in a relatively simple manner.
 
 In summary, the data-slicer package solves the problem of scope discussed in 
-the introduction by offering a variety of methods for users of varying 
+section 
+\ref{sec:intro} by offering a variety of methods for users of varying 
 backgrounds to get exactly the tools they need.
 On the first and most general level, PIT offers a ready-to-use GUI for quick 
 3D data visualization without any need of programmatic user input.
