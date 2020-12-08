@@ -29,7 +29,11 @@ improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
 Examples for this are put together in figure \autoref{fig1}, where one can 
 see how Angular photoemission electron spectroscopy 
-(ARPES) [@wells92evidence]
+(ARPES) [@wells92evidence; @shai13quasiparticle] (panels (a) and (b)), 
+tunnelling spectroscopy (STS) [@giaever62tunneling; @zhang19machine] (panels 
+(c) and (d)), and inelastic neutron scattering (INS) 
+[@woods60lattice; @Wan_2020,Bastien] (panels (e) and (f)) spectroscopy 
+techniques all started with single spectrum collection (top row).
 Modern spectroscopic and scattering techniques, however, involve 
 multidimensional data acquisition (bottom row). 
 
