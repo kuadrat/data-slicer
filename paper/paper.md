@@ -35,6 +35,19 @@ This saying reflects that our visual information intake is highly developed.
 Fast visualization is therefore important for quick digestion of large 
 datasets.
 
+![Evolution of data acquisition in the field of spectroscopy. 
+  (a,b) Angular photoemission electron spectroscopy 
+  (ARPES) [@wells92evidence; @shai13quasiparticle], 
+  (c,d) tunnelling spectroscopy (STS) [@giaever62tunneling; @zhang19machine] 
+  and (e,f) inelastic neutron scattering 
+  (INS) [@woods60lattice; @Bastien] 
+  spectroscopy techniques all started with single spectrum collection 
+  (top row). 
+  Modern spectroscopic and scattering techniques, however, involve 
+  multidimensional data acquisition (bottom row). 
+  \label{fig1}
+](fig1.pdf)
+
 # Summary
 
 data-slicer is a python package that contains several functions and classes which 
