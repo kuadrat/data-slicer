@@ -16,6 +16,7 @@ affiliations:
 ---
 
 # Statement of Need
+\label{sec:intro}
 
 From prehistoric cave-wall paintings to the invention of print and most 
 recently electronic hard-disks, human data storage capacity has evolved 
@@ -27,13 +28,9 @@ from physics to psychology and medicine.
 In observational sciences, most measurement techniques undergo steady 
 improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
-Examples for this are put together in figure \autoref{fig1}, where one can 
+Examples for this are put together in \autoref{fig1}, where one can 
 see how Angular photoemission electron spectroscopy 
-(ARPES) [@wells92evidence; @shai13quasiparticle] (panels (a) and (b)), 
-tunnelling spectroscopy (STS) [@giaever62tunneling; @zhang19machine] (panels 
-(c) and (d)), and inelastic neutron scattering (INS) 
-[@woods60lattice; @Wan_2020,Bastien] (panels (e) and (f)) spectroscopy 
-techniques all started with single spectrum collection (top row).
+(ARPES) [@wells92evidence; @shai13quasiparticle]
 Modern spectroscopic and scattering techniques, however, involve 
 multidimensional data acquisition (bottom row). 
 
@@ -112,8 +109,7 @@ These widgets can be arbitrarily combined to create customized applications
 in a relatively simple manner.
 
 In summary, the data-slicer package solves the problem of scope discussed in 
-section 
-\ref{sec:intro} by offering a variety of methods for users of varying 
+\autoref{sec:intro} by offering a variety of methods for users of varying 
 backgrounds to get exactly the tools they need.
 On the first and most general level, PIT offers a ready-to-use GUI for quick 
 3D data visualization without any need of programmatic user input.
@@ -123,6 +119,14 @@ programming knowledge.
 On the last, most specific level users can use and arrange the building 
 blocks contained in the package to create completely new applications or 
 embed PIT or other parts of the data-slicer package into an existing application.
+
+![Schematic structural overview of the data-slicer package. 
+The python image tool (PIT) is made up of differ-
+ent modular building blocks. These blocks can be used to
+create or enhance new applications. PIT itself can be used
+directly, optionally augmented through plugins. Or it can be
+embedded in external applications.
+](fig2.pdf)
 
 # Acknowledgements
 
