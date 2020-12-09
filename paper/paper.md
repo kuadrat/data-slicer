@@ -50,6 +50,27 @@ multidimensional data acquisition (bottom row).
   \label{fig1}
 ](fig1.pdf)
 
+Most data generating techniques come with very specific boundary conditions, 
+e.g. the data formats, metadata, necessary and desired pre- and 
+postprocessing routines, etc.
+But at the core, the problems are always the same when dealing with such 
+datasets.
+The result is that each community develops their own implementation of 
+solutions to essentially the same 
+problems [@stansbury20pyarpes;@lass20mjolnir].
+However, since these implementations are usually intertwined and 
+entangled with the community-specific parts, solutions are typically 
+not transferrable across different disciplines or experimental methodologies.
+On the other hand, there exist a variety of attempts of providing 
+visualization routines at maximum generality [@3dslicer; @fedorov123d].
+These programs, however, often suffer from being so general that they 
+cannot easily support the more specific needs of certain fields.
+
+To this end, we have developed data-slicer, a software package to account 
+for both of these needs: offering tools for fast live visualization of data 
+at an intermediate scope that can easily be adjusted and fine tuned for 
+different problems.
+
 # Summary
 
 data-slicer is a python package that contains several functions and classes which 
