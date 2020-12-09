@@ -62,7 +62,7 @@ However, since these implementations are usually intertwined and
 entangled with the community-specific parts, solutions are typically 
 not transferrable across different disciplines or experimental methodologies.
 On the other hand, there exist a variety of attempts of providing 
-visualization routines at maximum generality [@3dslicer; @fedorov123d].
+visualization routines at maximum generality [@fedorov123d].
 These programs, however, often suffer from being so general that they 
 cannot easily support the more specific needs of certain fields.
 
