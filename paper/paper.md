@@ -40,10 +40,10 @@ datasets.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
 (a,b) Angle resolved photoemission electron spectroscopy (ARPES) 
-[@wells92evidence; @shai13quasiparticle], 
-(c,d) tunnelling spectroscopy (STS) [@giaever62tunneling; @zhang19machine], 
+[@shai13quasiparticle; @wells92evidence], 
+(c,d) tunnelling spectroscopy (STS) [@zhang19machine; @giaever62tunneling], 
 and (e,f) inelastic neutron scattering (INS) 
-[@woods60lattice; @Wan_2020; @Bastien] spectroscopy 
+[@Wan_2020; @Bastien; @woods60lattice] spectroscopy 
 techniques all started with single spectrum collection (top row).
 Modern spectroscopic and scattering techniques, however, involve 
 multidimensional data acquisition (bottom row).
