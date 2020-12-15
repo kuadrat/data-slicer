@@ -6,9 +6,10 @@ tags:
   - visualization
 authors:
   - name: Kevin Kramer
-    orcid:
+    orcid: 0000-0001-5523-6924
     affiliation: 1
   - name: Johan Chang
+    orcid: 0000-0002-4655-1516
     affiliation: 1
 affiliations:
   - name: Physik Institut, Universität Zürich, Winterthurerstrasse 190, CH-8057 Zürich, Switzerland
