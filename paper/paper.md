@@ -1,5 +1,5 @@
 ---
-title: Visualization of Multi-Dimensional Data -- The data-slicer package
+title: Visualization of Multi-Dimensional Data -- The data-slicer Package
 bibliography: paper.bib
 tags:
   - python
@@ -31,7 +31,7 @@ As a result the sheer data throughput is continually increasing.
 Examples for this are put together in \autoref{fig1}.
 
 More data is always welcome.
-However, in many disciples human digestion of this large amount of data has 
+However, in many disciplines human digestion of this large amount of data has 
 now become the bottleneck.
 It is often said that a picture is worth more than 1000 words.
 This saying reflects that our visual information intake is highly developed.
@@ -39,8 +39,8 @@ Fast visualization is therefore important for quick digestion of large
 datasets.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
-(a,b) Angular photoemission electron spectroscopy (ARPES) [@wells92evidence; 
-@shai13quasiparticle], 
+(a,b) Angle resolved photoemission electron spectroscopy (ARPES) 
+[@wells92evidence; @shai13quasiparticle], 
 (c,d) tunnelling spectroscopy (STS) [@giaever62tunneling; @zhang19machine], 
 and (e,f) inelastic neutron scattering (INS) 
 [@woods60lattice; @Wan_2020; @Bastien] spectroscopy 
@@ -74,7 +74,7 @@ different problems.
 # Summary
 
 data-slicer is a python package that contains several functions and classes which 
-provide modular Qt [@company00qt][@00riverbank] widgets, tools and 
+provide modular Qt [@company00qt; @00riverbank] widgets, tools and 
 utilities for the visualization of three-dimensional (3D) datasets.
 These building blocks can be combined freely to create new applications.
 Some of these building blocks are used within the package to form a 
@@ -148,11 +148,10 @@ blocks contained in the package to create completely new applications or
 embed PIT or other parts of the data-slicer package into an existing application.
 
 ![Schematic structural overview of the data-slicer package. 
-The python image tool (PIT) is made up of differ-
-ent modular building blocks. These blocks can be used to
-create or enhance new applications. PIT itself can be used
-directly, optionally augmented through plugins. Or it can be
-embedded in external applications.
+The python image tool (PIT) is made up of different modular building blocks. 
+These blocks can be used to create or enhance new applications.
+ PIT itself can be used directly, optionally augmented through plugins.
+ Or it can be embedded in external applications.
 ](fig2.pdf)
 
 # Acknowledgements
