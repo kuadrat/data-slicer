@@ -29,7 +29,7 @@ from physics to psychology and medicine.
 In observational sciences, most measurement techniques undergo steady 
 improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
-Examples cases are shown in \autoref{fig1}.
+Example cases are shown in \autoref{fig1}.
 
 More data is always welcome.
 However, in many disciplines human digestion of this large amount of data has 
