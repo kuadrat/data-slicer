@@ -29,15 +29,36 @@ from physics to psychology and medicine.
 In observational sciences, most measurement techniques undergo steady 
 improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
-Examples for this are put together in \autoref{fig1}.
+Examples cases are shown in \autoref{fig1}.
 
 More data is always welcome.
 However, in many disciplines human digestion of this large amount of data has 
 now become the bottleneck.
-It is often said that a picture is worth more than 1000 words.
+It is often said that a picture is worth more than a thousand words.
 This saying reflects that our visual information intake is highly developed.
 Fast visualization is therefore important for quick digestion of large 
 datasets.
+
+Most data generating techniques come with very specific boundary conditions, 
+e.g. the data formats, metadata, necessary and desired pre- and 
+postprocessing routines, etc.
+But at the core, the necessary steps to visualize such datasets are always 
+the same.
+The result is that each community develops their own implementation of 
+solutions to essentially the same 
+problems [@stansbury20pyarpes;@lass20mjolnir].
+However, since these implementations are usually intertwined and 
+entangled with the community-specific parts, solutions are typically 
+not transferrable across different disciplines or experimental methodologies.
+On the other hand, there exist attempts to provide 
+visualization routines at maximum generality [@fedorov123d].
+These programs, however, often suffer from being so general that they 
+cannot easily support the more specific needs of certain fields.
+
+To this end, we have developed data-slicer, a software package to account 
+for both of these needs: offering tools for fast live visualization of data 
+at an intermediate scope that can easily be adjusted and fine tuned for 
+different problems.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
 (a,b) Angle resolved photoemission electron spectroscopy (ARPES) 
@@ -50,27 +71,6 @@ Modern spectroscopic and scattering techniques, however, involve
 multidimensional data acquisition (bottom row).
   \label{fig1}
 ](fig1.pdf)
-
-Most data generating techniques come with very specific boundary conditions, 
-e.g. the data formats, metadata, necessary and desired pre- and 
-postprocessing routines, etc.
-But at the core, the problems are always the same when dealing with such 
-datasets.
-The result is that each community develops their own implementation of 
-solutions to essentially the same 
-problems [@stansbury20pyarpes;@lass20mjolnir].
-However, since these implementations are usually intertwined and 
-entangled with the community-specific parts, solutions are typically 
-not transferrable across different disciplines or experimental methodologies.
-On the other hand, there exist a variety of attempts of providing 
-visualization routines at maximum generality [@fedorov123d].
-These programs, however, often suffer from being so general that they 
-cannot easily support the more specific needs of certain fields.
-
-To this end, we have developed data-slicer, a software package to account 
-for both of these needs: offering tools for fast live visualization of data 
-at an intermediate scope that can easily be adjusted and fine tuned for 
-different problems.
 
 # Summary
 
@@ -101,8 +101,9 @@ This includes running python commands live, in a workflow familiar to
 pylab or Jupyter [@00jupyter] notebook users but 
 also loading or directly running scripts into or from the console, using 
 ipython's line magic functions \texttt{\%load} and \texttt{\%run} respectively.
-Effectively, this design is central in empowering users to do anything they 
-want --- as long as it is possible to accomplish with python.
+Effectively, this design is central in empowering users to accomplish any task
+imaginable --- as long as it lies within the possibility space of the python 
+language.
 
 ## Plugins
 It is clear that it can get complicated and tedious to run certain types of 
@@ -158,8 +159,9 @@ These blocks can be used to create or enhance new applications.
 # Acknowledgements
 
 We are thankful for fruitful discussions with and inputs from Titus Neupert, 
-Claude Monney, Daniel Mazzone, Nicholas Plumb, Wojciech Pude\l{}ko as well as 
-for the testing efforts of Qisi Wang, Julia Küspert and Karin von Arx.
+Claude Monney, Daniel Mazzone, Nicholas Plumb, Wojciech Pude\l{}ko, Niels 
+Bech Christensen as well as for the testing efforts of Qisi Wang, Julia 
+Küspert and Karin von Arx.
 
 Kevin Kramer and Johan Chang acknowledge support by the Swiss National 
 Science Foundation.
