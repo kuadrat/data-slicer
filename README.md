@@ -28,3 +28,13 @@ If you are familiar with the workflow on github, feel free to go ahead and creat
 request or open an issue.
 If you are unsure of what that means but are willing to contribute, contact Kevin Kramer
 via email: kevin.kramer@uzh.ch
+
+### Plugins
+
+If you have created a PIT plugin, feel free to add it to the list below, 
+either via pull request or through an email (see above).
+
+| Plugin Name (link) | Description | 
+| ------------------ | ----------- |
+| [ds-arpes-plugin](https://www.pluralsight.com/guides/working-tables-github-markdown) | tools for angle-resolved photoelectron spectroscopy (ARPES) | 
+
