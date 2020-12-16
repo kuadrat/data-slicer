@@ -1,14 +1,15 @@
 ---
-title: Visualization of Multi-Dimensional Data -- The data-slicer package
+title: Visualization of Multi-Dimensional Data -- The data-slicer Package
 bibliography: paper.bib
 tags:
   - python
   - visualization
 authors:
   - name: Kevin Kramer
-    orcid:
+    orcid: 0000-0001-5523-6924
     affiliation: 1
   - name: Johan Chang
+    orcid: 0000-0002-4655-1516
     affiliation: 1
 affiliations:
   - name: Physik Institut, Universität Zürich, Winterthurerstrasse 190, CH-8057 Zürich, Switzerland
@@ -16,6 +17,7 @@ affiliations:
 ---
 
 # Statement of Need
+\label{sec:intro}
 
 From prehistoric cave-wall paintings to the invention of print and most 
 recently electronic hard-disks, human data storage capacity has evolved 
@@ -27,13 +29,48 @@ from physics to psychology and medicine.
 In observational sciences, most measurement techniques undergo steady 
 improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
+Example cases are shown in \autoref{fig1}.
+
 More data is always welcome.
-However, in many disciples human digestion of this large amount of data has 
+However, in many disciplines human digestion of this large amount of data has 
 now become the bottleneck.
-It is often said that a picture is worth more than 1000 words.
+It is often said that a picture is worth more than a thousand words.
 This saying reflects that our visual information intake is highly developed.
 Fast visualization is therefore important for quick digestion of large 
 datasets.
+
+Most data generating techniques come with very specific boundary conditions, 
+e.g. the data formats, metadata, necessary and desired pre- and 
+postprocessing routines, etc.
+But at the core, the necessary steps to visualize such datasets are always 
+the same.
+The result is that each community develops their own implementation of 
+solutions to essentially the same 
+problems [@stansbury20pyarpes;@lass20mjolnir].
+However, since these implementations are usually intertwined and 
+entangled with the community-specific parts, solutions are typically 
+not transferrable across different disciplines or experimental methodologies.
+On the other hand, there exist attempts to provide 
+visualization routines at maximum generality [@fedorov123d].
+These programs, however, often suffer from being so general that they 
+cannot easily support the more specific needs of certain fields.
+
+To this end, we have developed data-slicer, a software package to account 
+for both of these needs: offering tools for fast live visualization of data 
+at an intermediate scope that can easily be adjusted and fine tuned for 
+different problems.
+
+![Evolution of data acquisition in the field of spectroscopy. 
+(a,b) Angle resolved photoemission electron spectroscopy (ARPES) 
+[@shai13quasiparticle; @wells92evidence], 
+(c,d) tunnelling spectroscopy (STS) [@zhang19machine; @giaever62tunneling], 
+and (e,f) inelastic neutron scattering (INS) 
+[@Wan_2020; @Bastien; @woods60lattice] spectroscopy 
+techniques all started with single spectrum collection (top row).
+Modern spectroscopic and scattering techniques, however, involve 
+multidimensional data acquisition (bottom row).
+  \label{fig1}
+](fig1.pdf)
 
 # Summary
 
@@ -64,8 +101,9 @@ This includes running python commands live, in a workflow familiar to
 pylab or Jupyter [@00jupyter] notebook users but 
 also loading or directly running scripts into or from the console, using 
 ipython's line magic functions \texttt{\%load} and \texttt{\%run} respectively.
-Effectively, this design is central in empowering users to do anything they 
-want --- as long as it is possible to accomplish with python.
+Effectively, this design is central in empowering users to accomplish any task
+imaginable --- as long as it lies within the possibility space of the python 
+language.
 
 ## Plugins
 It is clear that it can get complicated and tedious to run certain types of 
@@ -82,7 +120,7 @@ knowledge of the inner workings of PIT.
 In this manner, different communities of users can create and share their 
 field-specific plugins which allow them to customize PIT to their needs.
 
-As an example, we mention the ds-arpes-plugin, which provides 
+As an example, we mention the ds-arpes-plugin [@arpesPlugin], which provides 
 basic functionalities for loading of ARPES datasets and handles for typical 
 analysis functions, customized and taylored to be used from within PIT.
 
@@ -97,10 +135,11 @@ independently available to the user.
 These widgets can be arbitrarily combined to create customized applications 
 in a relatively simple manner.
 
-In summary, the data-slicer package solves the problem of scope discussed in 
-section 
-\ref{sec:intro} by offering a variety of methods for users of varying 
-backgrounds to get exactly the tools they need.
+In summary, the data-slicer package solves the problem of offering the right 
+scope -- neither too specialized that it can only be used by a narrow community 
+nor too bloated such that it becomes hard to do specific operations -- by 
+offering a variety of methods for users of varying backgrounds to get exactly 
+the tools they need.
 On the first and most general level, PIT offers a ready-to-use GUI for quick 
 3D data visualization without any need of programmatic user input.
 Users can satisfy their more specific needs either through use of the console 
@@ -110,11 +149,19 @@ On the last, most specific level users can use and arrange the building
 blocks contained in the package to create completely new applications or 
 embed PIT or other parts of the data-slicer package into an existing application.
 
+![Schematic structural overview of the data-slicer package. 
+The python image tool (PIT) is made up of different modular building blocks. 
+These blocks can be used to create or enhance new applications.
+ PIT itself can be used directly, optionally augmented through plugins.
+ Or it can be embedded in external applications.
+](fig2.pdf)
+
 # Acknowledgements
 
 We are thankful for fruitful discussions with and inputs from Titus Neupert, 
-Claude Monney, Daniel Mazzone, Nicholas Plumb, Wojciech Pude\l{}ko as well as 
-for the testing efforts of Qisi Wang, Julia Küspert and Karin von Arx.
+Claude Monney, Daniel Mazzone, Nicholas Plumb, Wojciech Pude\l{}ko, Niels 
+Bech Christensen as well as for the testing efforts of Qisi Wang, Julia 
+Küspert and Karin von Arx.
 
 Kevin Kramer and Johan Chang acknowledge support by the Swiss National 
 Science Foundation.
