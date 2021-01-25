@@ -2,7 +2,7 @@
 title: Visualization of Multi-Dimensional Data -- The data-slicer Package
 bibliography: paper.bib
 tags:
-  - python
+  - Python
   - visualization
 authors:
   - name: Kevin Kramer
@@ -14,6 +14,7 @@ authors:
 affiliations:
   - name: Physik Institut, Universität Zürich, Winterthurerstrasse 190, CH-8057 Zürich, Switzerland
     index: 1
+date: 25 November 2021
 ---
 
 # Statement of Need
