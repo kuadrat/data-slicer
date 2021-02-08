@@ -80,7 +80,7 @@ class ds_cmap(ColorMap) :
         self.vmax = vmax
         self.apply_transformations()
 
-def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=0.5) :
+def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=1) :
     """ Take a matplotlib colormap and convert it to a pyqtgraph ColorMap.
 
     **Parameters**
@@ -152,8 +152,35 @@ def load_custom_cmap(filename) :
     data stored in a file with three columns, red, green and blue - either in 
     integer form from 0-255 or as floats from 0.0 to 1.0 (ignores fourth 
     alpha column).
+    The suffix can be left out in the file name.
+    Also, an `_r` can be appended to the colormap name to indicate that the 
+    inverse of a cmap is requested (e.g. my_cmap_r will give the reverse of 
+    my_cmap).
     """
-    data = np.loadtxt(filename)[:,:3]
+    # Split off suffix
+    full_basename, suffix = os.path.splitext(filename)
+    path, basename = os.path.split(full_basename)
+    # Split off '_r' ending, if found
+    if basename.endswith('_r') :
+        reverse = True
+        basename = basename[:-2]
+    else :
+        reverse = False
+    # If no suffix was given, look for a file that matches
+    if suffix == '' :
+        # Split path and filename
+        files = os.listdir(path)
+        for f in files :
+            if f.startswith(basename) :
+                actual_filename = path + '/' + f
+                break
+    else :
+        actual_filename = path + '/' + basename + suffix
+    logger.debug(f'Trying to load cmap {actual_filename}.')
+    data = np.loadtxt(actual_filename)[:,:3]
+    # Invert cmap, if required
+    if reverse :
+        data = data[::-1]
     data /= data.max() 
     # Convert to range [0-255] for pyqtgraph 0.0.11
     data *= 255
@@ -165,19 +192,50 @@ def load_custom_cmap(filename) :
 
 # Load the cmaps dictionary (this is broken)
 data_path = pkg_resources.resource_filename('data_slicer', 'data/')
-#try :
-#    with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
-#        cmaps = pickle.load(f)
-#except AttributeError :
-#    logger.info('Could not load colormaps from {}.'.format(
-#                data_path + CACHED_CMAPS_FILENAME))
-#    cmaps = dict()
-def get_cmaps() :
-    """ Return cached cmaps. """
-    print(data_path + CACHED_CMAPS_FILENAME)
-    with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
-        cmaps = pickle.load(f)
-    return cmaps
+
+def load_cmap(cmap_name) :
+    """ Return a ds_cmap object for the colormap specified by *cmap_name*.
+    *cmap_name* can be either
+        
+        1. one of the matplotlib colormap names
+
+        2. one of the colormap names supplied by the data slicer package. At 
+        the time of this writing, these are `rainbow_light`, `neutrons` and 
+        `kocean`. This list is not regularly updated. Check the .cmap files 
+        in the data/ directory of the installation (loacation depends on 
+        your system) to find out all options.
+
+        3. any file found in the cmaps/ subdirectory of your config directory 
+        (check documentation).
+    """
+    # Try to convert a matplotlib cmap
+    try :
+        return convert_matplotlib_to_pyqtgraph(cmap_name)
+    except ValueError as e :
+        # Store the error for later
+        matplotlib_error = e
+
+    logger.debug(f'Did not find {cmap_name} in MPL cmaps.')
+
+    # If that didn't work, try converting a package cmap
+    try :
+        logger.debug(data_path + cmap_name)
+        return load_custom_cmap(data_path + cmap_name)
+    # numpy.loadtxt raises OSError
+    except OSError :
+        logger.debug(f'Did not find {cmap_name} in package cmaps.')
+
+    # Finally, try to load a cmap from the config dir
+    config_path = pathlib.Path.home() / CONFIG_DIR / 'cmaps/'
+    try :
+        logger.debug(config_path / cmap_name)
+        return load_custom_cmap(config_path / cmap_name)
+    # numpy.loadtxt raises OSError
+    except OSError :
+        # Re-raise the matplotlib error which shows a list of valid 
+        # matplotlib cmap names.
+        logger.debug(f'Did not find {cmap_name} in user cmaps.')
+        raise ValueError(matplotlib_error)
 
 # Add user supplied colormaps
 def load_user_cmaps(cmaps) :
@@ -204,6 +262,7 @@ def load_user_cmaps(cmaps) :
 # +-------------------+ #
 
 if __name__ == '__main__' :
+    # Caching colormaps is no longer necessary, but kept for the time being.
     from datetime import datetime
     print('Caching colormaps...')
     n = datetime.now
