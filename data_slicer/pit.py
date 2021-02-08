@@ -21,9 +21,7 @@ from qtconsole.rich_ipython_widget import RichIPythonWidget, RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
 
 import data_slicer.dataloading as dl
-# Importing ds_cmap is necessary in order to load from pickle
-from data_slicer.cmaps import convert_ds_to_matplotlib, ds_cmap, \
-                              load_user_cmaps, get_cmaps
+from data_slicer.cmaps import convert_ds_to_matplotlib, load_cmap
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import *
 from data_slicer.model import Model
@@ -69,12 +67,6 @@ SAMPLE_DATA_FILE = data_path + 'pit.p'
 # Add the plugin directory to the python path
 plugin_path = pathlib.Path.home() / CONFIG_DIR / 'plugins/'
 sys.path.append(str(plugin_path))
-
-# Load cmaps
-#with open(data_path + CACHED_CMAPS_FILENAME, 'rb') as f :
-#    cmaps = pickle.load(f)
-cmaps = get_cmaps()
-load_user_cmaps(cmaps)
 
 # Number of dimensions to handle
 NDIM = 3
@@ -552,6 +544,7 @@ class MainWindow(QtGui.QMainWindow) :
 
          # Aesthetics
         self.setStyleSheet(app_style)
+        self.cmaps = dict()
         self.set_cmap(DEFAULT_CMAP)
 
         # Autoload plugins (needs to happen before _init_UI() because the 
@@ -841,17 +834,20 @@ class MainWindow(QtGui.QMainWindow) :
         self.update_x_plot()
         self.update_y_plot()
 
-    def set_cmap(self, cmap) :
+    def set_cmap(self, cmap_name) :
         """ Set the colormap to *cmap* where *cmap* is one of the names 
-        registered in :mod:`<data_slicer.cmaps>` which includes all matplotlib and 
-        kustom cmaps.
+        registered in :mod:`<data_slicer.cmaps>` which includes all 
+        matplotlib and custom cmaps.
         """
-        try :
-            self.cmap = cmaps[cmap]
-        except KeyError :
-            print('Invalid colormap name. Use one of: ')
-            print(cmaps.keys())
-        self.cmap_name = cmap
+        # See if the cmap has been used and cached before. If not, create it 
+        # now.
+        if cmap_name in self.cmaps :
+            cmap = self.cmaps[cmap_name]
+        else :
+            cmap = load_cmap(cmap_name)
+            self.cmaps.update({cmap_name: cmap})
+        self.cmap = cmap
+        self.cmap_name = cmap_name
         # Since the cmap changed it forgot our settings for alpha and gamma
         self.cmap.set_alpha(self.alpha)
         self.cmap.set_gamma(self.gamma)
