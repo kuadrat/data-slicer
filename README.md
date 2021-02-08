@@ -17,6 +17,9 @@ https://data-slicer.readthedocs.io/en/latest/
 
 ## Installation
 
+`data_slicer` should run on all platforms that support python and has been 
+shown to run on Windows, macOS ans Linux.
+
 The package can be installed from pypi using `pip install data_slicer`.
 It is recommended to do this from within some sort of virtual environment.
 Visit the documentation for more detailed instructions:

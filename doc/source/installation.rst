@@ -1,6 +1,8 @@
 Installation
 ============
 
+The installation of `data_slicer` has been tested on Linux, macOS and Windows.
+
 The easiest way to install the package is to use 
 `pip <https://pip.pypa.io/en/stable/>`_. Just type the following on a command 
 line::
