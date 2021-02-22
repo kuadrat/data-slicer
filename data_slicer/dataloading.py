@@ -63,7 +63,12 @@ class Dataloader_Pickle(Dataloader) :
             data = filedata['data']
             axes = [filedata[i+'axis'] for i in 'xyz']
         elif isinstance(filedata, type(Namespace())) :
-            # Nothing to do
+            # Ensure all needed fields are present
+            keys = filedata.__dict__.keys()
+            if 'data' not in keys :
+                raise TypeError('Invalid Namespace object.')
+            elif 'axes' not in keys :
+                filedata.axes = None
             return filedata
         else :
             raise(TypeError('Filetype not understood.'))

@@ -3,6 +3,7 @@ PIT is a widget that combines slices from different sides with intensity
 distribution curves and other convenient features.
 """
 
+import argparse
 import importlib
 import logging
 import pathlib
@@ -129,7 +130,10 @@ class PITDataHandler() :
         logger.debug('prepare_data()')
 
         self.data = TracedVariable(data, name='data')
-        self.axes = np.array(axes)
+        if axes is None :
+            self.axes = np.array(3*[None])
+        else :
+            self.axes = np.array(axes)
 
         # Retain a copy of the original data and axes so that we can reset later
         # NOTE: this effectively doubles the used memory!
@@ -1028,9 +1032,17 @@ class MainWindow(QtGui.QMainWindow) :
         self.lut = self.cmap.getLookupTable()
         self.redraw_plots()
 
+# Set up argument parsing
+parser = argparse.ArgumentParser()
+parser.add_argument('filename', help='Name of file to open.', default=None, 
+                    nargs='?')
+# Hook for setuptools entry point
 def start_main_window() :
+    args = parser.parse_args()
     app = QtGui.QApplication([])
     mw = MainWindow()
+    if args.filename is not None :
+        mw.data_handler.load(args.filename)
     app.exec_()
 
 if __name__=="__main__" :
