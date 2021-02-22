@@ -9,7 +9,7 @@ import pyqtgraph.opengl as gl
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
 
-from data_slicer.cmaps import get_cmaps, ds_cmap
+from data_slicer.cmaps import load_cmap, ds_cmap
 from data_slicer.cutline import Cutline
 from data_slicer.imageplot import ImagePlot, Scalebar
 from data_slicer.utilities import make_slice, TracedVariable
@@ -19,7 +19,6 @@ logger = logging.getLogger('ds.'+__name__)
 #_Parameters____________________________________________________________________
 
 DEFAULT_CMAP = 'Greys'
-cmaps = get_cmaps()
 # Default translation for objects
 T = -0.5
 
@@ -105,8 +104,8 @@ class ThreeDWidget(QtGui.QWidget) :
 
         # Initialize instance variables
         self.data = TracedVariable(None, name='data')
-        self.cmap = cmaps[DEFAULT_CMAP]
-        self.lut = cmaps[DEFAULT_CMAP].getLookupTable()
+        self.cmap = load_cmap(DEFAULT_CMAP)
+        self.lut = self.cmap.getLookupTable()
         self.gloptions = 'translucent'
 
         # Create a GLViewWidget and put it into the layout of this view
@@ -251,7 +250,7 @@ class ThreeDWidget(QtGui.QWidget) :
         <data_slicer.cmaps.ds_cmap>` instance.
         """
         if isinstance(cmap, str) :
-            self.cmap = cmaps[cmap]
+            self.cmap = load_cmap(cmap)
         elif isinstance(cmap, ds_cmap) :
             self.cmap = cmap
         else :
