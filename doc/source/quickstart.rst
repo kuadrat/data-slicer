@@ -4,8 +4,12 @@ Quick start
 ===========
 
 If you want to dive right in, just type ``pit`` from a command line.
-The example data is loaded and you can familiarize yourself with the layout 
+The startup data is loaded and you can familiarize yourself with the layout 
 and the most basic functionality.
+
+You can alternatively load a set of MRI brain scan data that is perhaps more 
+intuitive to understand by using the command ``mw.brain()`` on the console 
+[#]_.
 
 .. figure:: ../../screenshots/pit_overview.png
    :scale: 50 %
@@ -86,4 +90,13 @@ clicking and choosing *MPL Export*.
    error in pyqtgraph over which I have no control.
 
 Refer to :ref:`sec-console` for more information on what you can do.
+
+.. rubric:: Footnotes
+
+.. [#] This data set is taken from the OpenNeuro database.
+       Openneuro Accession Number: ds000108
+       Authored by: Wager, T.D., Davidson, M.L., Hughes, B.L., Lindquist, 
+       M.A., Ochsner, K.N. (2008). Prefrontal-subcortical pathways mediating 
+       successful emotion regulation. Neuron, 59(6):1037-50. 
+       doi: ``10.1016/j.neuron.2008.09.006``
 

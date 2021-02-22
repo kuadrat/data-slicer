@@ -558,9 +558,9 @@ class MainWindow(QtGui.QMainWindow) :
 
         # Prepare sample data for initialization
         if data is None :
-            with open(SAMPLE_DATA_FILE, 'rb') as f :
-                data = pickle.load(f)
-        self.data_handler.prepare_data(data)
+            self.load_startup_data()
+        else :
+            self.data_handler.prepare_data(data)
 
     def _init_UI(self) :
         """ Initialize the elements of the user interface. """
@@ -748,6 +748,28 @@ class MainWindow(QtGui.QMainWindow) :
     def print_to_console(self, message) :
         """ Print a *message* to the embedded ipython console. """
         self.console.kernel.stdout.write(str(message) + '\n')
+
+    def load_startup_data(self) :
+        with open(SAMPLE_DATA_FILE, 'rb') as f :
+            data = pickle.load(f)
+        self.data_handler.prepare_data(data)
+
+    def brain(self) :
+        """ Load the example dataset from an MRI brain scan. 
+
+        This example data is taken from the OpenNeuro database.
+        Openneuro Accession Number: ds000108
+        Authored by: Wager, T.D., Davidson, M.L., Hughes, B.L., Lindquist, 
+        M.A., Ochsner, K.N. (2008). Prefrontal-subcortical pathways mediating 
+        successful emotion regulation. Neuron, 59(6):1037-50. 
+        doi: ``10.1016/j.neuron.2008.09.006``
+        """
+        BRAIN_DATA_FILE = data_path + 'brain.p'
+        with open(BRAIN_DATA_FILE, 'rb') as f :
+            data = pickle.load(f)
+        self.data_handler.prepare_data(data)
+        # Print the docstring to emphasize the source of the data
+        self.print_to_console(self.brain.__doc__)
 
     def update_main_plot(self, **image_kwargs) :
         """ Change *self.main_plot*`s currently displayed
