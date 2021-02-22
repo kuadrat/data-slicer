@@ -40,6 +40,7 @@ if __name__ == "__main__" :
     datafile = 'pit.p'
     with open(data_path + datafile, 'rb') as f :
         data = pickle.load(f)
+    shape = data.shape
     w.set_data(data)
 
     # Button actions
@@ -48,7 +49,7 @@ if __name__ == "__main__" :
     button1.clicked.connect(reset_data)
 
     def randomize_data() :
-        w.set_data(np.random.rand(100, 150, 200))
+        w.set_data(np.random.rand(*shape))
     button2.clicked.connect(randomize_data)
 
     # Run

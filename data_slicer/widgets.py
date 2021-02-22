@@ -182,7 +182,7 @@ class ThreeDWidget(QtGui.QWidget) :
         self._initialize_planes()
 
     def _initialize_planes(self) :
-        """ This wrapper exists to be overriden by subclasses. """
+        """ This wrapper exists to be overwritten by subclasses. """
         self.initialize_xy()
 
     def _update_sliders(self) :
@@ -217,14 +217,14 @@ class ThreeDWidget(QtGui.QWidget) :
         if hasattr(self, 'xy') :
             self.glview.removeItem(self.xy)
         # Get the data and texture to create the GLImageItem object
-        cut = self.get_xy_slice(0)
+        cut = self.get_xy_slice(self.slider_xy.pos.get_value())
         texture = self.make_texture(cut)
         self.xy = gl.GLImageItem(texture, glOptions=self.gloptions)
         # Scale and translate to origin and add to glview
         self.xy.scale(self.xscale, self.yscale, 1)
         self.xy.translate(T, T, T)
         # Put to position in accordance with slider
-        self.old_z = self.slider_xy.pos.get_value()
+        self.old_z = 0 #self.slider_xy.pos.get_value()
         self.update_xy()
         # Add to GLView
         self.glview.addItem(self.xy)
@@ -333,7 +333,7 @@ class ThreeDSliceWidget(ThreeDWidget) :
         if hasattr(self, 'yz') :
             self.glview.removeItem(self.yz)
         # Get the data and texture to create the GLImageItem object
-        cut = self.get_yz_slice(0)
+        cut = self.get_yz_slice(self.slider_yz.pos.get_value())
         texture = self.make_texture(cut)
         self.yz = gl.GLImageItem(texture, glOptions=self.gloptions)
         # Scale and translate to origin and add to glview (this plane has 

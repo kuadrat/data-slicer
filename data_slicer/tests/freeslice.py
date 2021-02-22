@@ -7,7 +7,7 @@ import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 
-from data_slicer.cmaps import get_cmaps, ds_cmap
+from data_slicer.cmaps import load_cmap
 from data_slicer.imageplot import ImagePlot
 from data_slicer.cutline import Cutline
 
@@ -63,8 +63,7 @@ if __name__ == "__main__" :
 
     # Create Textures
     levels = [data.min(), data.max()]
-    cmaps = get_cmaps()
-    cmap = cmaps[cmap]
+    cmap = load_cmap(cmap)
     lut = cmap.getLookupTable()
     cuts = [data[x0], data[:,y0], data[:,:,z0]]
     textures = [pg.makeRGBA(d, levels=levels, lut=lut)[0] for d in cuts]
