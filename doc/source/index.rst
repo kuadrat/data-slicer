@@ -1,7 +1,7 @@
-Welcome to data_slicer's documentation!
+Welcome to data-slicer's documentation!
 =======================================
 
-Welcome to the documentation for the ``data_slicer`` package!
+Welcome to the documentation for the ``data-slicer`` package!
 These pages are intended to give an overview about what the package provides, 
 and explain how it can be installed and used.
 
@@ -11,7 +11,13 @@ and explain how it can be installed and used.
 
    introduction
    installation
+
+.. toctree::
+   :maxdepth: 1
+   :caption: PIT
+
    quickstart
+   data_format
    console
    access
 
