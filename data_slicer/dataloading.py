@@ -240,6 +240,46 @@ def three_d_to_txt(outfilename, data, axes=3*[None], force=False) :
                                       data[i,j,k])
                     f.write(line)
 
+# Function to create a python pickle file from a data namespace
+def dump(D, filename, force=False) :
+    """ Wrapper for :func:`pickle.dump`. Does not overwrite if a file of 
+    the given name already exists, unless *force* is True.
+
+    **Parameters**
+
+    ========  ==================================================================
+    D         python object to be stored.
+    filename  str; name of the output file to create.
+    force     boolean; if True, overwrite existing files.
+    ========  ==================================================================
+    """
+    # Check if file already exists
+    if not force and os.path.isfile(filename) :
+        question = 'File <{}> exists. Overwrite it? (y/N)'.format(filename)
+        answer = input(question)
+        # If the answer is anything but a clear affirmative, stop here
+        if answer.lower() not in ['y', 'yes'] :
+            print('Not overwriting existing file.')
+            return
+
+    with open(filename, 'wb') as f :
+        pickle.dump(D, f)
+
+    message = 'Wrote to file <{}>.'.format(filename)
+    print(message)
+
+def load_pickle(filename) :
+    """ Shorthand for loading python objects stored in pickle files.
+
+    **Parameters**
+
+    ========  ==================================================================
+    filename  str; name of file to load.
+    ========  ==================================================================
+    """
+    with open(filename, 'rb') as f :
+        return pickle.load(f)
+
 if __name__=="__main__" :
     a = np.array([[[0, 0, 0], [1, 2, 3]], [[1, 1, 1], [11, 22, 33]]])
     foofile = 'foofoo.txt'
