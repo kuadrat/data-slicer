@@ -31,7 +31,7 @@ https://data-slicer.readthedocs.io/en/latest/installation.html
 If you are familiar with the workflow on github, feel free to go ahead and create a pull
 request or open an issue.
 If you are unsure of what that means but are willing to contribute, contact Kevin Kramer
-via email: kevin.kramer@uzh.ch
+via email: kevin.pasqual.kramer@protonmail.ch
 
 ### Plugins
 
