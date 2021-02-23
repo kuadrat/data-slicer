@@ -74,5 +74,7 @@ intersphinx_mapping = {
                        'pyqtgraph': 
                        ('https://pyqtgraph.readthedocs.io/en/latest/', None),
                        'python':
-                       ('https://docs.python.org/3', None)
+                       ('https://docs.python.org/3', None),
+                       'numpy':
+                       ('https://numpy.org/doc/stable/', None)
                       }

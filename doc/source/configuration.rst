@@ -37,5 +37,10 @@ Any python module that you put in the ``plugins/`` subdirectory will be found
 by PIT even if it is not part of the system PYTHONPATH.
 
 Additionally, if you create a simple txt file called ``autoload.txt`` in 
-which you list plugins (one per line), PIT will attempt to load all of them 
-on startup.
+which you list plugins (the names you would use to import them, one per line), 
+PIT will attempt to load all of them on startup.
+
+Example contents of an ``autoload.txt`` with just one plugin::
+
+   ds_arpes_plugin
+

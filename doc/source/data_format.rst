@@ -47,17 +47,17 @@ In order to make the example more concrete and to allow for a step-by-step
 code-along experience, we will explain here how we prepared the MRI brain scan 
 data that can be loaded by issuing ``mw.brain()`` on ``PIT``'s console.
 But again, how exactly this step is handled depends on your starting point.
-The result of Step 0 should always be the same, though: Your data should be 
+The result of Step 1 should always be the same, though: Your data should be 
 accessible as a numpy array in python.
 
-OK, now let's get started.
+OK, now let's get started with the concrete example.
 We find and download our brain scan data of a meditating person 
-`here <https://openneuro.org/crn/datasets/ds000108/snapshots/00002/files/sub-01:anat:sub-01_T1w.nii.gz)>`_.
+`here <https://openneuro.org/crn/datasets/ds000108/snapshots/00002/files/sub-01:anat:sub-01_T1w.nii.gz)>`_ [#]_.
 
 Once downloaded, we need a way of opening it.
 A quick `Ecoisa search <www.ecosia.org>`_ leads us to the library `NiBabel 
 <https://nipy.org/nibabel/gettingstarted.html>`_, which seems to be able to 
-open ``nii`` files.
+open ``.nii`` files.
 Thus, we install that library (depending on your system and setup there may 
 be different ways of doing this)::
 
@@ -92,12 +92,18 @@ This, again, depends completely on your use case.
 Since in the example here we just want to *see* the data, we have nothing to 
 do.  
 
+In case you find yourself wanting to do some rearrangements, here are a few 
+functions that might be of interest: :func:`numpy.moveaxis`, 
+:func:`numpy.transpose` and 
+all basic :class:`numpy.ndarray` operations, like `slicing and indexing 
+<https://numpy.org/devdocs/reference/arrays.indexing.html#arrays-indexing>`_.
+
 Step 3: Optionally create axis information
 ..........................................
 
 Skipping this step means that the data we end up loading into ``PIT`` will 
 have axes that simply count the number of pixels (voxels) from 0 upwards.
-If you want to assign more meaningful information to the axes, like in our 
+But we can assign more meaningful units to our axes, like in our 
 example we could assign length units to the *x*, *y* and *z* axes.
 To do this, we have to create one 1D array for each axis and collect them in 
 a list.
@@ -155,7 +161,7 @@ Option 2: with axes information in a dictionary
 ***********************************************
 
 In order to also store the axis information we created in step 3, we just 
-construct a dictionary and pickle it::
+construct a :class:`dictionary <dict>` and pickle it::
 
    >>> D = dict(data=my_data, axes=my_axes)
    >>> dump(D, 'brain.p')
@@ -180,7 +186,7 @@ The idea is exactly the same, except that we create a
 Conclusion
 ..........
 
-And that's it. We have now successfully converted some datafile into a 
+And that's it. We have now successfully converted a datafile into a 
 ``PIT``-readable format.
 Of course, if you have to do this kind of operation often, it would be a good 
 idea to write a little script that does these steps for you.
@@ -214,4 +220,13 @@ If you've skipped step 3, you can just leave out the ``axes`` argument.
 In case you're typing along this tutorial, you will notice that the creation 
 of this ``txt`` takes much longer than in the binary case - up to several 
 minutes even.
+
+.. rubric:: Footnotes
+
+.. [#] This data set is taken from the OpenNeuro database.
+       Openneuro Accession Number: ds000108
+       Authored by: Wager, T.D., Davidson, M.L., Hughes, B.L., Lindquist, 
+       M.A., Ochsner, K.N. (2008). Prefrontal-subcortical pathways mediating 
+       successful emotion regulation. Neuron, 59(6):1037-50. 
+       doi: ``10.1016/j.neuron.2008.09.006``
 
