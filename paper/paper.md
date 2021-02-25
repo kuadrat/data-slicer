@@ -34,18 +34,18 @@ Examples of techniques where the typical data output has moved from 1D to 3D
 in the past few decades are shown in \autoref{fig1}.
 
 More data is always welcome.
-However, in many disciplines human digestion of this large amount of data has 
-now become the bottleneck.
+However, in many disciplines human digestion of these large amounts of data 
+has now become the bottleneck.
 In many fields, for example those working at large scale synchrotron 
-facilities, where the duration of the experiment is limited, scientists 
+facilities where the duration of the experiment is limited, scientists 
 require a means of quick data inspection and carrying out a fast preliminary 
-analysis in order to decide on the course of the experiment.
+analysis in order to take decisions on the course of the experiment.
 Many of the existing powerful and versatile visualization tools 
 [@fedorov123d;@ahrens05paraview;@00mayavi;@00visit] are not well suited for 
 this purpose and cannot easily support the specific and often changing needs 
 of a given discipline.
-The result is that each community develops their own implementation of 
-solutions to the problem of quick data visualization and inspection 
+The result is that each community ends up developing their own solutions to 
+the problem of quick data visualization and inspection, e.g.
 [@stansbury20pyarpes;@lass20mjolnir].
 However, since these implementations are usually intertwined and 
 entangled with the community-specific parts, such solutions are typically 
@@ -53,7 +53,7 @@ not transferrable across different disciplines or experimental methodologies.
 
 We have developed PIT and the data-slicer package to account 
 for these needs: offering tools for fast live visualization of data at an 
-intermediate scope that can easily be adjusted and fine tuned for more 
+general scope that can easily be adjusted and fine tuned for more 
 specific problems.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
@@ -84,24 +84,23 @@ is schematically depicted in \autoref{fig2}.
 PIT consists of a number of dynamic plot figures which allow browsing through 
 3D data by quickly selecting slices of variable thickness from the data cube 
 and further cutting them up arbitrarily.
-Besides the different plot windows, there are two core features of PIT that 
-should be explicitly mentioned.
+Two core features of PIT should be explicitly mentioned.
 The first is the ability to create slices of the 3D data cube along arbitrary 
 angles quickly.
 This is facilitated on the GUI side through a simple draggable line to select 
-the slice direction and behind the scenes by the use of optimized functions 
-which enable the superior speed of this operation.
+the slice direction.
+The superior speed of this operation is enabled by the use of optimized 
+functions.
 The second feature worth mentioning is the inclusion of an ipython console 
 which is aware of the loaded data as well as of all GUI elements.
 The console immediately enables users to run any analysis routine suitable to 
 their respective needs.
-This includes running python commands live, in a workflow familiar to 
-pylab or Jupyter [@00jupyter] notebook users but 
-also loading or directly running scripts into or from the console, using 
-ipython's line magic functions \texttt{\%load} and \texttt{\%run} respectively.
+This includes running python commands in a workflow familiar to pylab or 
+Jupyter [@00jupyter] notebook users but also loading or directly running 
+scripts into or from the console, using ipython's line magic functions 
+\texttt{\%load} and \texttt{\%run} respectively.
 Effectively, this design is central in empowering users to accomplish any task
-imaginable --- as long as it lies within the possibility space of the python 
-language.
+imaginable --- as long as it is possible to achieve with python.
 
 ## Plugins
 It is clear that it can get complicated and tedious to run certain types of 
@@ -153,6 +152,7 @@ The python image tool (PIT) is made up of different modular building blocks.
 These blocks can be used to create or enhance new applications.
 PIT itself can be used directly, optionally augmented through plugins.
 Alternatively, it can be embedded in external applications.
+\label{fig2}
 ](fig2.pdf)
 
 # Acknowledgements
