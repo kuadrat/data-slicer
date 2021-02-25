@@ -14,7 +14,7 @@ authors:
 affiliations:
   - name: Physik Institut, Universität Zürich, Winterthurerstrasse 190, CH-8057 Zürich, Switzerland
     index: 1
-date: 25 November 2021
+date: 25 February 2021
 ---
 
 # Statement of Need
@@ -30,36 +30,31 @@ from physics to psychology and medicine.
 In observational sciences, most measurement techniques undergo steady 
 improvements in acquisition time and resolution.
 As a result the sheer data throughput is continually increasing.
-Example cases are shown in \autoref{fig1}.
+Examples of techniques where the typical data output has moved from 1D to 3D 
+in the past few decades are shown in \autoref{fig1}.
 
 More data is always welcome.
 However, in many disciplines human digestion of this large amount of data has 
 now become the bottleneck.
-It is often said that a picture is worth more than a thousand words.
-This saying reflects that our visual information intake is highly developed.
-Fast visualization is therefore important for quick digestion of large 
-datasets.
-
-Most data generating techniques come with very specific boundary conditions, 
-e.g. the data formats, metadata, necessary and desired pre- and 
-postprocessing routines, etc.
-But at the core, the necessary steps to visualize such datasets are always 
-the same.
+In many fields, for example those working at large scale synchrotron 
+facilities, where the duration of the experiment is limited, scientists 
+require a means of quick data inspection and carrying out a fast preliminary 
+analysis in order to decide on the course of the experiment.
+Many of the existing powerful and versatile visualization tools 
+[@fedorov123d;@ahrens05paraview;@00mayavi;@00visit] are not well suited for 
+this purpose and cannot easily support the specific and often changing needs 
+of a given discipline.
 The result is that each community develops their own implementation of 
-solutions to essentially the same 
-problems [@stansbury20pyarpes;@lass20mjolnir].
+solutions to the problem of quick data visualization and inspection 
+[@stansbury20pyarpes;@lass20mjolnir].
 However, since these implementations are usually intertwined and 
-entangled with the community-specific parts, solutions are typically 
+entangled with the community-specific parts, such solutions are typically 
 not transferrable across different disciplines or experimental methodologies.
-On the other hand, there exist attempts to provide 
-visualization routines at maximum generality [@fedorov123d].
-These programs, however, often suffer from being so general that they 
-cannot easily support the more specific needs of certain fields.
 
-To this end, we have developed data-slicer, a software package to account 
-for both of these needs: offering tools for fast live visualization of data 
-at an intermediate scope that can easily be adjusted and fine tuned for 
-different problems.
+We have developed PIT and the data-slicer package to account 
+for these needs: offering tools for fast live visualization of data at an 
+intermediate scope that can easily be adjusted and fine tuned for more 
+specific problems.
 
 ![Evolution of data acquisition in the field of spectroscopy. 
 (a,b) Angle resolved photoemission electron spectroscopy (ARPES) 
@@ -75,13 +70,15 @@ multidimensional data acquisition (bottom row).
 
 # Summary
 
-data-slicer is a python package that contains several functions and classes which 
-provide modular Qt [@company00qt; @00riverbank] widgets, tools and 
+data-slicer is a python package that contains several functions and classes 
+which provide modular Qt [@company00qt; @00riverbank] widgets, tools and 
 utilities for the visualization of three-dimensional (3D) datasets.
 These building blocks can be combined freely to create new applications.
 Some of these building blocks are used within the package to form a 
 graphical user interface (GUI) for 3D data visualization and manipulation: 
 the Python Image Tool (PIT).
+The relation between different elements of the package and external software 
+is schematically depicted in \autoref{fig2}.
 
 ## PIT
 PIT consists of a number of dynamic plot figures which allow browsing through 
@@ -150,11 +147,12 @@ On the last, most specific level users can use and arrange the building
 blocks contained in the package to create completely new applications or 
 embed PIT or other parts of the data-slicer package into an existing application.
 
-![Schematic structural overview of the data-slicer package. 
+![Schematic structural overview of the data-slicer package (represented by 
+the large grey block). 
 The python image tool (PIT) is made up of different modular building blocks. 
 These blocks can be used to create or enhance new applications.
- PIT itself can be used directly, optionally augmented through plugins.
- Or it can be embedded in external applications.
+PIT itself can be used directly, optionally augmented through plugins.
+Alternatively, it can be embedded in external applications.
 ](fig2.pdf)
 
 # Acknowledgements
