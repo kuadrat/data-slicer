@@ -20,7 +20,7 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'data_slicer'
+project = 'data-slicer'
 copyright = '2020, Kevin Kramer'
 author = 'Kevin Kramer'
 

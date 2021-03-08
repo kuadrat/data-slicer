@@ -19,7 +19,7 @@ Detailed instructions for Anaconda users follow:
 
 1) Open "Anaconda Prompt" 
 
-2) In order not to mess up your dependencies (footnote 1), create a virtual 
+2) In order not to mess up your dependencies, create a virtual 
    environment with python version 3.7.5::
 
       $ conda create --name testenv python==3.7.5
@@ -42,6 +42,24 @@ Detailed instructions for Anaconda users follow:
       (testenv) $ pit
    
    This should bring up a window with some example data.
+
+
+Upgrading
+---------
+
+The following command will attempt to upgrade ``data-slicer`` to the latest 
+published version::
+
+   pip install --upgrade data_slicer
+
+It is usually a good idea to upgrade ``pip`` itself before running above 
+command::
+
+   pip install --upgrade pip
+
+.. Note::
+   Run these commands from within the same (virtual) environment as you've 
+   installed ``data-slicer`` in.
 
 Dependencies
 ------------
