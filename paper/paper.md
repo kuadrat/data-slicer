@@ -161,8 +161,11 @@ We are thankful for fruitful discussions with and inputs from Titus Neupert,
 Claude Monney, Daniel Mazzone, Nicholas Plumb, Wojciech Pude\l{}ko, Niels 
 Bech Christensen as well as for the testing efforts of Qisi Wang, Julia 
 Küspert and Karin von Arx.
-
+We acknowledge the contribution of other open-source frameworks to this 
+publication, namely matplotlib [@hunter07matplotlib], numpy 
+[@harris20array] and pyqtgraph [@00pyqtgraph].
 Kevin Kramer and Johan Chang acknowledge support by the Swiss National 
 Science Foundation.
+
 
 # References
