@@ -26,6 +26,14 @@ It is recommended to do this from within some sort of virtual environment.
 Visit the documentation for more detailed instructions:
 https://data-slicer.readthedocs.io/en/latest/installation.html
 
+### Dependencies
+
+This software is built upon on a number of other open-source frameworks.
+The complete list of packages can be found in the file `requirements.txt`.
+Most notably, this includes [matplotlib](https://matplotlib.org/), 
+[numpy](https://numpy.org/) and 
+[pyqtgraph](https://pyqtgraph.readthedocs.io/en/latest/)
+
 ## Contributing
 
 If you are familiar with the workflow on github, feel free to go ahead and create a pull

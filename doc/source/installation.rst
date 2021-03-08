@@ -43,3 +43,18 @@ Detailed instructions for Anaconda users follow:
    
    This should bring up a window with some example data.
 
+Dependencies
+------------
+
+This software is built upon on a number of other open-source frameworks.
+The complete list of packages is:
+
+.. include:: ../../requirements.txt
+   :code:
+
+Most notably, this includes 
+`pyqtgraph <https://pyqtgraph.readthedocs.io/en/latest/>`_ for fast live 
+visualizations and widgets, `numpy <https://numpy.org/>`_ for numerical 
+operations and `matplotlib <https://matplotlib.org/>`_ for plot exporting 
+functionalities.
+
