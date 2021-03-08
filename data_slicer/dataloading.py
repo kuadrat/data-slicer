@@ -61,7 +61,19 @@ class Dataloader_Pickle(Dataloader) :
             data = filedata
         elif isinstance(filedata, type(dict())) :
             data = filedata['data']
-            axes = [filedata[i+'axis'] for i in 'xyz']
+            try :
+                axes = filedata['axes']
+            except KeyError :
+                # Try the other allowed definition of the axes
+                pass
+            try :
+                axes = [filedata[i+'axis'] for i in 'xyz']
+            except KeyError :
+                # Both methods did not work - raise an error
+                raise ValueError(('The pickled dictionary either needs to '
+                                  'contain the key *axes* or all of the keys '
+                                  '*xaxis*, *yaxis* and *zaxis*.'))
+
         elif isinstance(filedata, type(Namespace())) :
             # Ensure all needed fields are present
             keys = filedata.__dict__.keys()

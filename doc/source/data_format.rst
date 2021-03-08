@@ -168,6 +168,11 @@ construct a :class:`dictionary <dict>` and pickle it::
 
 In this case it is important that the argument names ``data`` and ``axes`` 
 are exactly like that. Other names will not work.
+As the only exception, an alternative method is possible if you provide the 
+three axes separately, like this::
+
+   >>> D = dict(data=my_data, xaxis=x_axis, yaxis=y_axis, zaxis=z_axis)
+   >>> dump(D, 'brain.p')
 
 Option 3: with axes information in a Namespace
 **********************************************
