@@ -1,12 +1,19 @@
 # Data slicer
 
-The `data-slicer` package offers fast 3D data visualization tools with plugin capabilites.
+The `data-slicer` package offers fast tools for inspection, visualization, 
+slicing and analysis of 3(+) dimensional datasets at a general level.
+It also provides a framework and building blocks for users to easily create 
+more specialized and customized tools for their individual use cases.
 
 ![](https://raw.githubusercontent.com/kuadrat/data_slicer/master/screenshots/pit_demo.gif)
 
-The package was developed to deal with the high data throughput of modern measurement 
-instruments, where quick visualizations and preliminary analyses are necessary to guide
-the direction of a measurement session.
+`data-slicer` was originally developed to deal with the high data throughput of 
+modern measurement instruments, where quick visualizations and preliminary 
+analyses are necessary to guide the direction of a measurement session.
+However, the package is designed to be agnostic of the concrete use-case and 
+all scientific, engineering, medical, artistic or other data driven 
+disciplines where inspection and slicing of (hyper)cubes is required could 
+potentially benefit from `data-slicer`.
 
 ## Documentation
 
@@ -32,7 +39,7 @@ This software is built upon on a number of other open-source frameworks.
 The complete list of packages can be found in the file `requirements.txt`.
 Most notably, this includes [matplotlib](https://matplotlib.org/), 
 [numpy](https://numpy.org/) and 
-[pyqtgraph](https://pyqtgraph.readthedocs.io/en/latest/)
+[pyqtgraph](https://pyqtgraph.readthedocs.io/en/latest/).
 
 ## Contributing
 
