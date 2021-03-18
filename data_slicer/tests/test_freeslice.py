@@ -2,16 +2,17 @@
 import pickle
 import pkg_resources
 
-from pyqtgraph.Qt import QtCore, QtGui
+import pytestqt
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
+from pyqtgraph.Qt import QtCore, QtGui
 
 from data_slicer.cmaps import load_cmap
 from data_slicer.imageplot import ImagePlot
 from data_slicer.cutline import Cutline
 
-if __name__ == "__main__" :
+def make_freeslice() :
     #_Parameters________________________________________________________________
 
     DATA_PATH = pkg_resources.resource_filename('data_slicer', 'data/')
@@ -22,9 +23,6 @@ if __name__ == "__main__" :
     cmap = 'ocean'
 
     #_GUI_setup_________________________________________________________________
-
-    # Initialize the application
-    app = QtGui.QApplication([])
 
     # Set up the main window and set a central widget
     window = QtGui.QMainWindow()
@@ -48,8 +46,6 @@ if __name__ == "__main__" :
     # Somehow this is needed for both widets to be visible
     layout.setRowStretch(0, 1)
     layout.setRowStretch(1, 1)
-
-    window.show()
 
     #_Data_loading_and_presenting_______________________________________________
 
@@ -177,6 +173,20 @@ if __name__ == "__main__" :
     axis = gl.GLAxisItem()
     main.addItem(axis)
 
+    return window
+
+def test_freeslice(qtbot) :
+    """ Test creating the freeslice window. """
+    window = make_freeslice()
+    window.show()
+    qtbot.add_widget(window)
+    qtbot.wait(1000)
+
+if __name__ == "__main__" :
+    # Initialize the application
+    app = QtGui.QApplication([])
+    
+    window = make_freeslice()
+    window.show()
+
     app.exec_()
-
-

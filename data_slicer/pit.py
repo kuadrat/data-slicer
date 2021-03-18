@@ -807,8 +807,6 @@ class MainWindow(QtGui.QMainWindow) :
         self.main_plot.set_yscale(yaxis, update=True)
         self.main_plot.fix_viewrange()
 
-        # Kind of a hack to get the crosshair to the right position...
-        self.cut_plot.sig_axes_changed.emit()
         self.cutline.initialize()
 
     def update_x_plot(self) :
@@ -823,9 +821,12 @@ class MainWindow(QtGui.QMainWindow) :
 
         # Get the correct position indicator
         pos = self.y_plot.pos
-        i_x = int( min(pos.get_value(), pos.allowed_values.max()-1))
-        logger.debug(('xp.pos.get_value()={}; i_x: '
-                      '{}').format(xp.pos.get_value(), i_x))
+        if pos.allowed_values is not None :
+            i_x = int( min(pos.get_value(), pos.allowed_values.max()-1))
+            logger.debug(('xp.pos.get_value()={}; i_x: '
+                          '{}').format(xp.pos.get_value(), i_x))
+        else :
+            i_x = 0
         if not self.main_plot.transposed.get_value() :
             xprofile = self.data_handler.cut_data[i_x]
         else :
@@ -844,9 +845,12 @@ class MainWindow(QtGui.QMainWindow) :
             pass
         # Get the correct position indicator
         pos = self.x_plot.pos
-        i_y = int( min(pos.get_value(), pos.allowed_values.max()-1)) 
-        logger.debug(('yp.pos.get_value()={}; i_y: '
-                      '{}').format(yp.pos.get_value(), i_y))
+        if pos.allowed_values is not None :
+            i_y = int( min(pos.get_value(), pos.allowed_values.max()-1)) 
+            logger.debug(('yp.pos.get_value()={}; i_y: '
+                          '{}').format(yp.pos.get_value(), i_y))
+        else :
+            i_y = 0
         if not self.main_plot.transposed.get_value() :
             yprofile = self.data_handler.cut_data[:,i_y]
         else :
