@@ -42,7 +42,41 @@ Detailed instructions for Anaconda users follow:
       (testenv) $ pit
    
    This should bring up a window with some example data.
+   See also :ref:`below, for how to run automated tests to verify your 
+   installation <sec-verifying>`.
 
+.. _sec-verifying:
+
+Verifying your installation
+---------------------------
+
+Once installed, you can run a set of automated tests in order to check if the 
+main features work as expected.
+To do this, issue the following on the command line::
+
+   python -m data_slicer.tests.run_tests
+
+The result should be that some text is printed to the console and some 
+windows open, with a few things happening in them before they quickly close 
+again.
+Basically, these tests simulate a few interactions that the user could have 
+with these windows and verify that they worked with some checks.
+If all went well you might see some warnings, but no notifications of any
+``failures``.
+It could, for example, look like this::
+   
+   ================== 4 passed, 16 warnings in 14.92 s ==================
+
+.. note::
+   The fact that all tests passed does not guarantee that *everything* is in 
+   working order - but it's a very good sign.
+
+If interested, you can also run these tests individually and interact with 
+the respective windows by calling them like so::
+
+   python -m data_slicer.tests.test_XXX
+
+where ``XXX`` is any of ``pit``, ``freeslice``, ``threedwidget``.
 
 Upgrading
 ---------
