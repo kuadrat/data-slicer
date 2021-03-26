@@ -29,3 +29,20 @@ You can set it up such that your favourite plugins will always be loaded on
 startup of PIT.
 See :ref:`here <sec-config-plugins>`.
 
+List of known plugins
+---------------------
+
+If you have created a PIT plugin, feel free to add it to the list below, 
+either via pull request or through an e-mail 
+(kevin.pasqual.kramer@protonmail.ch).
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Plugin Name (link) 
+     - Description
+
+   * - `ds-arpes-plugin <https://github.com/kuadrat/ds_arpes_plugin>`_
+     - tools for angle-resolved photoelectron spectroscopy (ARPES) data
+

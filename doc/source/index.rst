@@ -30,6 +30,7 @@ and explain how it can be installed and used.
    ipython_crash_course
    widgets
    examples
+   contributing
 
 .. toctree::
    :maxdepth: 1
