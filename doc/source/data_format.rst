@@ -3,6 +3,53 @@
 Data formats and data loading
 =============================
 
+Accessing the displayed data
+----------------------------
+
+The data currently represented in ``PIT`` can always be accessed and changed 
+from the ``ipython`` console through ``pit.get_data()`` and ``pit.set_data()``.
+
+We could, for example, replace the first slice of our data by random numbers::
+
+   # Get hold of the data
+   [1] data = pit.get_data()
+   # Get the shape
+   [2] x, y, z = data.shape
+   # Randomize the first slice
+   [3] data[:,:,0] = np.random.rand(x, y)
+   # Set the data again
+   [4] pit.set_data(data)
+
+The :meth:`~data_slicer.pit.PITDataHandler.set_data` function takes an 
+additional argument **axes**, which should be a list/tuple/array of 3 arrays 
+representing the x, y and z axis coordinates.
+The following example would rescale the x-axis by an order of magnitude and 
+shift the y-axis by 50 units::
+
+   # Get the current axes
+   [1] axes = pit.axes
+   # Set modified axes coordinates with the set_data method
+   [2] pit.set_data(axes=[axes[0]*10, axes[1]+50, axes[2]])
+
+As another example, this is how we could apply some Gaussian blurring to the 
+data (requires ``scipy`` to be installed)::
+
+   # Import the Gaussian filter from scipy
+   [1] from scipy.ndimage import gaussian_filter
+   # Get the current data
+   [2] data = pit.get_data()
+   # Set blurred data
+   [3] pit.set_data(gaussian_filter(data, 1))
+   # Play with different levels of blurring
+   [4] pit.set_data(gaussian_filter(data, 10))
+
+If you have certain operations that you routinely carry out on your data, it 
+is recommended to automate this process by writing a :ref:`plugin 
+<sec-plugin>`.
+
+Loading data from a file
+------------------------
+
 The existing dataloaders found in the :mod:`dataloading module 
 <data_slicer.dataloading>` can handle two types of input data formats:
 
@@ -22,7 +69,7 @@ In the following we give an example tutorial for both cases.
 
 
 Binary pickle files
--------------------
+'''''''''''''''''''''''''''''''''
 
 Step 1: Load the data into python
 .................................
@@ -202,7 +249,7 @@ Or, if you're lucky, somebody else has already done this and you can just use
 that plugin.
 
 Plain text files
-----------------
+''''''''''''''''
 
 Working with plain text (ASCII) files is significantly slower and requires 
 more disk space than other file formats, but it can be useful to have the 

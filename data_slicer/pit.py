@@ -108,11 +108,22 @@ class PITDataHandler() :
         """
         return self.data.get_value()
 
-    def set_data(self, data) :
+    def set_data(self, data=None, axes=None) :
         """ Convenience `setter` method. Allows writing ``self.set_data(d)`` 
         instead of ``self.data.set_value(d)``. 
+        Additionally allows setting new *axes*. If *axes* is ``None``, the axes
+        are reset to pixels.
         """
-        self.data.set_value(data)
+        if data is not None :
+            self.data.set_value(data)
+        if axes is not None :
+            self.axes = axes
+            self.main_window.set_axes()
+        else :
+            self.axes = np.array(3*[None])
+        # Call on_z_dim_change here because it was not executed with the 
+        # proper axes on the data change before
+        self.on_z_dim_change()
 
     def prepare_data(self, data, axes=3*[None]) :
         """ Load the specified data and prepare the corresponding z range. 
@@ -264,8 +275,12 @@ class PITDataHandler() :
 
         # Also display the actual data values in the top axis
         zscale = self.axes[2]
-        zmin = zscale[0]
-        zmax = zscale[-1]
+        if zscale is not None :
+            zmin = zscale[0]
+            zmax = zscale[-1]
+        else :
+            zmin = 0
+            zmax = self.data.get_value().shape[2]
         ip.set_secondary_axis(zmin, zmax)
 
     def calculate_integrated_intensity(self) :

@@ -1007,7 +1007,7 @@ class CursorPlot(pg.PlotWidget) :
         if av is not None and self.wheel_frames <= 1 and len(av) > 1 :
             self.wheel_frames = av[1] - av[0]
     
-    def set_secondary_axis(self, min_val, max_val) :
+    def set_secondary_axis(self, min_val=None, max_val=None) :
         """ Create (or replace) a second x-axis on the top which ranges from 
         `min_val` to `max_val`.
         This is the right axis in case of the horizontal orientation.
@@ -1021,7 +1021,7 @@ class CursorPlot(pg.PlotWidget) :
         new_axis = pg.AxisItem(orientation=self.secondary_axis)
         new_axis.setRange(min_val, max_val)
         # Attach it internally to the plotItem and its layout (The arguments 
-        # `*(1, 1)` or `*(2, 2)` refers to the axis' position in the GridLayout)
+        # `*(1, 1)` or `*(2, 2)` refer to the axis' position in the GridLayout)
         plotItem.axes[self.secondary_axis]['item'] = new_axis
         plotItem.layout.addItem(new_axis, *self.secondary_axis_grid)
 
