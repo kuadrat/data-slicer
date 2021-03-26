@@ -71,10 +71,12 @@ autodoc_member_order = 'bysource'
 
 # Intersphinx config
 intersphinx_mapping = {
-                       'pyqtgraph': 
-                       ('https://pyqtgraph.readthedocs.io/en/latest/', None),
-                       'python':
-                       ('https://docs.python.org/3', None),
-                       'numpy':
-                       ('https://numpy.org/doc/stable/', None)
-                      }
+    'pyqtgraph': 
+    ('https://pyqtgraph.readthedocs.io/en/latest/', None),
+    'python':
+    ('https://docs.python.org/3', None),
+    'numpy':
+    ('https://numpy.org/doc/stable/', None),
+    'matplotlib':
+    ('https://matplotlib.org/', None)
+}

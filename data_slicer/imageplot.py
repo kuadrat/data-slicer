@@ -356,7 +356,8 @@ class ImagePlot(pg.PlotWidget) :
 
     def show_cursor(self, show=True) :
         """
-        Toggle whether or not to show a crosshair cursor that tracks the mouse movement.
+        Toggle whether or not to show a crosshair cursor that tracks the 
+        mouse movement.
         """
         if show :
             crosshair_cursor = Crosshair()
