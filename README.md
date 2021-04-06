@@ -84,9 +84,6 @@ for a guide on how to create a plugin.
 
 | Plugin Name (link) | Description | 
 | ------------------ | ----------- |
-| [ds-example-plugin](https://github.com/kuadrat/ds_example_plugin) | exists 
-as a minimal example that can be used for guidance when creating your own 
-plugins. A step-by-step tutorial on how it was made can be found in [the 
-documentation](https://data-slicer.readthedocs.io/en/latest/contributing.html) |
+| [ds-example-plugin](https://github.com/kuadrat/ds_example_plugin) | exists as a minimal example that can be used for guidance when creating your own plugins. A step-by-step tutorial on how it was made can be found in [the documentation](https://data-slicer.readthedocs.io/en/latest/contributing.html) |
 | [ds-arpes-plugin](https://github.com/kuadrat/ds_arpes_plugin) | tools for angle-resolved photoelectron spectroscopy (ARPES) | 
 
