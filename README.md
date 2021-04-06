@@ -78,8 +78,15 @@ If you are unsure you can always contact me via e-mail (see above).
 
 If you have created a PIT plugin, feel free to add it to the list below, 
 either via pull request or through an e-mail (see above).
+Also check the 
+[documentation](https://data-slicer.readthedocs.io/en/latest/contributing.html) 
+for a guide on how to create a plugin.
 
 | Plugin Name (link) | Description | 
 | ------------------ | ----------- |
-| [ds-arpes-plugin](https://www.pluralsight.com/guides/working-tables-github-markdown) | tools for angle-resolved photoelectron spectroscopy (ARPES) | 
+| [ds-example-plugin](https://github.com/kuadrat/ds_example_plugin) | exists 
+as a minimal example that can be used for guidance when creating your own 
+plugins. A step-by-step tutorial on how it was made can be found in [the 
+documentation](https://data-slicer.readthedocs.io/en/latest/contributing.html) |
+| [ds-arpes-plugin](https://github.com/kuadrat/ds_arpes_plugin) | tools for angle-resolved photoelectron spectroscopy (ARPES) | 
 

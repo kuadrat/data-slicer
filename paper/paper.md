@@ -52,7 +52,7 @@ entangled with the community-specific parts, such solutions are typically
 not transferrable across different disciplines or experimental methodologies.
 
 We have developed PIT and the data-slicer package to account 
-for these needs: offering tools for fast live visualization of data at an 
+for these needs: offering tools for fast live visualization of data at a 
 general scope that can easily be adjusted and fine tuned for more 
 specific problems.
 
