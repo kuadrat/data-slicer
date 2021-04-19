@@ -41,6 +41,14 @@ Most notably, this includes [matplotlib](https://matplotlib.org/),
 [numpy](https://numpy.org/) and 
 [pyqtgraph](https://pyqtgraph.readthedocs.io/en/latest/).
 
+## Citing
+
+If you use `data-slicer` in your work, please credit it by citing the following publication:
+
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.02969/status.svg)](https://doi.org/10.21105/joss.02969)
+
+Kramer et al., (2021). Visualization of Multi-Dimensional Data -- The data-slicer Package. Journal of Open Source Software, 6(60), 2969, https://doi.org/10.21105/joss.02969
+
 ## Contributing
 
 You are welcome to help making this software package more useful!
