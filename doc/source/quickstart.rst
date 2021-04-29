@@ -11,7 +11,7 @@ You can alternatively load a set of MRI brain scan data that is perhaps more
 intuitive to understand by using the command ``mw.brain()`` on the console 
 [#]_.
 
-.. figure:: ../../screenshots/pit_overview.png
+.. figure:: ../../img/pit_overview.png
    :scale: 50 %
    :alt: Image not found.
 

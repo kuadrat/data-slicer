@@ -5,7 +5,7 @@ slicing and analysis of 3(+) dimensional datasets at a general level.
 It also provides a framework and building blocks for users to easily create 
 more specialized and customized tools for their individual use cases.
 
-![](https://raw.githubusercontent.com/kuadrat/data_slicer/master/screenshots/pit_demo.gif)
+![](https://raw.githubusercontent.com/kuadrat/data_slicer/master/img/pit_demo.gif)
 
 `data-slicer` was originally developed to deal with the high data throughput of 
 modern measurement instruments, where quick visualizations and preliminary 
