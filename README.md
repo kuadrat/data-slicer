@@ -41,6 +41,14 @@ Most notably, this includes [matplotlib](https://matplotlib.org/),
 [numpy](https://numpy.org/) and 
 [pyqtgraph](https://pyqtgraph.readthedocs.io/en/latest/).
 
+## Citing
+
+If you use `data-slicer` in your work, please credit it by citing the following publication:
+
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.02969/status.svg)](https://doi.org/10.21105/joss.02969)
+
+Kramer et al., (2021). Visualization of Multi-Dimensional Data -- The data-slicer Package. Journal of Open Source Software, 6(60), 2969, https://doi.org/10.21105/joss.02969
+
 ## Contributing
 
 You are welcome to help making this software package more useful!
@@ -84,9 +92,6 @@ for a guide on how to create a plugin.
 
 | Plugin Name (link) | Description | 
 | ------------------ | ----------- |
-| [ds-example-plugin](https://github.com/kuadrat/ds_example_plugin) | exists 
-as a minimal example that can be used for guidance when creating your own 
-plugins. A step-by-step tutorial on how it was made can be found in [the 
-documentation](https://data-slicer.readthedocs.io/en/latest/contributing.html) |
+| [ds-example-plugin](https://github.com/kuadrat/ds-example-plugin) | exists as a minimal example that can be used for guidance when creating your own plugins. A step-by-step tutorial on how it was made can be found in [the documentation](https://data-slicer.readthedocs.io/en/latest/contributing.html) |
 | [ds-arpes-plugin](https://github.com/kuadrat/ds_arpes_plugin) | tools for angle-resolved photoelectron spectroscopy (ARPES) | 
 
