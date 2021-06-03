@@ -1,5 +1,6 @@
-# Data slicer
+![](https://raw.githubusercontent.com/kuadrat/data_slicer/master/img/Data_Slicer_RZ.png)
 
+# Data slicer 
 The `data-slicer` package offers fast tools for inspection, visualization, 
 slicing and analysis of 3(+) dimensional datasets at a general level.
 It also provides a framework and building blocks for users to easily create 
