@@ -1,4 +1,4 @@
-![](https://raw.githubusercontent.com/kuadrat/data_slicer/master/img/Data_Slicer_RZ.png)
+![](https://raw.githubusercontent.com/kuadrat/data_slicer/master/img/02_Data_Slicer_Logo.png)
 
 # Data slicer 
 The `data-slicer` package offers fast tools for inspection, visualization, 
