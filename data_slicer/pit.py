@@ -210,7 +210,6 @@ class PITDataHandler() :
         """
         return self.main_window.integrated_plot.get_data()[1]
 
-
     def update_z_range(self) :
         """ When new data is loaded or the axes are rolled, the limits and 
         allowed values along the z dimension change.
@@ -816,8 +815,16 @@ class MainWindow(QtGui.QMainWindow) :
         xaxis = self.data_handler.axes[0]
         yaxis = self.data_handler.axes[1]
         zaxis = self.data_handler.axes[2]
+        if xaxis is not None :
+            len_x = len(xaxis)
+        else :
+            len_x = 'None'
+        if yaxis is not None :
+            len_y = len(yaxis)
+        else :
+            len_y = 'None'
         logger.debug(('set_axes(): len(xaxis), len(yaxis)={}, ' +
-                      '{}').format(len(xaxis), len(yaxis)))
+                      '{}').format(len_x, len_y))
         self.main_plot.set_xscale(xaxis)
         self.main_plot.set_yscale(yaxis, update=True)
         self.main_plot.fix_viewrange()
