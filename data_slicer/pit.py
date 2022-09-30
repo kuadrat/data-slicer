@@ -71,6 +71,8 @@ sys.path.append(str(plugin_path))
 
 # Number of dimensions to handle
 NDIM = 3
+# What axes look like if they have not been initialized
+EMPTY_AXES = np.array(3*[None])
 
 # +-----------------------+ #
 # | Main class definition | # ==================================================
@@ -120,7 +122,7 @@ class PITDataHandler() :
             self.axes = axes
             self.main_window.set_axes()
         else :
-            self.axes = np.array(3*[None])
+            self.axes = EMPTY_AXES
         # Call on_z_dim_change here because it was not executed with the 
         # proper axes on the data change before
         self.on_z_dim_change()
@@ -327,7 +329,7 @@ class PITDataHandler() :
         data = self.get_data()
         res = np.roll([0, 1, 2], i)
         self.axes = np.roll(self.axes, -i)
-        self.set_data(np.moveaxis(data, [0,1,2], res))
+        self.set_data(np.moveaxis(data, [0, 1, 2], res), axes=self.axes)
         # Setting the data triggers a call to self.redraw_plots()
         self.on_z_dim_change()
         # Reset cut_plot's axes
@@ -814,7 +816,6 @@ class MainWindow(QtGui.QMainWindow) :
         """
         xaxis = self.data_handler.axes[0]
         yaxis = self.data_handler.axes[1]
-        zaxis = self.data_handler.axes[2]
         if xaxis is not None :
             len_x = len(xaxis)
         else :
