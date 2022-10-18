@@ -198,10 +198,10 @@ class Cutline(qt.QtCore.QObject) :
         y = 0.5*(ymax+ymin)
 
         # Set the start and endpoint depending on the orientation
-        if self.orientation is 'horizontal' :
+        if self.orientation == 'horizontal' :
             lower_left = [xmin, y]
             upper_right = [xmax, y]
-        elif self.orientation is 'vertical' :
+        elif self.orientation == 'vertical' :
             lower_left = [x, ymin]
             upper_right = [x, ymax]
 
