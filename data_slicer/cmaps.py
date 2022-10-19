@@ -11,7 +11,6 @@ import pkg_resources
 import warnings
 
 import numpy as np
-from matplotlib import cm
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.pyplot import colormaps
 from pyqtgraph import ColorMap
@@ -120,9 +119,11 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=1) :
     pyqtgraph_cmap   :class:`pyqtgraph.ColorMap`
     ===============  ===========================================================
     """
+    logger.debug('Converting colormap "{}"'.format(matplotlib_cmap))
+
     # Get the colormap object if a colormap name is given 
     if isinstance(matplotlib_cmap, str) :
-        matplotlib_cmap = cm.get_cmap(matplotlib_cmap)
+        matplotlib_cmap = colormaps.get_cmap(matplotlib_cmap)
     # Number of entries in the matplotlib colormap
     N = matplotlib_cmap.N
     # Create the mapping values in the interval [0, 1]
@@ -291,7 +292,7 @@ if __name__ == '__main__' :
     # in the dict cmaps
     start = n()
     for name in colormaps() :
-        cmap = cm.get_cmap(name)
+        cmap = colormaps.get_cmap(name)
         cmaps.update({name: convert_matplotlib_to_pyqtgraph(cmap)})
     print('mpl: ', n()-start)
 

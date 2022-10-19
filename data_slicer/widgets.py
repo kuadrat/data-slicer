@@ -105,7 +105,6 @@ class ThreeDWidget(QtWidgets.QWidget) :
         # Initialize instance variables
         self.data = TracedVariable(None, name='data')
         self.cmap = load_cmap(DEFAULT_CMAP)
-#        self.cmap = pg.colormap.get('CET-L9')
         self.lut = self.cmap.getLookupTable()
         self.gloptions = 'translucent'
 
@@ -577,8 +576,8 @@ if __name__ == "__main__" :
     cw.setLayout(layout)
 
     # Add our custom widgets
-    w = ThreeDSliceWidget()
-#    w = FreeSliceWidget()
+#    w = ThreeDSliceWidget()
+    w = FreeSliceWidget()
     layout.addWidget(w, 0, 0, 1, 2)
 
     button1 = QtWidgets.QPushButton()
