@@ -589,8 +589,8 @@ class MainWindow(QtWidgets.QMainWindow) :
         self.resize(*self.size)
 
         # Create a "central widget" and its layout
-        self.central_widget = QtGui.QWidget()
-        self.layout = QtGui.QGridLayout()
+        self.central_widget = QtWidgets.QWidget()
+        self.layout = QtWidgets.QGridLayout()
         self.central_widget.setLayout(self.layout)
         self.setCentralWidget(self.central_widget)
 
@@ -1066,7 +1066,7 @@ parser.add_argument('filename', help='Name of file to open.', default=None,
 # Hook for setuptools entry point
 def start_main_window() :
     args = parser.parse_args()
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     mw = MainWindow()
     if args.filename is not None :
         mw.data_handler.load(args.filename)

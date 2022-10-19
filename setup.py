@@ -8,8 +8,7 @@ with open("README.md", "r") as fh :
 
 setuptools.setup(
     name='data-slicer',
-#    version='99.0.2',
-    version='0.0.12',
+    version='1.0.1',
     author='Kevin Kramer',
     author_email='kevin.kramer@uzh.ch',
     description='Tools for quick visualization of three dimensional datasets.',

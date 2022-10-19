@@ -105,6 +105,7 @@ class ThreeDWidget(QtWidgets.QWidget) :
         # Initialize instance variables
         self.data = TracedVariable(None, name='data')
         self.cmap = load_cmap(DEFAULT_CMAP)
+#        self.cmap = pg.colormap.get('CET-L9')
         self.lut = self.cmap.getLookupTable()
         self.gloptions = 'translucent'
 
@@ -206,8 +207,8 @@ class ThreeDWidget(QtWidgets.QWidget) :
 
     def make_texture(self, cut) :
         """ Wrapper for :func:`makeRGBA <pyqtgraph.makeRGBA>`."""
-        return pg.makeRGBA(cut, levels=self.levels, 
-                           lut=self.lut)[0]
+        return pg.makeRGBA(cut, levels=self.levels, lut=self.lut)[0]
+#        return pg.makeRGBA(cut, levels=self.levels)[0]
 
     def initialize_xy(self) :
         """ Create the xy plane. """
@@ -219,7 +220,7 @@ class ThreeDWidget(QtWidgets.QWidget) :
         # Get the data and texture to create the GLImageItem object
         cut = self.get_xy_slice(self.slider_xy.pos.get_value())
         texture = self.make_texture(cut)
-        self.xy = gl.GLImageItem(texture, glOptions=self.gloptions)
+        self.xy = gl.GLImageItem(texture) #, glOptions=self.gloptions)
         # Scale and translate to origin and add to glview
         self.xy.scale(self.xscale, self.yscale, 1)
         self.xy.translate(T, T, T)

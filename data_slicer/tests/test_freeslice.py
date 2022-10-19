@@ -6,7 +6,7 @@ import pytestqt
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
-from pyqtgraph.Qt import QtCore, QtGui
+from pyqtgraph.Qt import QtGui, QtCore, QtWidgets
 
 from data_slicer.cmaps import load_cmap
 from data_slicer.imageplot import ImagePlot
@@ -25,13 +25,13 @@ def make_freeslice() :
     #_GUI_setup_________________________________________________________________
 
     # Set up the main window and set a central widget
-    window = QtGui.QMainWindow()
+    window = QtWidgets.QMainWindow()
     window.resize(800, 800)
-    central_widget = QtGui.QWidget()
+    central_widget = QtWidgets.QWidget()
     window.setCentralWidget(central_widget)
 
     # Create a layout
-    layout = QtGui.QGridLayout()
+    layout = QtWidgets.QGridLayout()
     central_widget.setLayout(layout)
 
     # Add the selector view

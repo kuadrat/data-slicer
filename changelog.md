@@ -11,16 +11,22 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## [1.0.1] = 2022-10-19
+
+### Changed
+
 - :class:`cmaps.ds_cmap` is now just an empty shell, in order to fix a bug. 
   In turn, alpha and gamma sliders don't work anymore. The original code is 
   retained in :class:`cmaps.ds_cmaps_legacy`.
 
 - Created compatibility for PyQt5 by exchanging many instances of `QtGui` 
   with `QtWidgets`.
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 

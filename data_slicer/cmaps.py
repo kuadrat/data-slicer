@@ -23,6 +23,24 @@ logger = logging.getLogger('ds.'+__name__)
 class ds_cmap(ColorMap) :
     """ Simple subclass of :class:`pyqtgraph.ColorMap`. Adds vmax, 
     powerlaw normalization and a convenience function to change alpha.
+
+    .. versionchanged:: 1.0.1
+        Made this an empty shell for fixing a bug with a change in colormaps 
+        in :module:`pyqtgraph`.
+    """
+    def set_alpha(self, *args, **kwargs) :
+        pass
+
+    def set_gamma(self, *args, **kwargs) :
+        pass
+
+class ds_cmap_legacy(ColorMap) :
+    """ Simple subclass of :class:`pyqtgraph.ColorMap`. Adds vmax, 
+    powerlaw normalization and a convenience function to change alpha.
+
+    .. versionchanged:: 1.0.1
+        Renamed this to `ds_cmap_legacy` in order to fix a bug due to a 
+        change in colormaps in :module:`pyqtgraph`.
     """
     def __init__(self, pos, color, gamma=1, **kwargs) :
         super().__init__(pos, color, **kwargs)
@@ -167,6 +185,7 @@ def load_custom_cmap(filename) :
     else :
         reverse = False
     # If no suffix was given, look for a file that matches
+    actual_filename = ''
     if suffix == '' :
         # Split path and filename
         files = os.listdir(path)

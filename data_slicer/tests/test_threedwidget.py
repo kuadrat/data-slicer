@@ -3,7 +3,7 @@ import pkg_resources
 
 import numpy as np
 import pytestqt
-from pyqtgraph.Qt import QtGui, QtCore
+from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 
 import data_slicer.set_up_logging
 from data_slicer.widgets import ThreeDWidget
@@ -18,13 +18,13 @@ def create_threedwindow() :
     function returns the created QWindow, the ThreeDWidget as well as the two 
     QPushButtons.
     """
-    window = QtGui.QMainWindow()
+    window = QtWidgets.QMainWindow()
     window.resize(800, 800)
 
     # Add layouting-widget
-    cw = QtGui.QWidget()
+    cw = QtWidgets.QWidget()
     window.setCentralWidget(cw)
-    layout = QtGui.QGridLayout()
+    layout = QtWidgets.QGridLayout()
     cw.setLayout(layout)
 
     # Add our custom widgets
@@ -32,10 +32,10 @@ def create_threedwindow() :
     layout.addWidget(w, 0, 0, 1, 2)
 
     # Create and add buttons
-    button1 = QtGui.QPushButton()
+    button1 = QtWidgets.QPushButton()
     button1.setText('Reset')
     layout.addWidget(button1, 1, 0, 1, 1)
-    button2 = QtGui.QPushButton()
+    button2 = QtWidgets.QPushButton()
     button2.setText('Randomize')
     layout.addWidget(button2, 1, 1, 1, 1)
 
