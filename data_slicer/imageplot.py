@@ -21,7 +21,7 @@ logger = logging.getLogger('ds.'+__name__)
 BASE_LINECOLOR = (255,255,0,255)
 HOVER_COLOR = (195,155,0,255)
 
-class MPLExportDialog(qt.QtGui.QDialog) :
+class MPLExportDialog(qt.QtWidgets.QDialog) :
     """ A dialog that provides a GUI to 
     :meth:`~data_slicer.imageplot.ImagePlot.mpl_export`.
     """
@@ -42,41 +42,41 @@ class MPLExportDialog(qt.QtGui.QDialog) :
         self.setWindowTitle('MPL Export Options')
 
         # Title textbox
-        self.label_title = qt.QtGui.QLabel('Title')
-        self.box_title = qt.QtGui.QLineEdit(self)
+        self.label_title = qt.QtWidgets.QLabel('Title')
+        self.box_title = qt.QtWidgets.QLineEdit(self)
 
         # x- and y-axis textboxes
-        self.label_xlabel = qt.QtGui.QLabel('x axis label')
-        self.box_xlabel = qt.QtGui.QLineEdit(self)
-        self.label_ylabel = qt.QtGui.QLabel('y axis label')
-        self.box_ylabel = qt.QtGui.QLineEdit(self)
+        self.label_xlabel = qt.QtWidgets.QLabel('x axis label')
+        self.box_xlabel = qt.QtWidgets.QLineEdit(self)
+        self.label_ylabel = qt.QtWidgets.QLabel('y axis label')
+        self.box_ylabel = qt.QtWidgets.QLineEdit(self)
 
         # Invert and transpose checkboxes
-        self.checkbox_invertx = qt.QtGui.QCheckBox('invert x')
-        self.checkbox_inverty = qt.QtGui.QCheckBox('invert y')
-        self.checkbox_transpose = qt.QtGui.QCheckBox('transpose')
+        self.checkbox_invertx = qt.QtWidgets.QCheckBox('invert x')
+        self.checkbox_inverty = qt.QtWidgets.QCheckBox('invert y')
+        self.checkbox_transpose = qt.QtWidgets.QCheckBox('transpose')
 
         # x limits
-        self.label_xlim = qt.QtGui.QLabel('x limits')
-        self.box_xmin = qt.QtGui.QLineEdit()
+        self.label_xlim = qt.QtWidgets.QLabel('x limits')
+        self.box_xmin = qt.QtWidgets.QLineEdit()
         self.box_xmin.setValidator(qt.QtGui.QDoubleValidator())
-        self.box_xmax = qt.QtGui.QLineEdit()
+        self.box_xmax = qt.QtWidgets.QLineEdit()
         self.box_xmax.setValidator(qt.QtGui.QDoubleValidator())
 
         # y limits
-        self.label_ylim = qt.QtGui.QLabel('y limits')
-        self.box_ymin = qt.QtGui.QLineEdit()
+        self.label_ylim = qt.QtWidgets.QLabel('y limits')
+        self.box_ymin = qt.QtWidgets.QLineEdit()
         self.box_ymin.setValidator(qt.QtGui.QDoubleValidator())
-        self.box_ymax = qt.QtGui.QLineEdit()
+        self.box_ymax = qt.QtWidgets.QLineEdit()
         self.box_ymax.setValidator(qt.QtGui.QDoubleValidator())
 
         # Figsize
-        self.label_width = qt.QtGui.QLabel('Figure width (inch)')
-        self.box_width = qt.QtGui.QLineEdit()
+        self.label_width = qt.QtWidgets.QLabel('Figure width (inch)')
+        self.box_width = qt.QtWidgets.QLineEdit()
         self.box_width.setValidator(qt.QtGui.QDoubleValidator(0, 99, 2))
         self.box_width.setText(str(self.figwidth))
-        self.label_height = qt.QtGui.QLabel('Figure height (inch)')
-        self.box_height = qt.QtGui.QLineEdit()
+        self.label_height = qt.QtWidgets.QLabel('Figure height (inch)')
+        self.box_height = qt.QtWidgets.QLineEdit()
         self.box_height.setValidator(qt.QtGui.QDoubleValidator(0, 99, 2))
         self.box_height.setText(str(self.figheight))
 
@@ -91,7 +91,7 @@ class MPLExportDialog(qt.QtGui.QDialog) :
             checkbox.stateChanged.connect(self.plot_preview)
 
         # Figsize warning label
-        self.label_figsize = qt.QtGui.QLabel('Preview figure size is not to '
+        self.label_figsize = qt.QtWidgets.QLabel('Preview figure size is not to '
                                              'scale.')
 
         # Preview canvas
@@ -101,8 +101,8 @@ class MPLExportDialog(qt.QtGui.QDialog) :
         self.ax = self.figure.add_subplot(111)
 
         # 'OK' and 'Cancel' buttons
-        QBtn = qt.QtGui.QDialogButtonBox.Ok | qt.QtGui.QDialogButtonBox.Cancel
-        self.button_box = qt.QtGui.QDialogButtonBox(QBtn)
+        QBtn = qt.QtWidgets.QDialogButtonBox.Ok | qt.QtWidgets.QDialogButtonBox.Cancel
+        self.button_box = qt.QtWidgets.QDialogButtonBox(QBtn)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
 
@@ -111,7 +111,7 @@ class MPLExportDialog(qt.QtGui.QDialog) :
 
     def align(self) :
         """ Create and apply the dialog's layout. """
-        layout = qt.QtGui.QGridLayout()
+        layout = qt.QtWidgets.QGridLayout()
         ncol = 4
         i = 1
         # Title
@@ -133,12 +133,12 @@ class MPLExportDialog(qt.QtGui.QDialog) :
         i += 1
         # Limits
         layout.addWidget(self.label_xlim, i, 1, 1, 1)
-        xlims = qt.QtGui.QHBoxLayout()
+        xlims = qt.QtWidgets.QHBoxLayout()
         xlims.addWidget(self.box_xmin)
         xlims.addWidget(self.box_xmax)
         layout.addLayout(xlims, i, 2, 1, 1)
         layout.addWidget(self.label_ylim, i, 3, 1, 1)
-        ylims = qt.QtGui.QHBoxLayout()
+        ylims = qt.QtWidgets.QHBoxLayout()
         ylims.addWidget(self.box_ymin)
         ylims.addWidget(self.box_ymax)
         layout.addLayout(ylims, i, 4, 1, 1)
@@ -683,13 +683,13 @@ class ImagePlot(pg.PlotWidget) :
 
         # Show the dialog with some options
         dialog = MPLExportDialog(self, parent=self)
-#        ok_button = qt.QtGui.QPushButton('Done', dialog)
+#        ok_button = qt.QtWidgets.QPushButton('Done', dialog)
         if not dialog.exec_() : return
         # Replot to update the figure
         dialog.plot_preview()
 
         # Get a filename first
-        fd = qt.QtGui.QFileDialog()
+        fd = qt.QtWidgets.QFileDialog()
         filename = fd.getSaveFileName()[0]
         if not filename : return
         logger.debug('Outfilename: {}'.format(filename))

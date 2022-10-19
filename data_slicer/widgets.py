@@ -7,7 +7,7 @@ import logging
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 import numpy as np
-from pyqtgraph.Qt import QtGui, QtCore
+from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 
 from data_slicer.cmaps import load_cmap, ds_cmap
 from data_slicer.cutline import Cutline
@@ -24,7 +24,7 @@ T = -0.5
 
 #_Classes_______________________________________________________________________
 
-class ColorSliders(QtGui.QWidget) :
+class ColorSliders(QtWidgets.QWidget) :
     """ A simple widget providing a *gamma* and *vmax* slider. 
     
     **Signals**
@@ -68,7 +68,7 @@ class ColorSliders(QtGui.QWidget) :
         self.align()
 
     def align(self) :
-        layout = QtGui.QGridLayout()
+        layout = QtWidgets.QGridLayout()
         self.setLayout(layout)
 
         layout.addWidget(self.gamma_slider, 1, 1)
@@ -87,7 +87,7 @@ class ColorSliders(QtGui.QWidget) :
         self.vmax = vmax
         self.sig_vmax_changed.emit()
 
-class ThreeDWidget(QtGui.QWidget) :
+class ThreeDWidget(QtWidgets.QWidget) :
     """
     A widget that contains a :class:`GLViewWidget 
     <pyqtgraph.opengl.GLViewWidget>` that allows displaying 2D colormeshes in 
@@ -109,7 +109,7 @@ class ThreeDWidget(QtGui.QWidget) :
         self.gloptions = 'translucent'
 
         # Create a GLViewWidget and put it into the layout of this view
-        self.layout = QtGui.QGridLayout()
+        self.layout = QtWidgets.QGridLayout()
         self.setLayout(self.layout)
         self.glview = gl.GLViewWidget()
 
@@ -565,26 +565,26 @@ if __name__ == "__main__" :
 
     import data_slicer.set_up_logging
     # Set up Qt Application skeleton
-    app = QtGui.QApplication([])
-    window = QtGui.QMainWindow()
+    app = QtWidgets.QApplication([])
+    window = QtWidgets.QMainWindow()
     window.resize(800, 800)
 
     # Add layouting-widget
-    cw = QtGui.QWidget()
+    cw = QtWidgets.QWidget()
     window.setCentralWidget(cw)
-    layout = QtGui.QGridLayout()
+    layout = QtWidgets.QGridLayout()
     cw.setLayout(layout)
 
     # Add our custom widgets
-#    w = ThreeDSliceWidget()
-    w = FreeSliceWidget()
+    w = ThreeDSliceWidget()
+#    w = FreeSliceWidget()
     layout.addWidget(w, 0, 0, 1, 2)
 
-    button1 = QtGui.QPushButton()
+    button1 = QtWidgets.QPushButton()
     button1.setText('Reset')
     layout.addWidget(button1, 1, 0, 1, 1)
 
-    button2 = QtGui.QPushButton()
+    button2 = QtWidgets.QPushButton()
     button2.setText('Randomize')
     layout.addWidget(button2, 1, 1, 1, 1)
 

@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.console
-from pyqtgraph.Qt import QtGui, QtCore
+from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 from qtconsole.rich_ipython_widget import RichIPythonWidget, RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
 
@@ -537,7 +537,7 @@ class PITDataHandler() :
         self.model_cut = self.main_window.cut_plot.plot(model_cut, 
                                                         pen=self.iso.pen)
 
-class MainWindow(QtGui.QMainWindow) :
+class MainWindow(QtWidgets.QMainWindow) :
     """ The main window of PIT. Defines the basic GUI layouts and 
     acts as the controller, keeping track of the data and handling the 
     communication between the different GUI elements. 
