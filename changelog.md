@@ -1,0 +1,34 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic 
+Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+
+### Changed
+
+- :class:`cmaps.ds_cmap` is now just an empty shell, in order to fix a bug. 
+  In turn, alpha and gamma sliders don't work anymore. The original code is 
+  retained in :class:`cmaps.ds_cmaps_legacy`.
+
+- Created compatibility for PyQt5 by exchanging many instances of `QtGui` 
+  with `QtWidgets`.
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+- ImageItems and GLImageItems not showing up due to a change of how colormaps 
+  work in pyqtgraph.
+
+## [1.0.0] - 2022-10-19
+
+### Added
+
+- changelog.md
