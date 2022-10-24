@@ -18,7 +18,7 @@ import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.console
 from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
-from qtconsole.rich_ipython_widget import RichIPythonWidget, RichJupyterWidget
+from qtconsole.rich_jupyter_widget import RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
 
 import data_slicer.dataloading as dl
@@ -300,7 +300,8 @@ class PITDataHandler() :
         data = self.get_data()
         try :
             self.main_window.image_data = make_slice(data, dim=2, index=z, 
-                                                     integrate=integrate_z) 
+                                                     integrate=integrate_z, 
+                                                     silent=True) 
         except IndexError :
             logger.debug(('update_image_data(): z index {} out of range for '
                           'data of length {}.').format(

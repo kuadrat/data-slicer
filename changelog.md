@@ -11,13 +11,29 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- `qtconsole.rich_ipython_widget` -> `qtconsole.rich_jupyter_widget` due to 
+  deprecation
+
+- PIT now uses `utilities.make_slice()` with the `silent=True` option to suppress 
+  a warning.
+
 ### Deprecated
 
 ### Removed
 
 ### Fixed
 
-## [1.0.1] = 2022-10-19
+## [1.0.3] = 2022-10-24
+
+### Changed
+
+- `qtconsole.rich_ipython_widget` -> `qtconsole.rich_jupyter_widget` due to 
+  deprecation
+
+- PIT now uses `utilities.make_slice()` with the `silent=True` option to suppress 
+  a warning.
+
+## [1.0.2] = 2022-10-19
 
 ### Changed
 
@@ -33,7 +49,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - ImageItems and GLImageItems not showing up due to a change of how colormaps 
   work in pyqtgraph.
 
-## [1.0.0] - 2022-10-19
+## [1.0.1] - 2022-10-19
 
 ### Added
 
