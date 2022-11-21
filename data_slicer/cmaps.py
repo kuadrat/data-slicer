@@ -12,7 +12,7 @@ import warnings
 
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
-from matplotlib.pyplot import colormaps
+from matplotlib.pyplot import get_cmap
 from pyqtgraph import ColorMap
 
 from data_slicer.utilities import CACHED_CMAPS_FILENAME, CONFIG_DIR
@@ -123,7 +123,7 @@ def convert_matplotlib_to_pyqtgraph(matplotlib_cmap, alpha=1) :
 
     # Get the colormap object if a colormap name is given 
     if isinstance(matplotlib_cmap, str) :
-        matplotlib_cmap = colormaps.get_cmap(matplotlib_cmap)
+        matplotlib_cmap = get_cmap(matplotlib_cmap)
     # Number of entries in the matplotlib colormap
     N = matplotlib_cmap.N
     # Create the mapping values in the interval [0, 1]
