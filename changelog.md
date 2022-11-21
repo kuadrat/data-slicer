@@ -16,6 +16,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - PIT now uses `utilities.make_slice()` with the `silent=True` option to suppress 
   a warning.
+  
+- `from matplotlib.pyplot import colormaps` changed to 
+  `from matplotlib.pyplot import get_cmap` to align with matplotlib change.
 
 ### Deprecated
 
